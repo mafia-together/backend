@@ -23,4 +23,8 @@ public class RoomManager {
         rooms.put(code, Room.create(roomInfo));
         return code;
     }
+
+    public Room findByCode(final String code) {
+        return rooms.get(code);
+    }
 }

@@ -1,9 +1,11 @@
 package mafia.mafiatogether.service;
 
 import lombok.RequiredArgsConstructor;
+import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomManager;
-import mafia.mafiatogether.service.dto.CreateRoomRequest;
-import mafia.mafiatogether.service.dto.CreateRoomResponse;
+import mafia.mafiatogether.service.dto.RoomCreateRequest;
+import mafia.mafiatogether.service.dto.RoomCreateResponse;
+import mafia.mafiatogether.service.dto.RoomStatusResponse;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,8 +14,13 @@ public class RoomService {
 
     private final RoomManager roomManager;
 
-    public CreateRoomResponse create(final CreateRoomRequest request) {
+    public RoomCreateResponse create(final RoomCreateRequest request) {
         String code = roomManager.create(request.toDomain());
-        return new CreateRoomResponse(code);
+        return new RoomCreateResponse(code);
+    }
+
+    public RoomStatusResponse findStatus(final String code) {
+        Room room = roomManager.findByCode(code);
+        return new RoomStatusResponse(room.getStatus());
     }
 }

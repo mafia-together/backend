@@ -1,9 +1,11 @@
 package mafia.mafiatogether.domain;
 
-public class Player {
-    private final String name;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-    public Player(String name) {
-        this.name = name;
-    }
+@Getter
+@RequiredArgsConstructor
+public class Player {
+
+    private final String name;
 }

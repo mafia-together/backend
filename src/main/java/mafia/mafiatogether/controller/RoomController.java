@@ -2,12 +2,15 @@ package mafia.mafiatogether.controller;
 
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.service.RoomService;
-import mafia.mafiatogether.service.dto.CreateRoomRequest;
-import mafia.mafiatogether.service.dto.CreateRoomResponse;
+import mafia.mafiatogether.service.dto.RoomCreateRequest;
+import mafia.mafiatogether.service.dto.RoomCreateResponse;
+import mafia.mafiatogether.service.dto.RoomStatusResponse;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -18,7 +21,14 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping
-    public ResponseEntity<CreateRoomResponse> create(@RequestBody CreateRoomRequest request) {
+    public ResponseEntity<RoomCreateResponse> create(@RequestBody RoomCreateRequest request) {
         return ResponseEntity.ok(roomService.create(request));
+    }
+
+    @GetMapping("/status")
+    public ResponseEntity<RoomStatusResponse> findStatus(
+            @RequestParam("code") String code
+    ) {
+        return ResponseEntity.ok(roomService.findStatus(code));
     }
 }

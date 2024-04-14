@@ -1,6 +1,6 @@
 package mafia.mafiatogether.service.dto;
 
-public record CreateRoomResponse(
+public record RoomCreateResponse(
         String code
 ) {
 }
