@@ -25,6 +25,9 @@ public class RoomManager {
     }
 
     public Room findByCode(final String code) {
+        if (!rooms.containsKey(code)) {
+            throw new IllegalArgumentException("입장 코드가 올바르지 않습니다. 올바른 코드를 입력해주세요");
+        }
         return rooms.get(code);
     }
 }

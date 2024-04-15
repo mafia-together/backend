@@ -25,4 +25,8 @@ public class Room {
     public void modifyStatus(final Status status) {
         this.status = status;
     }
+
+    public void joinPlayer(final Player player) {
+        players.add(player);
+    }
 }

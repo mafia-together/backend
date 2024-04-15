@@ -3,6 +3,7 @@ package mafia.mafiatogether.controller;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.Base64;
+import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.RoomManager;
@@ -94,5 +95,22 @@ class RoomControllerTest {
         //then
         Room room = roomManager.findByCode(code);
         Assertions.assertThat(room.getStatus()).isEqualTo(Status.START);
+    }
+
+    @Test
+    void 방에_참가할_수_있다() {
+        //given
+        String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+
+        //when
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when().get("/room?code=" + code + "&name=power")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        //then
+        Room room = roomManager.findByCode(code);
+        Assertions.assertThat(room.getPlayers()).contains(new Player("power"));
     }
 }
