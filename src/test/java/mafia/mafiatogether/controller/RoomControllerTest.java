@@ -3,11 +3,13 @@ package mafia.mafiatogether.controller;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.Base64;
+import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.RoomManager;
 import mafia.mafiatogether.domain.Status;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
 import mafia.mafiatogether.service.dto.RoomCreateResponse;
+import mafia.mafiatogether.service.dto.RoomModifyRequest;
 import mafia.mafiatogether.service.dto.RoomStatusResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -71,5 +73,26 @@ class RoomControllerTest {
 
         //then
         Assertions.assertThat(response.status()).isEqualTo(Status.WAIT);
+    }
+
+    @Test
+    void 방을_상태를_변경할_수_있다() {
+        //given
+        String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
+        RoomModifyRequest request = new RoomModifyRequest(Status.START);
+
+        //when
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .header("Authorization", "Basic " + basic)
+                .when().patch("/room/status")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        //then
+        Room room = roomManager.findByCode(code);
+        Assertions.assertThat(room.getStatus()).isEqualTo(Status.START);
     }
 }
