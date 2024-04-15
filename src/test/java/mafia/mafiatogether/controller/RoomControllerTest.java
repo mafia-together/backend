@@ -2,6 +2,7 @@ package mafia.mafiatogether.controller;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.util.Base64;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.RoomManager;
 import mafia.mafiatogether.domain.Status;
@@ -56,11 +57,13 @@ class RoomControllerTest {
     void 방을_상태를_확인할_수_있다() {
         //given
         String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
 
         //when
         RoomStatusResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/room/status?code=" + code)
+                .header("Authorization", "Basic " + basic)
+                .when().get("/room/status")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
