@@ -24,16 +24,14 @@ public class RoomController {
     private final RoomService roomService;
 
     @PostMapping
-    public ResponseEntity<RoomCreateResponse> create(@RequestBody RoomCreateRequest request) {
+    public ResponseEntity<RoomCreateResponse> create(@RequestBody final RoomCreateRequest request) {
         return ResponseEntity.ok(roomService.create(request));
     }
 
-    //TODO 방장 역할 추가
-    //TODO GET -> POST
     @GetMapping
     public ResponseEntity<Void> join(
-            @RequestParam("code") String code,
-            @RequestParam("name") String name
+            @RequestParam("code") final String code,
+            @RequestParam("name") final String name
     ) {
         roomService.join(code,name);
         return ResponseEntity.ok().build();
@@ -41,7 +39,7 @@ public class RoomController {
 
     @GetMapping("/status")
     public ResponseEntity<RoomStatusResponse> findStatus(
-            @PlayerInfo PlayerInfoDto playerInfoDto
+            @PlayerInfo final PlayerInfoDto playerInfoDto
     ) {
         return ResponseEntity.ok(roomService.findStatus(playerInfoDto.code()));
     }
@@ -49,8 +47,8 @@ public class RoomController {
 
     @PatchMapping("/status")
     public ResponseEntity<Void> modifyStatus(
-            @PlayerInfo PlayerInfoDto playerInfoDto,
-            @RequestBody RoomModifyRequest request
+            @PlayerInfo final PlayerInfoDto playerInfoDto,
+            @RequestBody final RoomModifyRequest request
     ) {
         roomService.modifyStatus(playerInfoDto.code(), request);
         return ResponseEntity.ok().build();

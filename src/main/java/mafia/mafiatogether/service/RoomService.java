@@ -17,22 +17,22 @@ public class RoomService {
     private final RoomManager roomManager;
 
     public RoomCreateResponse create(final RoomCreateRequest request) {
-        String code = roomManager.create(request.toDomain());
+        final String code = roomManager.create(request.toDomain());
         return new RoomCreateResponse(code);
     }
 
     public void join(final String code, final String name) {
-        Room room = roomManager.findByCode(code);
+        final Room room = roomManager.findByCode(code);
         room.joinPlayer(new Player(name));
     }
 
     public RoomStatusResponse findStatus(final String code) {
-        Room room = roomManager.findByCode(code);
+        final Room room = roomManager.findByCode(code);
         return new RoomStatusResponse(room.getStatus());
     }
 
     public void modifyStatus(final String code, final RoomModifyRequest request) {
-        Room room = roomManager.findByCode(code);
+        final Room room = roomManager.findByCode(code);
         room.modifyStatus(request.status());
     }
 }
