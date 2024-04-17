@@ -15,4 +15,8 @@ public class Chat {
     public static Chat chat() {
         return new Chat(new ArrayList<>());
     }
+
+    public void save(final Message message){
+        messages.add(message);
+    }
 }

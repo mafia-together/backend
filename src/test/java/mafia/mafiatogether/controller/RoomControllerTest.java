@@ -3,7 +3,6 @@ package mafia.mafiatogether.controller;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.Base64;
-import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.RoomManager;
@@ -111,6 +110,6 @@ class RoomControllerTest {
 
         //then
         Room room = roomManager.findByCode(code);
-        Assertions.assertThat(room.getPlayers()).contains(new Player("power"));
+        Assertions.assertThat(room.getPlayers()).containsKey("power");
     }
 }
