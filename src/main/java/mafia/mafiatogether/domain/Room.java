@@ -13,12 +13,14 @@ public class Room {
     private final List<Player> players;
     private Status status;
     private final RoomInfo roomInfo;
+    private final Chat chat;
 
     public static Room create(final RoomInfo roomInfo) {
         return new Room(
                 new ArrayList<>(),
                 Status.WAIT,
-                roomInfo
+                roomInfo,
+                Chat.chat()
         );
     }
 
