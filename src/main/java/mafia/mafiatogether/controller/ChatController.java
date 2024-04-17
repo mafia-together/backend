@@ -34,4 +34,13 @@ public class ChatController {
         chatService.saveChat(playerInfoDto.code(), playerInfoDto.name(), request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @PostMapping
+    public ResponseEntity<Void> sendChat(
+            @PlayerInfo PlayerInfoDto playerInfoDto,
+            @RequestBody ChatRequest request
+    ) {
+        chatService.createChat(playerInfoDto.code(), playerInfoDto.name(), request);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
 }

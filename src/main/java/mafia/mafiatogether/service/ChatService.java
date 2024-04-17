@@ -31,4 +31,11 @@ public class ChatService {
         final Player player = room.findPlayer(name);
         chat.save(Message.of(player, chatRequest.contents()));
     }
+
+    public void createChat(final String code, final String name, final ChatRequest chatRequest){
+        final Room room = roomManager.findByCode(code);
+        final Chat chat = room.getChat();
+        final Player player = room.findPlayer(name);
+        chat.save(Message.of(player,chatRequest.contents()));
+    }
 }
