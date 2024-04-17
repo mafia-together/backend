@@ -1,9 +1,11 @@
 package mafia.mafiatogether.service.dto;
 
 import java.sql.Timestamp;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@Getter
 public class ChatResponse {
 
     private final String name;
