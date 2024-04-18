@@ -23,7 +23,7 @@ public class RoomService {
 
     public void join(final String code, final String name) {
         final Room room = roomManager.findByCode(code);
-        room.joinPlayer(new Player(name));
+        room.joinPlayer(Player.create(name));
     }
 
     public RoomStatusResponse findStatus(final String code) {
