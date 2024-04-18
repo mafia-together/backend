@@ -1,7 +1,7 @@
 package mafia.mafiatogether.domain;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Room {
 
-    private final Map<String, Player> players;
+    private final List<Player> players;
     private Status status;
     private final RoomInfo roomInfo;
     private final Chat chat;
@@ -25,6 +25,9 @@ public class Room {
     }
 
     public void modifyStatus(final Status status) {
+        if (this.status.equals(Status.WAIT)) {
+            distributeRole();
+        }
         this.status = status;
     }
 
@@ -37,5 +40,27 @@ public class Room {
             throw new IllegalArgumentException("존재하지 않는 플레이어입니다.");
         }
         return players.get(name);
+        players.put(player.getName(), player);
+    }
+
+    private void distributeRole() {
+        List<Player> playerNames = players.values().stream().toList();
+        Collections.shuffle(playerNames);
+        Queue<Role> roles = new LinkedList<>();
+        for (int i = 0; i < roomInfo.getMafia(); i++) {
+            roles.add(Role.MAFIA);
+        }
+        for (int i = 0; i < roomInfo.getPolice(); i++) {
+            roles.add(Role.POLICE);
+        }
+        for (int i = 0; i < roomInfo.getDoctor(); i++) {
+            roles.add(Role.DOCTOR);
+        }
+        for (Player player : playerNames) {
+            if (roles.isEmpty()) {
+                break;
+            }
+            player.modifyRole(roles.poll());
+        }
     }
 }

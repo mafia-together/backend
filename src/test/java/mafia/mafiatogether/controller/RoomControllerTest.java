@@ -79,9 +79,9 @@ class RoomControllerTest {
     @Test
     void 방을_상태를_변경할_수_있다() {
         //given
-        final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
-        final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
-        final RoomModifyRequest request = new RoomModifyRequest(Status.START);
+        String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
+        RoomModifyRequest request = new RoomModifyRequest(Status.DAY);
 
         //when
         RestAssured.given().log().all()
@@ -93,8 +93,8 @@ class RoomControllerTest {
                 .statusCode(HttpStatus.OK.value());
 
         //then
-        final Room room = roomManager.findByCode(code);
-        Assertions.assertThat(room.getStatus()).isEqualTo(Status.START);
+        Room room = roomManager.findByCode(code);
+        Assertions.assertThat(room.getStatus()).isEqualTo(Status.DAY);
     }
 
     @Test
@@ -110,8 +110,8 @@ class RoomControllerTest {
                 .statusCode(HttpStatus.OK.value());
 
         //then
-        final Room room = roomManager.findByCode(code);
-        Assertions.assertThat(room.getPlayers()).containsKey("power");
+        Room room = roomManager.findByCode(code);
+        Assertions.assertThat(room.getPlayers()).containsValue(Player.create("power"));
     }
 
     @Test
