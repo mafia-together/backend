@@ -21,20 +21,14 @@ public class ChatService {
         final Room room = roomManager.findByCode(code);
         final Chat chat = room.getChat();
         return chat.getMessages().stream()
-                .map(message ->
-                        new ChatResponse(
-                                message.getName(),
-                                message.getContents(),
-                                message.getTimestamp(),
-                                message.isOwner(name)
-                        )
-                ).toList();
+                .map(message -> ChatResponse.byOfName(message, name))
+                .toList();
     }
 
-    public void createChat(final String code, final String name, final ChatRequest chatRequest){
+    public void createChat(final String code, final String name, final ChatRequest chatRequest) {
         final Room room = roomManager.findByCode(code);
         final Chat chat = room.getChat();
         final Player player = room.findPlayer(name);
-        chat.save(Message.of(player,chatRequest.contents()));
+        chat.save(Message.of(player, chatRequest.contents()));
     }
 }
