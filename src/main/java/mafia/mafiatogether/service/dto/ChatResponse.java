@@ -9,6 +9,7 @@ public record ChatResponse(
         Timestamp timestamp,
         boolean owner
 ) {
+
     public static ChatResponse byOfName(final Message message, final String name) {
         return new ChatResponse(
                 message.getName(),
