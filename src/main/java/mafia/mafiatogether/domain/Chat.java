@@ -6,8 +6,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class Chat {
 
     private final List<Message> messages;
@@ -16,7 +16,7 @@ public class Chat {
         return new Chat(new ArrayList<>());
     }
 
-    public void save(final Message message){
+    public void save(final Message message) {
         messages.add(message);
     }
 }
