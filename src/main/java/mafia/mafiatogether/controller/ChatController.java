@@ -22,12 +22,12 @@ public class ChatController {
     private final ChatService chatService;
 
     @GetMapping
-    public ResponseEntity<List<ChatResponse>> getChat(@PlayerInfo PlayerInfoDto playerInfoDto) {
-        return ResponseEntity.ok(chatService.getChat(playerInfoDto.code(), playerInfoDto.name()));
+    public ResponseEntity<List<ChatResponse>> findAllChat(@PlayerInfo PlayerInfoDto playerInfoDto) {
+        return ResponseEntity.ok(chatService.findAllChat(playerInfoDto.code(), playerInfoDto.name()));
     }
 
     @PostMapping
-    public ResponseEntity<Void> sendChat(
+    public ResponseEntity<Void> createChat(
             @PlayerInfo PlayerInfoDto playerInfoDto,
             @RequestBody ChatRequest request
     ) {
