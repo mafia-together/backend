@@ -1,11 +1,8 @@
 package mafia.mafiatogether.service.dto;
 
 import java.sql.Timestamp;
-import lombok.AccessLevel;
-import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.domain.Message;
 
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public record ChatResponse(
         String name,
         String contents,
