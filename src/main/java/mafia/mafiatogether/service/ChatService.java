@@ -17,7 +17,7 @@ public class ChatService {
 
     private final RoomManager roomManager;
 
-    public List<ChatResponse> getChat(final String code, final String name) {
+    public List<ChatResponse> findAllChat(final String code, final String name) {
         final Room room = roomManager.findByCode(code);
         final Chat chat = room.getChat();
         return chat.getMessages().stream()
