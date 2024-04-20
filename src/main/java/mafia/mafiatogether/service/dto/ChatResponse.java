@@ -10,7 +10,7 @@ public record ChatResponse(
         boolean owner
 ) {
 
-    public static ChatResponse byOfName(final Message message, final String name) {
+    public static ChatResponse of(final Message message, final String name) {
         return new ChatResponse(
                 message.getName(),
                 message.getContents(),

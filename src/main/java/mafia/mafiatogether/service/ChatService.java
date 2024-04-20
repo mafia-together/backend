@@ -21,11 +21,11 @@ public class ChatService {
         final Room room = roomManager.findByCode(code);
         final Chat chat = room.getChat();
         return chat.getMessages().stream()
-                .map(message -> ChatResponse.byOfName(message, name))
+                .map(message -> ChatResponse.of(message, name))
                 .toList();
     }
 
-    public void createChat(final String code, final String name, final ChatRequest chatRequest) {
+    public void saveChat(final String code, final String name, final ChatRequest chatRequest) {
         final Room room = roomManager.findByCode(code);
         final Chat chat = room.getChat();
         final Player player = room.findPlayer(name);
