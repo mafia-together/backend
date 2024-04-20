@@ -27,11 +27,11 @@ public class ChatController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createChat(
+    public ResponseEntity<Void> saveChat(
             @PlayerInfo PlayerInfoDto playerInfoDto,
             @RequestBody ChatRequest request
     ) {
-        chatService.createChat(playerInfoDto.code(), playerInfoDto.name(), request);
+        chatService.saveChat(playerInfoDto.code(), playerInfoDto.name(), request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
