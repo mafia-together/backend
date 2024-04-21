@@ -2,6 +2,7 @@ package mafia.mafiatogether.controller;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.service.ChatService;
 import mafia.mafiatogether.service.dto.ChatRequest;
 import mafia.mafiatogether.service.dto.ChatResponse;
@@ -22,16 +23,20 @@ public class ChatController {
     private final ChatService chatService;
 
     @GetMapping
-    public ResponseEntity<List<ChatResponse>> findAllChat(@PlayerInfo PlayerInfoDto playerInfoDto) {
-        return ResponseEntity.ok(chatService.findAllChat(playerInfoDto.code(), playerInfoDto.name()));
+    public ResponseEntity<List<ChatResponse>> findAllChat(
+            @PlayerRoom final Room room,
+            @PlayerInfo final PlayerInfoDto playerInfoDto
+    ) {
+        return ResponseEntity.ok(chatService.findAllChat(room, playerInfoDto.name()));
     }
 
     @PostMapping
     public ResponseEntity<Void> saveChat(
-            @PlayerInfo PlayerInfoDto playerInfoDto,
-            @RequestBody ChatRequest request
+            @PlayerRoom final Room room,
+            @PlayerInfo final PlayerInfoDto playerInfoDto,
+            @RequestBody final ChatRequest request
     ) {
-        chatService.saveChat(playerInfoDto.code(), playerInfoDto.name(), request);
+        chatService.saveChat(room, playerInfoDto.name(), request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

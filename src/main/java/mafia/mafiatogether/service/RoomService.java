@@ -26,13 +26,11 @@ public class RoomService {
         room.joinPlayer(new Player(name));
     }
 
-    public RoomStatusResponse findStatus(final String code) {
-        final Room room = roomManager.findByCode(code);
+    public RoomStatusResponse findStatus(final Room room) {
         return new RoomStatusResponse(room.getStatus());
     }
 
-    public void modifyStatus(final String code, final RoomModifyRequest request) {
-        final Room room = roomManager.findByCode(code);
+    public void modifyStatus(final Room room, final RoomModifyRequest request) {
         room.modifyStatus(request.status());
     }
 }

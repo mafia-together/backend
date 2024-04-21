@@ -1,8 +1,8 @@
 package mafia.mafiatogether.controller;
 
 import lombok.RequiredArgsConstructor;
+import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.service.RoomService;
-import mafia.mafiatogether.service.dto.PlayerInfoDto;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
 import mafia.mafiatogether.service.dto.RoomCreateResponse;
 import mafia.mafiatogether.service.dto.RoomModifyRequest;
@@ -33,24 +33,24 @@ public class RoomController {
             @RequestParam("code") final String code,
             @RequestParam("name") final String name
     ) {
-        roomService.join(code,name);
+        roomService.join(code, name);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/status")
     public ResponseEntity<RoomStatusResponse> findStatus(
-            @PlayerInfo final PlayerInfoDto playerInfoDto
+            @PlayerRoom final Room room
     ) {
-        return ResponseEntity.ok(roomService.findStatus(playerInfoDto.code()));
+        return ResponseEntity.ok(roomService.findStatus(room));
     }
 
 
     @PatchMapping("/status")
     public ResponseEntity<Void> modifyStatus(
-            @PlayerInfo final PlayerInfoDto playerInfoDto,
+            @PlayerRoom Room room,
             @RequestBody final RoomModifyRequest request
     ) {
-        roomService.modifyStatus(playerInfoDto.code(), request);
+        roomService.modifyStatus(room, request);
         return ResponseEntity.ok().build();
     }
 }
