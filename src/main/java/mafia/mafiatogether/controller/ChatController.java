@@ -6,7 +6,6 @@ import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.service.ChatService;
 import mafia.mafiatogether.service.dto.ChatRequest;
 import mafia.mafiatogether.service.dto.ChatResponse;
-import mafia.mafiatogether.service.dto.PlayerInfoDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,18 +24,18 @@ public class ChatController {
     @GetMapping
     public ResponseEntity<List<ChatResponse>> findAllChat(
             @PlayerRoom final Room room,
-            @PlayerInfo final PlayerInfoDto playerInfoDto
+            @PlayerInfo final String name
     ) {
-        return ResponseEntity.ok(chatService.findAllChat(room, playerInfoDto.name()));
+        return ResponseEntity.ok(chatService.findAllChat(room, name));
     }
 
     @PostMapping
     public ResponseEntity<Void> saveChat(
             @PlayerRoom final Room room,
-            @PlayerInfo final PlayerInfoDto playerInfoDto,
+            @PlayerInfo final String name,
             @RequestBody final ChatRequest request
     ) {
-        chatService.saveChat(room, playerInfoDto.name(), request);
+        chatService.saveChat(room, name, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

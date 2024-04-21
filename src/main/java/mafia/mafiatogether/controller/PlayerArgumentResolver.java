@@ -2,7 +2,6 @@ package mafia.mafiatogether.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.service.dto.PlayerInfoDto;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -20,14 +19,13 @@ public class PlayerArgumentResolver implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public PlayerInfoDto resolveArgument(
+    public String resolveArgument(
             final MethodParameter parameter,
             final ModelAndViewContainer mavContainer,
             final NativeWebRequest webRequest,
             final WebDataBinderFactory binderFactory
     ) {
         final HttpServletRequest httpServletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
-        final String name = requestDecrypter.decryptName(httpServletRequest);
-        return new PlayerInfoDto(name);
+        return requestDecrypter.decryptName(httpServletRequest);
     }
 }
