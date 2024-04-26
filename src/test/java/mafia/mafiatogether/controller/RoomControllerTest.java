@@ -7,11 +7,12 @@ import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.RoomManager;
 import mafia.mafiatogether.domain.Status;
+import mafia.mafiatogether.service.dto.RoomCodeResponse;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
-import mafia.mafiatogether.service.dto.RoomCreateResponse;
 import mafia.mafiatogether.service.dto.RoomModifyRequest;
 import mafia.mafiatogether.service.dto.RoomStatusResponse;
 import org.assertj.core.api.Assertions;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,14 +43,14 @@ class RoomControllerTest {
         RoomCreateRequest request = new RoomCreateRequest(5, 1, 1, 1);
 
         //when
-        RoomCreateResponse response = RestAssured.given().log().all()
+        RoomCodeResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/room")
+                .when().post("/rooms")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .as(RoomCreateResponse.class);
+                .as(RoomCodeResponse.class);
 
         //then
         Assertions.assertThat(response.code()).isNotBlank();
@@ -65,7 +66,7 @@ class RoomControllerTest {
         RoomStatusResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/room/status")
+                .when().get("/rooms/status")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -87,7 +88,7 @@ class RoomControllerTest {
                 .contentType(ContentType.JSON)
                 .body(request)
                 .header("Authorization", "Basic " + basic)
-                .when().patch("/room/status")
+                .when().patch("/rooms/status")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
 
@@ -104,12 +105,28 @@ class RoomControllerTest {
         //when
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/room?code=" + code + "&name=power")
+                .when().get("/rooms?code=" + code + "&name=power")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
 
         //then
         Room room = roomManager.findByCode(code);
         Assertions.assertThat(room.getPlayers()).containsKey("power");
+    }
+
+    @Test
+    void 방의_코드를_찾는다() {
+        // given
+        String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
+
+        // when & then
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Basic " + basic)
+                .when().get("/rooms/code")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("code", Matchers.equalTo(code));
     }
 }
