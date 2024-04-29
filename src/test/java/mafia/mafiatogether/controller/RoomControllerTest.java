@@ -111,7 +111,7 @@ class RoomControllerTest {
 
         //then
         Room room = roomManager.findByCode(code);
-        Assertions.assertThat(room.getPlayers()).containsValue(Player.create("power"));
+        Assertions.assertThat(room.getPlayer("power")).isNotNull();
     }
 
     @Test
