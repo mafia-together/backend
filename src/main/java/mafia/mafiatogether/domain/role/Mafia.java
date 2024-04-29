@@ -2,8 +2,10 @@ package mafia.mafiatogether.domain.role;
 
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
 import mafia.mafiatogether.domain.Player;
 
+@Getter
 public class Mafia implements Role {
 
     private final int limit;

@@ -2,6 +2,7 @@ package mafia.mafiatogether.controller;
 
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.service.PlayerService;
+import mafia.mafiatogether.service.dto.MafiaTargetResponse;
 import mafia.mafiatogether.service.dto.PlayerExecuteAbilityRequest;
 import mafia.mafiatogether.service.dto.PlayerExecuteAbilityResponse;
 import mafia.mafiatogether.service.dto.PlayerInfoDto;
@@ -34,6 +35,16 @@ public class PlayerController {
                 playerInfoDto.code(),
                 playerInfoDto.name(),
                 request
+        ));
+    }
+
+    @GetMapping("/night")
+    public ResponseEntity<MafiaTargetResponse> getTarget(
+            @PlayerInfo PlayerInfoDto playerInfoDto
+    ) {
+        return ResponseEntity.ok(playerService.getTarget(
+                playerInfoDto.code(),
+                playerInfoDto.name()
         ));
     }
 }
