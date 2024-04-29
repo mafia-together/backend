@@ -1,11 +1,11 @@
 package mafia.mafiatogether.domain;
 
-import static mafia.mafiatogether.domain.Role.CITIZEN;
-
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import mafia.mafiatogether.domain.role.Role;
+import mafia.mafiatogether.domain.role.RoleSymbol;
 
 @Getter
 @EqualsAndHashCode
@@ -17,10 +17,14 @@ public class Player {
     private Role role;
 
     public static Player create(final String name) {
-        return new Player(name, true, CITIZEN);
+        return new Player(name, true, null);
     }
 
     public void modifyRole(final Role role) {
         this.role = role;
+    }
+
+    public RoleSymbol getRoleSymbol(){
+        return role.getRoleSymbol();
     }
 }
