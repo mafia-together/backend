@@ -15,6 +15,7 @@ public class Mafia implements Role {
         this.players = new HashMap<>();
     }
 
+    @Override
     public void addPlayer(final Player player) {
         if (players.size() >= limit) {
             throw new IllegalArgumentException("최대 마피아 인원 초과");

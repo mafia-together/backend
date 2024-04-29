@@ -1,10 +1,10 @@
 package mafia.mafiatogether.domain;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,14 +24,15 @@ public class Room {
     private final RoomInfo roomInfo;
     private final Chat chat;
 
-//    public static Room create(final RoomInfo roomInfo) {
-//        return new Room(
-//                new HashMap<>(),
-//                Status.WAIT,
-//                roomInfo,
-//                Chat.chat()
-//        );
-//    }
+    public static Room create(final RoomInfo roomInfo) {
+        return new Room(
+                new ArrayList<>(),
+                new HashMap<>(),
+                Status.WAIT,
+                roomInfo,
+                Chat.chat()
+        );
+    }
 
     public void modifyStatus(final Status status) {
         if (this.status.equals(Status.WAIT)) {
@@ -57,7 +58,7 @@ public class Room {
         List<Role> roles = List.of(mafia, police, doctor, citizen);
 
         for (Role role : roles) {
-            if(role.isOverSize()){
+            if (role.isOverSize()) {
                 continue;
             }
             for (Player player : waitingRoom) {
@@ -66,7 +67,7 @@ public class Room {
         }
     }
 
-    public Player getPlayer(final String name){
+    public Player getPlayer(final String name) {
         Role role = players.get(name);
         return role.getPlayer(name);
     }

@@ -14,6 +14,7 @@ public class Police implements Role {
         this.players = new HashMap<>();
     }
 
+    @Override
     public void addPlayer(final Player player) {
         if (players.size() >= limit) {
             throw new IllegalArgumentException("최대 경찰 인원 초과");

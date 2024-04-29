@@ -8,4 +8,5 @@ public interface Role {
     RoleSymbol getRoleSymbol();
     Player getPlayer(String name);
     String executeAbility(Player player);
+    void addPlayer(final Player player);
 }
