@@ -1,15 +1,24 @@
 package mafia.mafiatogether.domain;
 
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import mafia.mafiatogether.domain.role.Citizen;
+import mafia.mafiatogether.domain.role.Doctor;
+import mafia.mafiatogether.domain.role.Mafia;
+import mafia.mafiatogether.domain.role.Police;
+import mafia.mafiatogether.domain.role.Role;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Room {
 
+    private final List<Player> waitingRoom;
+    private final Map<String, Role> players;
     private final List<Player> players;
     private Status status;
     private final RoomInfo roomInfo;
@@ -32,29 +41,28 @@ public class Room {
     }
 
     public void joinPlayer(final Player player) {
-        players.put(player.getName(), player);
-    }
-
-    public Player findPlayer(final String name) {
-        if (!players.containsKey(name)) {
-            throw new IllegalArgumentException("존재하지 않는 플레이어입니다.");
-        }
-        return players.get(name);
-        players.put(player.getName(), player);
+        waitingRoom.add(player);
     }
 
     private void distributeRole() {
-        List<Player> playerNames = players.values().stream().toList();
-        Collections.shuffle(playerNames);
-        Queue<Role> roles = new LinkedList<>();
-        for (int i = 0; i < roomInfo.getMafia(); i++) {
-            roles.add(Role.MAFIA);
-        }
-        for (int i = 0; i < roomInfo.getPolice(); i++) {
-            roles.add(Role.POLICE);
-        }
-        for (int i = 0; i < roomInfo.getDoctor(); i++) {
-            roles.add(Role.DOCTOR);
+        Collections.shuffle(waitingRoom);
+
+        Mafia mafia = new Mafia(roomInfo.getMafia());
+        Police police = new Police(roomInfo.getPolice());
+        Doctor doctor = new Doctor(roomInfo.getDoctor());
+        Citizen citizen = new Citizen(
+                roomInfo.getTotal() - roomInfo.getMafia() - roomInfo.getPolice() - roomInfo.getDoctor()
+        );
+
+        List<Role> roles = List.of(mafia, police, doctor, citizen);
+
+        for (Role role : roles) {
+            if(role.isOverSize()){
+                continue;
+            }
+            for (Player player : waitingRoom) {
+                player.modifyRole(role);
+            }
         }
         for (Player player : playerNames) {
             if (roles.isEmpty()) {
