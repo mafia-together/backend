@@ -59,24 +59,32 @@ public class Room {
 
         for (Player player : waitingRoom) {
             for (Role role : roles) {
-                if (role.isOverSize()) {
+                if (role.isPlayerOverLimit()) {
                     continue;
                 }
+                players.put(player.getName(), role);
                 player.modifyRole(role);
                 break;
             }
         }
+
+
     }
 
     public Player getPlayer(final String name) {
-        Role role = players.get(name);
-        return role.getPlayer(name);
+        if (status == Status.WAIT) {
+            for (Player player : waitingRoom) {
+                if (player.getName().equals(name)) {
+                    return player;
+                }
+            }
+        }
+        return players.get(name).getPlayer(name);
     }
 
 
     public String executeAbility(final String player, final Player target) {
         Role role = players.get(player);
-
         return role.executeAbility(target);
     }
 }

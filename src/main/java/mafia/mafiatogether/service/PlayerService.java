@@ -5,7 +5,6 @@ import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomManager;
 import mafia.mafiatogether.domain.role.Mafia;
-import mafia.mafiatogether.domain.role.Role;
 import mafia.mafiatogether.domain.role.RoleSymbol;
 import mafia.mafiatogether.service.dto.MafiaTargetResponse;
 import mafia.mafiatogether.service.dto.PlayerExecuteAbilityRequest;
