@@ -22,9 +22,10 @@ public class Player {
 
     public void modifyRole(final Role role) {
         this.role = role;
+        role.addPlayer(this);
     }
 
-    public RoleSymbol getRoleSymbol(){
+    public RoleSymbol getRoleSymbol() {
         return role.getRoleSymbol();
     }
 }

@@ -13,6 +13,7 @@ public class Citizen implements Role {
         this.players = new HashMap<>();
     }
 
+    @Override
     public void addPlayer(final Player player) {
         if (players.size() >= limit) {
             throw new IllegalArgumentException("최대 시민 인원 초과");

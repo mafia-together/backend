@@ -2,8 +2,9 @@ package mafia.mafiatogether.domain;
 
 import java.util.Collections;
 import java.util.LinkedList;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -19,14 +20,14 @@ public class Room {
 
     private final List<Player> waitingRoom;
     private final Map<String, Role> players;
-    private final List<Player> players;
     private Status status;
     private final RoomInfo roomInfo;
     private final Chat chat;
 
     public static Room create(final RoomInfo roomInfo) {
         return new Room(
-                new ConcurrentHashMap<>(),
+                new ArrayList<>(),
+                new HashMap<>(),
                 Status.WAIT,
                 roomInfo,
                 Chat.chat()
@@ -64,11 +65,17 @@ public class Room {
                 player.modifyRole(role);
             }
         }
-        for (Player player : playerNames) {
-            if (roles.isEmpty()) {
-                break;
-            }
-            player.modifyRole(roles.poll());
-        }
+    }
+
+    public Player getPlayer(final String name){
+        Role role = players.get(name);
+        return role.getPlayer(name);
+    }
+
+
+    public String executeAbility(final String player, final Player target) {
+        Role role = players.get(player);
+
+        return role.executeAbility(target);
     }
 }
