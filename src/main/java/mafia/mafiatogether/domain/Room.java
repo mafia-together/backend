@@ -57,12 +57,13 @@ public class Room {
 
         List<Role> roles = List.of(mafia, police, doctor, citizen);
 
-        for (Role role : roles) {
-            if (role.isOverSize()) {
-                continue;
-            }
-            for (Player player : waitingRoom) {
+        for (Player player : waitingRoom) {
+            for (Role role : roles) {
+                if (role.isOverSize()) {
+                    continue;
+                }
                 player.modifyRole(role);
+                break;
             }
         }
     }
