@@ -3,7 +3,6 @@ package mafia.mafiatogether.config;
 import java.util.List;
 import mafia.mafiatogether.controller.PlayerArgumentResolver;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -19,10 +18,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("*")
-                .allowedMethods("*")
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("Authorization", "Content-Type")
+                .allowedOriginPatterns("*")
+                .exposedHeaders("*")
                 .allowCredentials(true)
-                .exposedHeaders(HttpHeaders.LOCATION);
+                .maxAge(3600);
         WebMvcConfigurer.super.addCorsMappings(registry);
     }
 }
