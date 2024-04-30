@@ -2,7 +2,6 @@ package mafia.mafiatogether.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,15 +47,7 @@ public class Room {
 
     private void distributeRole() {
         Collections.shuffle(waitingRoom);
-
-        Mafia mafia = new Mafia(roomInfo.getMafia());
-        Police police = new Police(roomInfo.getPolice());
-        Doctor doctor = new Doctor(roomInfo.getDoctor());
-        Citizen citizen = new Citizen(
-                roomInfo.getTotal() - roomInfo.getMafia() - roomInfo.getPolice() - roomInfo.getDoctor()
-        );
-
-        List<Role> roles = List.of(mafia, police, doctor, citizen);
+        List<Role> roles = createRoles();
 
         for (Player player : waitingRoom) {
             for (Role role : roles) {
@@ -68,8 +59,20 @@ public class Room {
                 break;
             }
         }
+    }
 
+    private List<Role> createRoles() {
+        final int totalPlayers = roomInfo.getTotal();
+        final int mafiaCount = roomInfo.getMafia();
+        final int policeCount = roomInfo.getPolice();
+        final int doctorCount = roomInfo.getDoctor();
 
+        final Mafia mafia = new Mafia(mafiaCount);
+        final Police police = new Police(policeCount);
+        final Doctor doctor = new Doctor(doctorCount);
+        final Citizen citizen = new Citizen(totalPlayers - mafiaCount - policeCount - doctorCount);
+
+        return List.of(mafia, police, doctor, citizen);
     }
 
     public Player getPlayer(final String name) {
