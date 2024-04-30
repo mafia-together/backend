@@ -1,8 +1,10 @@
 package mafia.mafiatogether.controller;
 
+import java.util.Base64;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.service.RoomService;
 import mafia.mafiatogether.service.dto.PlayerInfoDto;
+import mafia.mafiatogether.service.dto.RoomAuthResponse;
 import mafia.mafiatogether.service.dto.RoomCodeResponse;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
 import mafia.mafiatogether.service.dto.RoomModifyRequest;
@@ -29,12 +31,13 @@ public class RoomController {
     }
 
     @GetMapping
-    public ResponseEntity<Void> join(
+    public ResponseEntity<RoomAuthResponse> join(
             @RequestParam("code") final String code,
             @RequestParam("name") final String name
     ) {
         roomService.join(code, name);
-        return ResponseEntity.ok().build();
+        String encodedStr = Base64.getEncoder().encodeToString((code + ":" + name).getBytes());
+        return ResponseEntity.ok(new RoomAuthResponse(encodedStr));
     }
 
     @GetMapping("/status")
