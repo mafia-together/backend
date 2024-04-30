@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,7 +28,7 @@ public class Room {
     public static Room create(final RoomInfo roomInfo) {
         return new Room(
                 new ArrayList<>(),
-                new HashMap<>(),
+                new ConcurrentHashMap<>(),
                 Status.WAIT,
                 roomInfo,
                 Chat.chat()
