@@ -34,4 +34,9 @@ public class ChatController {
         chatService.saveChat(playerInfoDto.code(), playerInfoDto.name(), request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
+
+    @GetMapping("/test")
+    public ResponseEntity<String> test(){
+        return ResponseEntity.ok("success");
+    }
 }
