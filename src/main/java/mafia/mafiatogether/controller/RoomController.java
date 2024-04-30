@@ -3,8 +3,8 @@ package mafia.mafiatogether.controller;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.service.RoomService;
 import mafia.mafiatogether.service.dto.PlayerInfoDto;
+import mafia.mafiatogether.service.dto.RoomCodeResponse;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
-import mafia.mafiatogether.service.dto.RoomCreateResponse;
 import mafia.mafiatogether.service.dto.RoomModifyRequest;
 import mafia.mafiatogether.service.dto.RoomStatusResponse;
 import org.springframework.http.ResponseEntity;
@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/room")
+@RequestMapping("/rooms")
 public class RoomController {
 
     private final RoomService roomService;
 
     @PostMapping
-    public ResponseEntity<RoomCreateResponse> create(@RequestBody final RoomCreateRequest request) {
+    public ResponseEntity<RoomCodeResponse> create(@RequestBody final RoomCreateRequest request) {
         return ResponseEntity.ok(roomService.create(request));
     }
 
@@ -33,7 +33,7 @@ public class RoomController {
             @RequestParam("code") final String code,
             @RequestParam("name") final String name
     ) {
-        roomService.join(code,name);
+        roomService.join(code, name);
         return ResponseEntity.ok().build();
     }
 
@@ -52,5 +52,12 @@ public class RoomController {
     ) {
         roomService.modifyStatus(playerInfoDto.code(), request);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/code")
+    public ResponseEntity<RoomCodeResponse> findCode(
+            @PlayerInfo PlayerInfoDto playerInfoDto
+    ) {
+        return ResponseEntity.ok(new RoomCodeResponse(playerInfoDto.code()));
     }
 }
