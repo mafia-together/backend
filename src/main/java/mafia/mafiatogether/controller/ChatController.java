@@ -21,7 +21,6 @@ public class ChatController {
 
     private final ChatService chatService;
 
-
     @GetMapping
     public ResponseEntity<List<ChatResponse>> findAllChat(@PlayerInfo PlayerInfoDto playerInfoDto) {
         return ResponseEntity.ok(chatService.findAllChat(playerInfoDto.code(), playerInfoDto.name()));
