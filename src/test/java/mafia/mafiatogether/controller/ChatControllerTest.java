@@ -51,8 +51,8 @@ public class ChatControllerTest {
     void setRoom() {
         code = roomManager.create(new RoomInfo(5, 1, 1, 1));
         room = roomManager.findByCode(code);
-        player1 = new Player("power");
-        player2 = new Player("metthew");
+        player1 = Player.create("power");
+        player2 = Player.create("metthew");
         room.joinPlayer(player1);
         room.joinPlayer(player2);
     }

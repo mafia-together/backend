@@ -1,10 +1,14 @@
 package mafia.mafiatogether.domain;
 
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import mafia.mafiatogether.domain.job.Job;
+import mafia.mafiatogether.domain.job.JobTarget;
+import mafia.mafiatogether.domain.job.JobType;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -14,17 +18,22 @@ public class Room {
     private Status status;
     private final RoomInfo roomInfo;
     private final Chat chat;
+    private final JobTarget jobTarget;
 
     public static Room create(final RoomInfo roomInfo) {
         return new Room(
                 new ConcurrentHashMap<>(),
                 Status.WAIT,
                 roomInfo,
-                Chat.chat()
+                Chat.chat(),
+                new JobTarget()
         );
     }
 
     public void modifyStatus(final Status status) {
+        if (this.status.equals(Status.WAIT)) {
+            distributeRole();
+        }
         this.status = status;
     }
 
@@ -32,10 +41,28 @@ public class Room {
         players.put(player.getName(), player);
     }
 
-    public Player findPlayer(final String name) {
-        if (!players.containsKey(name)) {
-            throw new IllegalArgumentException("존재하지 않는 플레이어입니다.");
+    private void distributeRole() {
+        final Queue<Job> jobs = roomInfo.getRandomJobQueue();
+        for (Player player : players.values()){
+            if (jobs.isEmpty()){
+                break;
+            }
+            player.modifyRole(jobs.poll());
         }
+    }
+
+    public Player getPlayer(final String name) {
         return players.get(name);
+    }
+
+    public String executeAbility(final String name, final Player target) {
+        final Player player = players.get(name);
+        return player.getJob().executeAbility(target, jobTarget);
+    }
+
+    public String getJobsTarget(final String name){
+        final Player player = players.get(name);
+        final JobType jobType = player.getRoleSymbol();
+        return jobTarget.getTarget(jobType).getName();
     }
 }
