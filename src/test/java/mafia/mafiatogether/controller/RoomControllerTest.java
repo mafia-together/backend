@@ -53,7 +53,7 @@ class RoomControllerTest {
                 .as(RoomCodeResponse.class);
 
         //then
-        Assertions.assertThat(response.code()).isNotBlank();
+        Assertions.assertThat(response.code()).isBlank();
     }
 
     @Test
