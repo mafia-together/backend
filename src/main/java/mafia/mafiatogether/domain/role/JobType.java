@@ -1,5 +1,5 @@
 package mafia.mafiatogether.domain.role;
 
-public enum RoleSymbol {
+public enum JobType {
     CITIZEN, MAFIA, POLICE, DOCTOR
 }

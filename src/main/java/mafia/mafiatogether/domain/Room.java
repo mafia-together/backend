@@ -1,36 +1,31 @@
 package mafia.mafiatogether.domain;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import mafia.mafiatogether.domain.role.Citizen;
-import mafia.mafiatogether.domain.role.Doctor;
-import mafia.mafiatogether.domain.role.Mafia;
-import mafia.mafiatogether.domain.role.Police;
-import mafia.mafiatogether.domain.role.Role;
+import mafia.mafiatogether.domain.role.Job;
+import mafia.mafiatogether.domain.role.JobType;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Room {
 
-    private final List<Player> waitingRoom;
-    private final Map<String, Role> players;
+    private final Map<String, Player> players;
     private Status status;
     private final RoomInfo roomInfo;
     private final Chat chat;
+    private final JobTarget jobTarget;
 
     public static Room create(final RoomInfo roomInfo) {
         return new Room(
-                new ArrayList<>(),
                 new ConcurrentHashMap<>(),
                 Status.WAIT,
                 roomInfo,
-                Chat.chat()
+                Chat.chat(),
+                new JobTarget()
         );
     }
 
@@ -42,53 +37,31 @@ public class Room {
     }
 
     public void joinPlayer(final Player player) {
-        waitingRoom.add(player);
+        players.put(player.getName(), player);
     }
 
     private void distributeRole() {
-        Collections.shuffle(waitingRoom);
-        List<Role> roles = createRoles();
-
-        for (Player player : waitingRoom) {
-            for (Role role : roles) {
-                if (role.isPlayerOverLimit()) {
-                    continue;
-                }
-                players.put(player.getName(), role);
-                player.modifyRole(role);
+        Queue<Job> jobs = roomInfo.getRandomJobQueue();
+        for (Player player : players.values()){
+            if (jobs.isEmpty()){
                 break;
             }
+            player.modifyRole(jobs.poll());
         }
-    }
-
-    private List<Role> createRoles() {
-        final int totalPlayers = roomInfo.getTotal();
-        final int mafiaCount = roomInfo.getMafia();
-        final int policeCount = roomInfo.getPolice();
-        final int doctorCount = roomInfo.getDoctor();
-
-        final Mafia mafia = new Mafia(mafiaCount);
-        final Police police = new Police(policeCount);
-        final Doctor doctor = new Doctor(doctorCount);
-        final Citizen citizen = new Citizen(totalPlayers - mafiaCount - policeCount - doctorCount);
-
-        return List.of(mafia, police, doctor, citizen);
     }
 
     public Player getPlayer(final String name) {
-        if (status == Status.WAIT) {
-            for (Player player : waitingRoom) {
-                if (player.getName().equals(name)) {
-                    return player;
-                }
-            }
-        }
-        return players.get(name).getPlayer(name);
+        return players.get(name);
     }
 
+    public String executeAbility(final String name, final Player target) {
+        Player player = players.get(name);
+        return player.getJob().executeAbility(target, jobTarget);
+    }
 
-    public String executeAbility(final String player, final Player target) {
-        Role role = players.get(player);
-        return role.executeAbility(target);
+    public String getJobsTarget(final String name){
+        Player player = players.get(name);
+        JobType jobType = player.getRoleSymbol();
+        return jobTarget.getTarget(jobType).getName();
     }
 }

@@ -1,20 +1,18 @@
 package mafia.mafiatogether.domain.role;
 
+import mafia.mafiatogether.domain.JobTarget;
 import mafia.mafiatogether.domain.Player;
 
-public class Police extends Role {
+public class Police implements Job {
 
-    public Police(final int limit) {
-        super(limit);
+    @Override
+    public String executeAbility(final Player player, final JobTarget jobTarget) {
+        jobTarget.addTarget(JobType.POLICE, player);
+        return player.getJob().getRoleSymbol().name();
     }
 
     @Override
-    public String executeAbility(final Player player) {
-        return player.getRole().getRoleSymbol().name();
-    }
-
-    @Override
-    public RoleSymbol getRoleSymbol() {
-        return RoleSymbol.POLICE;
+    public JobType getRoleSymbol() {
+        return JobType.POLICE;
     }
 }

@@ -1,25 +1,20 @@
 package mafia.mafiatogether.domain.role;
 
 import lombok.Getter;
+import mafia.mafiatogether.domain.JobTarget;
 import mafia.mafiatogether.domain.Player;
 
 @Getter
-public class Mafia extends Role {
+public class Mafia implements Job {
 
-    private Player target;
-
-    public Mafia(final int limit) {
-        super(limit);
+    @Override
+    public String executeAbility(final Player player, final JobTarget jobTarget) {
+        jobTarget.addTarget(JobType.MAFIA, player);
+        return player.getName();
     }
 
     @Override
-    public String executeAbility(final Player player) {
-        this.target = player;
-        return target.getName();
-    }
-
-    @Override
-    public RoleSymbol getRoleSymbol() {
-        return RoleSymbol.MAFIA;
+    public JobType getRoleSymbol() {
+        return JobType.MAFIA;
     }
 }

@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import mafia.mafiatogether.domain.role.RoleSymbol;
+import mafia.mafiatogether.domain.role.JobType;
 import org.junit.jupiter.api.Test;
 
 class RoomTest {
@@ -30,21 +30,21 @@ class RoomTest {
 
         //then
 
-        List<RoleSymbol> roleSymbols = new ArrayList<>();
-        roleSymbols.add(a.getRoleSymbol());
-        roleSymbols.add(b.getRoleSymbol());
-        roleSymbols.add(c.getRoleSymbol());
-        roleSymbols.add(d.getRoleSymbol());
-        roleSymbols.add(e.getRoleSymbol());
+        List<JobType> jobTypes = new ArrayList<>();
+        jobTypes.add(a.getRoleSymbol());
+        jobTypes.add(b.getRoleSymbol());
+        jobTypes.add(c.getRoleSymbol());
+        jobTypes.add(d.getRoleSymbol());
+        jobTypes.add(e.getRoleSymbol());
 
-        assertEquals(5, roleSymbols.size());
-        assertTrue(roleSymbols.contains(RoleSymbol.CITIZEN));
-        assertTrue(roleSymbols.contains(RoleSymbol.MAFIA));
-        assertTrue(roleSymbols.contains(RoleSymbol.POLICE));
+        assertEquals(5, jobTypes.size());
+        assertTrue(jobTypes.contains(JobType.CITIZEN));
+        assertTrue(jobTypes.contains(JobType.MAFIA));
+        assertTrue(jobTypes.contains(JobType.POLICE));
 
         int mafiaPlayers = 0;
-        for (RoleSymbol symbol : roleSymbols) {
-            if (symbol == RoleSymbol.MAFIA) {
+        for (JobType symbol : jobTypes) {
+            if (symbol == JobType.MAFIA) {
                 mafiaPlayers++;
             }
         }

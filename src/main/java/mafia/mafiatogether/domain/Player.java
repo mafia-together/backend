@@ -4,8 +4,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import mafia.mafiatogether.domain.role.Role;
-import mafia.mafiatogether.domain.role.RoleSymbol;
+import mafia.mafiatogether.domain.role.Citizen;
+import mafia.mafiatogether.domain.role.Job;
+import mafia.mafiatogether.domain.role.JobType;
 
 @Getter
 @EqualsAndHashCode
@@ -14,18 +15,17 @@ public class Player {
 
     private final String name;
     private boolean alive;
-    private Role role;
+    private Job job;
 
     public static Player create(final String name) {
-        return new Player(name, true, null);
+        return new Player(name, true, new Citizen());
     }
 
-    public void modifyRole(final Role role) {
-        this.role = role;
-        role.addPlayer(this);
+    public void modifyRole(final Job job) {
+        this.job = job;
     }
 
-    public RoleSymbol getRoleSymbol() {
-        return role.getRoleSymbol();
+    public JobType getRoleSymbol() {
+        return job.getRoleSymbol();
     }
 }
