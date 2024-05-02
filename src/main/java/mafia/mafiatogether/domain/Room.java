@@ -52,6 +52,9 @@ public class Room {
     }
 
     public Player getPlayer(final String name) {
+        if (!players.containsKey(name)){
+            throw new IllegalArgumentException("존재하지 않는 유저입니다.");
+        }
         return players.get(name);
     }
 
