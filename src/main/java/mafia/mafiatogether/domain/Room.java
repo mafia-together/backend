@@ -1,6 +1,10 @@
 package mafia.mafiatogether.domain;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
@@ -21,6 +25,7 @@ public class Room {
     private final RoomInfo roomInfo;
     private final Chat chat;
     private final JobTarget jobTarget;
+    private Player votedPlayer;
 
     public static Room create(final RoomInfo roomInfo) {
         return new Room(
@@ -28,7 +33,8 @@ public class Room {
                 Status.WAIT,
                 roomInfo,
                 Chat.chat(),
-                new JobTarget()
+                new JobTarget(),
+                null
         );
     }
 
@@ -75,5 +81,37 @@ public class Room {
         final Player player = players.get(name);
         final Player target = players.get(targetName);
         player.setVote(target);
+    }
+
+    // todo : 추후 day 종료 구현시 countVotes() 메서드 이동
+    public String getVoteResult() {
+        countVotes();
+        if (Objects.nonNull(votedPlayer)) {
+            return votedPlayer.getName();
+        }
+        return null;
+    }
+
+    private void countVotes() {
+        Map<Player, Integer> voteCount = new HashMap<>();
+        for (final Player player : players.values()) {
+            Optional.of(player.getVote()).ifPresent(
+                    vote -> voteCount.put(vote, voteCount.getOrDefault(vote, 0) + 1)
+            );
+        }
+        Optional<Entry<Player, Integer>> maxVotedPlayer = voteCount.entrySet().stream()
+                .max((e1, e2) -> e1.getValue() - e2.getValue());
+
+        maxVotedPlayer.ifPresent(
+                entry -> {
+                    final long maxCount = voteCount.values().stream()
+                            .filter(i -> Objects.equals(i, entry.getValue()))
+                            .count();
+
+                    if (maxCount == 1) {
+                        votedPlayer = entry.getKey();
+                    }
+                }
+        );
     }
 }

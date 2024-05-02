@@ -8,6 +8,7 @@ import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.RoomManager;
+import mafia.mafiatogether.service.dto.VoteResultResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,5 +65,26 @@ class VoteControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
         Assertions.assertThat(player1.getVote()).isEqualTo(player2);
+    }
+
+    @Test
+    void 투표_결과를_조회한다() {
+        // given
+        final String basic = Base64.getEncoder().encodeToString((code + ":" + player1.getName()).getBytes());
+        room.votePlayer(player1.getName(), player2.getName());
+        room.votePlayer(player2.getName(), player2.getName());
+        room.votePlayer(player3.getName(), player1.getName());
+
+        // when & then
+        final VoteResultResponse voteResultResponse = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Basic " + basic)
+                .when().get("/vote")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .body()
+                .as(VoteResultResponse.class);
+        Assertions.assertThat(voteResultResponse.name()).isEqualTo(player2.getName());
     }
 }
