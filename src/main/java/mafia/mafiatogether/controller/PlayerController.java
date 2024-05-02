@@ -43,6 +43,7 @@ public class PlayerController {
             @PlayerInfo PlayerInfoDto playerInfoDto
     ) {
         return ResponseEntity.ok(playerService.getTarget(
+
                 playerInfoDto.code(),
                 playerInfoDto.name()
         ));
