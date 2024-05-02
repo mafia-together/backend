@@ -1,0 +1,38 @@
+name: Java CI with Gradle
+
+on:
+  pull_request:
+    branches: [feat/17]
+
+defaults:
+  run:
+    working-directory: backend
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    if: contains(github.event.pull_request.labels.*.name, 'Backend')
+    runs-on: ubuntu-22.04
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: 레포지토리 체크아웃
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.SUBMODULE_TOKEN }}
+          submodules: true
+
+      - name: JDK 21을 설치합니다.
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'corretto'
+
+      - name: gradlew 권한을 부여합니다.
+        run: chmod +x gradlew
+
+      - name: Gradle을 통해 빌드합니다.
+        run: ./gradlew build
