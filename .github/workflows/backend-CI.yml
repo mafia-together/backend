@@ -2,11 +2,7 @@ name: Java CI with Gradle
 
 on:
   pull_request:
-    branches: [feat/17]
-
-defaults:
-  run:
-    working-directory: backend
+    branches: [dev]
 
 permissions:
   contents: read
