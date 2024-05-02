@@ -70,4 +70,10 @@ public class Room {
         final JobType jobType = player.getRoleSymbol();
         return jobTarget.getTarget(jobType).getName();
     }
+
+    public void votePlayer(final String name, final String targetName) {
+        final Player player = players.get(name);
+        final Player target = players.get(targetName);
+        player.setVote(target);
+    }
 }
