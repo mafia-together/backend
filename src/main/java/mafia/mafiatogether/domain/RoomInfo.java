@@ -22,7 +22,7 @@ public class RoomInfo {
     private final int police;
 
     public Queue<Job> getRandomJobQueue() {
-        List<Job> jobList = new ArrayList<>();
+        final List<Job> jobList = new ArrayList<>();
         addTimes(new Mafia(), mafia, jobList);
         addTimes(new Doctor(), doctor, jobList);
         addTimes(new Police(), police, jobList);

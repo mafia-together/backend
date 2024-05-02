@@ -41,7 +41,7 @@ public class Room {
     }
 
     private void distributeRole() {
-        Queue<Job> jobs = roomInfo.getRandomJobQueue();
+        final Queue<Job> jobs = roomInfo.getRandomJobQueue();
         for (Player player : players.values()){
             if (jobs.isEmpty()){
                 break;
@@ -55,13 +55,13 @@ public class Room {
     }
 
     public String executeAbility(final String name, final Player target) {
-        Player player = players.get(name);
+        final Player player = players.get(name);
         return player.getJob().executeAbility(target, jobTarget);
     }
 
     public String getJobsTarget(final String name){
-        Player player = players.get(name);
-        JobType jobType = player.getRoleSymbol();
+        final Player player = players.get(name);
+        final JobType jobType = player.getRoleSymbol();
         return jobTarget.getTarget(jobType).getName();
     }
 }
