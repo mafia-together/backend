@@ -4,9 +4,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import mafia.mafiatogether.domain.role.Citizen;
-import mafia.mafiatogether.domain.role.Job;
-import mafia.mafiatogether.domain.role.JobType;
+import mafia.mafiatogether.domain.job.Citizen;
+import mafia.mafiatogether.domain.job.Job;
+import mafia.mafiatogether.domain.job.JobType;
 
 @Getter
 @EqualsAndHashCode

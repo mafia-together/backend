@@ -1,4 +1,4 @@
-package mafia.mafiatogether.domain.role;
+package mafia.mafiatogether.domain.job;
 
 public enum JobType {
     CITIZEN, MAFIA, POLICE, DOCTOR

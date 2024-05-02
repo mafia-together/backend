@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Queue;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.domain.role.Doctor;
-import mafia.mafiatogether.domain.role.Mafia;
-import mafia.mafiatogether.domain.role.Police;
-import mafia.mafiatogether.domain.role.Job;
+import mafia.mafiatogether.domain.job.Doctor;
+import mafia.mafiatogether.domain.job.Mafia;
+import mafia.mafiatogether.domain.job.Police;
+import mafia.mafiatogether.domain.job.Job;
 
 @Getter
 @RequiredArgsConstructor

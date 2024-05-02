@@ -1,6 +1,5 @@
-package mafia.mafiatogether.domain.role;
+package mafia.mafiatogether.domain.job;
 
-import mafia.mafiatogether.domain.JobTarget;
 import mafia.mafiatogether.domain.Player;
 
 public class Citizen implements Job {

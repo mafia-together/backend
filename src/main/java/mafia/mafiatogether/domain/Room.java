@@ -6,8 +6,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import mafia.mafiatogether.domain.role.Job;
-import mafia.mafiatogether.domain.role.JobType;
+import mafia.mafiatogether.domain.job.Job;
+import mafia.mafiatogether.domain.job.JobTarget;
+import mafia.mafiatogether.domain.job.JobType;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

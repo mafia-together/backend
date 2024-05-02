@@ -4,9 +4,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import mafia.mafiatogether.domain.role.JobType;
+import mafia.mafiatogether.domain.job.JobType;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("NonAsciiCharacters")
 class RoomTest {
 
     @Test

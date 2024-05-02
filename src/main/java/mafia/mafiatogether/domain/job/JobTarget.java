@@ -1,10 +1,10 @@
-package mafia.mafiatogether.domain;
+package mafia.mafiatogether.domain.job;
 
 import java.util.EnumMap;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
-import mafia.mafiatogether.domain.role.JobType;
+import mafia.mafiatogether.domain.Player;
 
 @Getter
 @Setter

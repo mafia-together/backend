@@ -1,7 +1,6 @@
-package mafia.mafiatogether.domain.role;
+package mafia.mafiatogether.domain.job;
 
 import lombok.Getter;
-import mafia.mafiatogether.domain.JobTarget;
 import mafia.mafiatogether.domain.Player;
 
 @Getter
