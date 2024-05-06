@@ -15,9 +15,10 @@ public class Player {
     private Player vote;
     private boolean alive;
     private Job job;
+    private static final Player NONE = new Player("", null, false, null);
 
     public static Player create(final String name) {
-        return new Player(name, null, true, new Citizen());
+        return new Player(name, NONE, true, new Citizen());
     }
 
     public void modifyRole(final Job job) {
@@ -30,5 +31,9 @@ public class Player {
 
     public void setVote(final Player player) {
         this.vote = player;
+    }
+
+    public void clear(){
+        this.vote = NONE;
     }
 }
