@@ -1,5 +1,6 @@
 package mafia.mafiatogether.domain;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -86,10 +87,7 @@ public class Room {
     // todo : 추후 day 종료 구현시 countVotes() 메서드 이동
     public String getVoteResult() {
         countVotes();
-        if (Objects.nonNull(votedPlayer)) {
-            return votedPlayer.getName();
-        }
-        return null;
+        return votedPlayer.getName();
     }
 
     private void countVotes() {
@@ -98,9 +96,10 @@ public class Room {
             Optional.of(player.getVote()).ifPresent(
                     vote -> voteCount.put(vote, voteCount.getOrDefault(vote, 0) + 1)
             );
+            player.clear();
         }
         Optional<Entry<Player, Integer>> maxVotedPlayer = voteCount.entrySet().stream()
-                .max((e1, e2) -> e1.getValue() - e2.getValue());
+                .max(Comparator.comparingInt(Entry::getValue));
 
         maxVotedPlayer.ifPresent(
                 entry -> {
