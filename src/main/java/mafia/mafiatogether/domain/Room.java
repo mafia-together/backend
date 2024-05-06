@@ -91,14 +91,14 @@ public class Room {
     }
 
     private void countVotes() {
-        Map<Player, Integer> voteCount = new HashMap<>();
+        final Map<Player, Integer> voteCount = new HashMap<>();
         for (final Player player : players.values()) {
             Optional.of(player.getVote()).ifPresent(
                     vote -> voteCount.put(vote, voteCount.getOrDefault(vote, 0) + 1)
             );
             player.clear();
         }
-        Optional<Entry<Player, Integer>> maxVotedPlayer = voteCount.entrySet().stream()
+        final Optional<Entry<Player, Integer>> maxVotedPlayer = voteCount.entrySet().stream()
                 .max(Comparator.comparingInt(Entry::getValue));
 
         maxVotedPlayer.ifPresent(
