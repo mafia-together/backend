@@ -103,7 +103,7 @@ public class Room {
         maxVotedPlayer.ifPresent(entry -> setVotedPlayer(voteCount, entry));
     }
 
-    private void setVotedPlayer(Map<Player, Integer> voteCount, Entry<Player, Integer> entry) {
+    private void setVotedPlayer(final Map<Player, Integer> voteCount, final Entry<Player, Integer> entry) {
         final long maxCount = voteCount.values().stream()
                 .filter(i -> Objects.equals(i, entry.getValue()))
                 .count();
