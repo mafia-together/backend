@@ -11,11 +11,11 @@ import mafia.mafiatogether.domain.job.JobType;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Player {
 
+    public static final Player NONE = new Player("", null, false, null);
     private final String name;
     private Player vote;
     private boolean alive;
     private Job job;
-    private static final Player NONE = new Player("", null, false, null);
 
     public static Player create(final String name) {
         return new Player(name, NONE, true, new Citizen());

@@ -35,7 +35,7 @@ public class Room {
                 roomInfo,
                 Chat.chat(),
                 new JobTarget(),
-                null
+                Player.NONE
         );
     }
 
@@ -100,17 +100,15 @@ public class Room {
         }
         final Optional<Entry<Player, Integer>> maxVotedPlayer = voteCount.entrySet().stream()
                 .max(Comparator.comparingInt(Entry::getValue));
+        maxVotedPlayer.ifPresent(entry -> setVotedPlayer(voteCount, entry));
+    }
 
-        maxVotedPlayer.ifPresent(
-                entry -> {
-                    final long maxCount = voteCount.values().stream()
-                            .filter(i -> Objects.equals(i, entry.getValue()))
-                            .count();
-
-                    if (maxCount == 1) {
-                        votedPlayer = entry.getKey();
-                    }
-                }
-        );
+    private void setVotedPlayer(Map<Player, Integer> voteCount, Entry<Player, Integer> entry) {
+        final long maxCount = voteCount.values().stream()
+                .filter(i -> Objects.equals(i, entry.getValue()))
+                .count();
+        if (maxCount == 1) {
+            votedPlayer = entry.getKey();
+        }
     }
 }
