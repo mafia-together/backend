@@ -33,7 +33,7 @@ public class Player {
         this.vote = player;
     }
 
-    public void clear(){
+    public void clear() {
         this.vote = NONE;
     }
 }
