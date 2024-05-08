@@ -60,7 +60,7 @@ class VoteControllerTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .body(Map.of("name", player2.getName()))
+                .body(Map.of("target", player2.getName()))
                 .when().post("/vote")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
