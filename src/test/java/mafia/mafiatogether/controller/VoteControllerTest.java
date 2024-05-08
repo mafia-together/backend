@@ -64,7 +64,6 @@ class VoteControllerTest {
                 .when().post("/vote")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
-        Assertions.assertThat(player1.getVote()).isEqualTo(player2);
     }
 
     @Test
@@ -85,6 +84,6 @@ class VoteControllerTest {
                 .extract()
                 .body()
                 .as(VoteResultResponse.class);
-        Assertions.assertThat(voteResultResponse.name()).isEqualTo(player2.getName());
+        Assertions.assertThat(voteResultResponse.dead()).isEqualTo(player2.getName());
     }
 }

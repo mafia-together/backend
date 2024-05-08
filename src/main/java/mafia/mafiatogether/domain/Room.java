@@ -1,11 +1,8 @@
 package mafia.mafiatogether.domain;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
@@ -22,6 +19,7 @@ import mafia.mafiatogether.domain.job.JobType;
 public class Room {
 
     private final Map<String, Player> players;
+    private final Map<Player, Player> votes;
     private Status status;
     private final RoomInfo roomInfo;
     private final Chat chat;
@@ -30,6 +28,7 @@ public class Room {
 
     public static Room create(final RoomInfo roomInfo) {
         return new Room(
+                new ConcurrentHashMap<>(),
                 new ConcurrentHashMap<>(),
                 Status.WAIT,
                 roomInfo,
@@ -81,34 +80,38 @@ public class Room {
     public void votePlayer(final String name, final String targetName) {
         final Player player = players.get(name);
         final Player target = players.get(targetName);
-        player.setVote(target);
+        votes.put(player, target);
     }
 
-    // todo : 추후 day 종료 구현시 countVotes() 메서드 이동
     public String getVoteResult() {
-        countVotes();
-        return votedPlayer.getName();
+        return countVotes().getName();
     }
 
-    private void countVotes() {
-        final Map<Player, Integer> voteCount = new HashMap<>();
-        for (final Player player : players.values()) {
-            Optional.of(player.getVote()).ifPresent(
-                    vote -> voteCount.put(vote, voteCount.getOrDefault(vote, 0) + 1)
-            );
-            player.clear();
+    private Player countVotes() {
+        final Map<Player, Integer> voteCounts = new HashMap<>();
+        for (final Player player : votes.values()) {
+            voteCounts.put(player, voteCounts.getOrDefault(player, 0) + 1);
         }
-        final Optional<Entry<Player, Integer>> maxVotedPlayer = voteCount.entrySet().stream()
-                .max(Comparator.comparingInt(Entry::getValue));
-        maxVotedPlayer.ifPresent(entry -> setVotedPlayer(voteCount, entry));
+        return findMaxVotedPlayer(voteCounts);
     }
 
-    private void setVotedPlayer(final Map<Player, Integer> voteCount, final Entry<Player, Integer> entry) {
-        final long maxCount = voteCount.values().stream()
-                .filter(i -> Objects.equals(i, entry.getValue()))
-                .count();
-        if (maxCount == 1) {
-            votedPlayer = entry.getKey();
+    private Player findMaxVotedPlayer(final Map<Player, Integer> voteCounts) {
+        int maxCount = 0;
+        int count = 0;
+        Player votedPlayer = Player.NONE;
+        for (Entry<Player, Integer> voteCount : voteCounts.entrySet()) {
+            if (maxCount == voteCount.getValue()) {
+                count++;
+            }
+            if (maxCount < voteCount.getValue()) {
+                maxCount = voteCount.getValue();
+                count = 1;
+                votedPlayer = voteCount.getKey();
+            }
         }
+        if (count > 1) {
+            return Player.NONE;
+        }
+        return votedPlayer;
     }
 }

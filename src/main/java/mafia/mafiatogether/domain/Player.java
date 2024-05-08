@@ -11,14 +11,13 @@ import mafia.mafiatogether.domain.job.JobType;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Player {
 
-    public static final Player NONE = new Player("", null, false, null);
+    public static final Player NONE = new Player(null, false, null);
     private final String name;
-    private Player vote;
     private boolean alive;
     private Job job;
 
     public static Player create(final String name) {
-        return new Player(name, NONE, true, new Citizen());
+        return new Player(name, true, new Citizen());
     }
 
     public void modifyRole(final Job job) {
@@ -27,13 +26,5 @@ public class Player {
 
     public JobType getRoleSymbol() {
         return job.getRoleSymbol();
-    }
-
-    public void setVote(final Player player) {
-        this.vote = player;
-    }
-
-    public void clear() {
-        this.vote = NONE;
     }
 }
