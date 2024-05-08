@@ -24,7 +24,7 @@ public class VoteController {
             @PlayerInfo final PlayerInfoDto playerInfoDto,
             @RequestBody final VoteRequest voteRequest
     ) {
-        voteService.votePlayer(playerInfoDto.code(), playerInfoDto.name(), voteRequest.name());
+        voteService.votePlayer(playerInfoDto.code(), playerInfoDto.name(), voteRequest.target());
         return ResponseEntity.noContent().build();
     }
 
