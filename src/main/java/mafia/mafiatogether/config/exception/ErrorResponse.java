@@ -1,9 +1,8 @@
-package mafia.mafiatogether.config;
+package mafia.mafiatogether.config.exception;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.http.HttpStatus;
 
 public record ErrorResponse(
         LocalDateTime timeStamp,

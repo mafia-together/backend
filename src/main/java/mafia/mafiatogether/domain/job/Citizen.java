@@ -1,12 +1,14 @@
 package mafia.mafiatogether.domain.job;
 
+import mafia.mafiatogether.config.exception.CitizenException;
+import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.domain.Player;
 
 public class Citizen implements Job {
 
     @Override
     public String executeAbility(final Player player, final JobTarget jobTarget) {
-        throw new IllegalArgumentException("시민은 능력을 사용할 수 없습니다.");
+        throw new CitizenException(ExceptionCode.INVALID_REQUEST);
     }
 
     @Override

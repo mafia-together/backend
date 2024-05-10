@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import mafia.mafiatogether.config.exception.ExceptionCode;
+import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.domain.job.Job;
 import mafia.mafiatogether.domain.job.JobTarget;
 import mafia.mafiatogether.domain.job.JobType;
@@ -43,8 +45,8 @@ public class Room {
 
     private void distributeRole() {
         final Queue<Job> jobs = roomInfo.getRandomJobQueue();
-        for (Player player : players.values()){
-            if (jobs.isEmpty()){
+        for (Player player : players.values()) {
+            if (jobs.isEmpty()) {
                 break;
             }
             player.modifyRole(jobs.poll());
@@ -52,8 +54,8 @@ public class Room {
     }
 
     public Player getPlayer(final String name) {
-        if (!players.containsKey(name)){
-            throw new IllegalArgumentException("존재하지 않는 유저입니다.");
+        if (!players.containsKey(name)) {
+            throw new RoomException(ExceptionCode.INVALID_NAMES);
         }
         return players.get(name);
     }
@@ -63,7 +65,7 @@ public class Room {
         return player.getJob().executeAbility(target, jobTarget);
     }
 
-    public String getJobsTarget(final String name){
+    public String getJobsTarget(final String name) {
         final Player player = players.get(name);
         final JobType jobType = player.getRoleSymbol();
         return jobTarget.getTarget(jobType).getName();

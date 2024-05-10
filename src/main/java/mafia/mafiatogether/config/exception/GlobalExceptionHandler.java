@@ -1,9 +1,9 @@
-package mafia.mafiatogether.config;
+package mafia.mafiatogether.config.exception;
 
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import mafia.mafiatogether.config.ErrorResponse.FieldErrorResponse;
+import mafia.mafiatogether.config.exception.ErrorResponse.FieldErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
-    @ExceptionHandler({GlobalException.class})
+    @ExceptionHandler({RoomException.class, CitizenException.class, AuthException.class})
     protected ResponseEntity<ErrorResponse> GlobalException(RuntimeException e) {
         final ErrorResponse errorResponse = ErrorResponse.create(
                 e.getMessage()
