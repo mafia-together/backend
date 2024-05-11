@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record ErrorResponse(
-        LocalDateTime timeStamp,
+        LocalDateTime localDateTime,
         String message,
         List<FieldErrorResponse> errorList
 ) {
