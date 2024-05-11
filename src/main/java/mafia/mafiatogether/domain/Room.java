@@ -14,7 +14,7 @@ import mafia.mafiatogether.domain.job.JobTarget;
 import mafia.mafiatogether.domain.job.JobType;
 import mafia.mafiatogether.domain.status.Status;
 import mafia.mafiatogether.domain.status.StatusType;
-import mafia.mafiatogether.domain.status.Wait;
+import mafia.mafiatogether.domain.status.WaitStatus;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -31,7 +31,7 @@ public class Room {
         return new Room(
                 new ConcurrentHashMap<>(),
                 Vote.create(),
-                Wait.create(clock),
+                WaitStatus.create(clock),
                 roomInfo,
                 Chat.chat(),
                 new JobTarget()
