@@ -22,7 +22,6 @@ public class Room {
     private final RoomInfo roomInfo;
     private final Chat chat;
     private final JobTarget jobTarget;
-    private Player votedPlayer;
 
     public static Room create(final RoomInfo roomInfo) {
         return new Room(
@@ -31,8 +30,7 @@ public class Room {
                 Status.WAIT,
                 roomInfo,
                 Chat.chat(),
-                new JobTarget(),
-                Player.NONE
+                new JobTarget()
         );
     }
 
