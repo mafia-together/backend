@@ -54,9 +54,6 @@ public class Vote {
     public void executeVote() {
         final Player player = countVotes();
         player.execute();
-    }
-
-    public void clear() {
         playerVote.clear();
     }
 }
