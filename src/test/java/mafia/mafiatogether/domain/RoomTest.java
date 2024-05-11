@@ -1,6 +1,7 @@
 package mafia.mafiatogether.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
@@ -80,5 +81,33 @@ class RoomTest {
 
         // then
         assertEquals(room.getVoteResult(), d.getName());
+    }
+
+    @Test
+    void 동표일떄_투표가_무효가_된다(){
+        // given
+        final Room room = Room.create(new RoomInfo(5, 3, 0, 1));
+        Player a = Player.create("A");
+        Player b = Player.create("B");
+        Player c = Player.create("C");
+        Player d = Player.create("D");
+        Player e = Player.create("E");
+
+        room.joinPlayer(a);
+        room.joinPlayer(b);
+        room.joinPlayer(c);
+        room.joinPlayer(d);
+        room.joinPlayer(e);
+
+        room.modifyStatus(Status.DAY);
+
+        // when
+        room.votePlayer(a.getName(), c.getName());
+        room.votePlayer(b.getName(), c.getName());
+        room.votePlayer(c.getName(), e.getName());
+        room.votePlayer(d.getName(), e.getName());
+
+        // then
+        assertNull(room.getVoteResult());
     }
 }
