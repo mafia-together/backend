@@ -50,4 +50,13 @@ public class Vote {
         }
         return votedPlayer;
     }
+
+    public void executeVote() {
+        final Player player = countVotes();
+        player.execute();
+    }
+
+    public void clear() {
+        playerVote.clear();
+    }
 }

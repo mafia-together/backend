@@ -1,5 +1,6 @@
 package mafia.mafiatogether.service;
 
+import java.time.Clock;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
@@ -28,11 +29,11 @@ public class RoomService {
 
     public RoomStatusResponse findStatus(final String code) {
         final Room room = roomManager.findByCode(code);
-        return new RoomStatusResponse(room.getStatus());
+        return new RoomStatusResponse(room.getStatusType(Clock.systemDefaultZone()));
     }
 
     public void modifyStatus(final String code, final RoomModifyRequest request) {
         final Room room = roomManager.findByCode(code);
-        room.modifyStatus(request.status());
+        room.modifyStatus(request.statusType(), Clock.systemDefaultZone());
     }
 }

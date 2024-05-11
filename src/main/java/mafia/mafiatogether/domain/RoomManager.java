@@ -1,5 +1,6 @@
 package mafia.mafiatogether.domain;
 
+import java.time.Clock;
 import java.util.HashMap;
 import java.util.Map;
 import mafia.mafiatogether.config.exception.ExceptionCode;
@@ -16,13 +17,13 @@ public class RoomManager {
     }
 
     public String create(
-            RoomInfo roomInfo
+            final RoomInfo roomInfo
     ) {
         String code = CodeGenerator.generate();
         while (rooms.containsKey(code)) {
             code = CodeGenerator.generate();
         }
-        rooms.put(code, Room.create(roomInfo));
+        rooms.put(code, Room.create(roomInfo, Clock.systemDefaultZone()));
         return code;
     }
 
