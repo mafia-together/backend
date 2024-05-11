@@ -112,4 +112,30 @@ class StatusTest {
         // when & then
         assertEquals(StatusType.END, room.getStatusType(nightEndTime));
     }
+
+    @Test
+    void 종료상태_일정_시간_이후_대기상태가_된다() {
+        // given
+        final Clock dayEndTime = Clock.fixed(Instant.parse("2024-01-01T00:01:41.000000Z"), TIME_ZONE);
+        final Clock voteEndTime = Clock.fixed(Instant.parse("2024-01-01T00:01:52.000000Z"), TIME_ZONE);
+        final Clock nightEndTime = Clock.fixed(Instant.parse("2024-01-01T00:02:33.000000Z"), TIME_ZONE);
+        final Clock endTime = Clock.fixed(Instant.parse("2024-01-01T00:03:33.000000Z"), TIME_ZONE);
+        final Clock gameEndTime = Clock.fixed(Instant.parse("2024-01-01T00:03:34.000000Z"), TIME_ZONE);
+
+        room.modifyStatus(StatusType.DAY, roomCreatedTime);
+        room.getStatusType(dayEndTime);
+        room.getStatusType(voteEndTime);
+        a.execute();
+        b.execute();
+        c.execute();
+        room.getStatusType(nightEndTime);
+
+        // when & then
+        assertSoftly(
+                softly -> {
+                    softly.assertThat(room.getStatusType(endTime)).isEqualTo(StatusType.END);
+                    softly.assertThat(room.getStatusType(gameEndTime)).isEqualTo(StatusType.WAIT);
+                }
+        );
+    }
 }
