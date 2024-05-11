@@ -26,6 +26,7 @@ public class Room {
     private final RoomInfo roomInfo;
     private final Chat chat;
     private final JobTarget jobTarget;
+    private Player master;
 
     public static Room create(final RoomInfo roomInfo, final Clock clock) {
         return new Room(
@@ -34,7 +35,8 @@ public class Room {
                 WaitStatus.create(clock),
                 roomInfo,
                 Chat.chat(),
-                new JobTarget()
+                new JobTarget(),
+                Player.NONE
         );
     }
 
@@ -43,6 +45,9 @@ public class Room {
     }
 
     public void joinPlayer(final Player player) {
+        if (master.equals(Player.NONE)) {
+            master = player;
+        }
         players.put(player.getName(), player);
     }
 
@@ -65,7 +70,7 @@ public class Room {
 
     public Player getPlayer(final String name) {
         if (!players.containsKey(name)) {
-            throw new RoomException(ExceptionCode.INVALID_NAMES);
+            throw new RoomException(ExceptionCode.INVALID_PLAYER);
         }
         return players.get(name);
     }
@@ -111,5 +116,9 @@ public class Room {
 
     public void executeJobTarget() {
         jobTarget.execute();
+    }
+
+    public Boolean isMaster(final Player player) {
+        return this.master.equals(player);
     }
 }

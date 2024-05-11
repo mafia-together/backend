@@ -3,9 +3,11 @@ package mafia.mafiatogether.domain.status;
 import java.sql.Timestamp;
 import java.time.Clock;
 import java.time.LocalDateTime;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.domain.Room;
 
+@Getter
 @RequiredArgsConstructor
 public abstract class Status {
 
