@@ -121,7 +121,7 @@ public class ChatControllerTest {
                 .body(Map.of("contents", "contents"))
                 .when().post("/chat")
                 .then().log().all()
-                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     static Stream<Arguments> failCaseProvider() {
