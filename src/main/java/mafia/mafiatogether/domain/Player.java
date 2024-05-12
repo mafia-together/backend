@@ -20,11 +20,11 @@ public class Player {
         return new Player(name, true, new Citizen());
     }
 
-    public void modifyRole(final Job job) {
+    public void modifyJob(final Job job) {
         this.job = job;
     }
 
-    public JobType getRoleSymbol() {
-        return job.getRoleSymbol();
+    public JobType getJobSymbol() {
+        return job.getJobSymbol();
     }
 }

@@ -1,6 +1,6 @@
 package mafia.mafiatogether.service.dto;
 
-public record RoleResponse(
+public record JobResponse(
         String role
 ) {
 }

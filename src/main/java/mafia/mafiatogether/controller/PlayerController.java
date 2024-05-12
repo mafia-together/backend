@@ -6,7 +6,7 @@ import mafia.mafiatogether.service.dto.MafiaTargetResponse;
 import mafia.mafiatogether.service.dto.PlayerExecuteAbilityRequest;
 import mafia.mafiatogether.service.dto.PlayerExecuteAbilityResponse;
 import mafia.mafiatogether.service.dto.PlayerInfoDto;
-import mafia.mafiatogether.service.dto.RoleResponse;
+import mafia.mafiatogether.service.dto.JobResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +22,8 @@ public class PlayerController {
     private final PlayerService playerService;
 
     @GetMapping("/my/job")
-    public ResponseEntity<RoleResponse> getRole(@PlayerInfo PlayerInfoDto playerInfoDto) {
-        return ResponseEntity.ok(playerService.getPlayerRole(playerInfoDto.code(), playerInfoDto.name()));
+    public ResponseEntity<JobResponse> getJob(@PlayerInfo PlayerInfoDto playerInfoDto) {
+        return ResponseEntity.ok(playerService.getPlayerJob(playerInfoDto.code(), playerInfoDto.name()));
     }
 
     @PostMapping("/skill")

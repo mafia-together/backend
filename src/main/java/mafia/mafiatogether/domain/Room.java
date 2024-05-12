@@ -36,7 +36,7 @@ public class Room {
 
     public void modifyStatus(final Status status) {
         if (this.status.equals(Status.WAIT)) {
-            distributeRole();
+            distributeJob();
         }
         this.status = status;
     }
@@ -45,13 +45,13 @@ public class Room {
         players.put(player.getName(), player);
     }
 
-    private void distributeRole() {
+    private void distributeJob() {
         final Queue<Job> jobs = roomInfo.getRandomJobQueue();
         for (Player player : players.values()) {
             if (jobs.isEmpty()) {
                 break;
             }
-            player.modifyRole(jobs.poll());
+            player.modifyJob(jobs.poll());
         }
     }
 
@@ -69,7 +69,7 @@ public class Room {
 
     public String getJobsTarget(final String name) {
         final Player player = players.get(name);
-        final JobType jobType = player.getRoleSymbol();
+        final JobType jobType = player.getJobSymbol();
         return jobTarget.getTarget(jobType).getName();
     }
 
