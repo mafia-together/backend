@@ -21,24 +21,24 @@ public class PlayerController {
 
     private final PlayerService playerService;
 
-    @GetMapping("/role")
+    @GetMapping("/my/job")
     public ResponseEntity<RoleResponse> getRole(@PlayerInfo PlayerInfoDto playerInfoDto) {
         return ResponseEntity.ok(playerService.getPlayerRole(playerInfoDto.code(), playerInfoDto.name()));
     }
 
-    @PostMapping("/night")
-    public ResponseEntity<PlayerExecuteAbilityResponse> executeAbility(
+    @PostMapping("/skill")
+    public ResponseEntity<PlayerExecuteAbilityResponse> executeSkill(
             @PlayerInfo PlayerInfoDto playerInfoDto,
             @RequestBody PlayerExecuteAbilityRequest request
     ) {
-        return ResponseEntity.ok(playerService.executeAbility(
+        return ResponseEntity.ok(playerService.executeSkill(
                 playerInfoDto.code(),
                 playerInfoDto.name(),
                 request
         ));
     }
 
-    @GetMapping("/night")
+    @GetMapping("/skill")
     public ResponseEntity<MafiaTargetResponse> getTarget(
             @PlayerInfo PlayerInfoDto playerInfoDto
     ) {

@@ -62,7 +62,7 @@ public class Room {
         return players.get(name);
     }
 
-    public String executeAbility(final String name, final Player target) {
+    public String executeSkill(final String name, final Player target) {
         final Player player = players.get(name);
         return player.getJob().executeAbility(target, jobTarget);
     }

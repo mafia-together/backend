@@ -22,7 +22,7 @@ public class PlayerService {
         return new RoleResponse(player.getRoleSymbol().name());
     }
 
-    public PlayerExecuteAbilityResponse executeAbility(
+    public PlayerExecuteAbilityResponse executeSkill(
             final String code,
             final String name,
             final PlayerExecuteAbilityRequest request
@@ -30,7 +30,7 @@ public class PlayerService {
         final Room room = roomManager.findByCode(code);
         final Player target = room.getPlayer(request.target());
         final Player player = room.getPlayer(name);
-        final String result = room.executeAbility(name, target);
+        final String result = room.executeSkill(name, target);
 
         return new PlayerExecuteAbilityResponse(player.getRoleSymbol().name(), result);
     }
