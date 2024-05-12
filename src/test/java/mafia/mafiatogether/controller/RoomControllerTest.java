@@ -129,4 +129,18 @@ class RoomControllerTest {
                 .statusCode(HttpStatus.OK.value())
                 .body("code", Matchers.equalTo(code));
     }
+
+    @Test
+    void 방의_코드를_검증_할_수_있다() {
+        // given
+        final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+
+        // when & then
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when().get("/rooms/code/exist?code=" + code)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("exist", Matchers.equalTo(false));
+    }
 }

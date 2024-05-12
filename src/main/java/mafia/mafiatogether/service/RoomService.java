@@ -8,6 +8,7 @@ import mafia.mafiatogether.service.dto.RoomCodeResponse;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
 import mafia.mafiatogether.service.dto.RoomModifyRequest;
 import mafia.mafiatogether.service.dto.RoomStatusResponse;
+import mafia.mafiatogether.service.dto.RoomValidateResponse;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -34,5 +35,9 @@ public class RoomService {
     public void modifyStatus(final String code, final RoomModifyRequest request) {
         final Room room = roomManager.findByCode(code);
         room.modifyStatus(request.status());
+    }
+
+    public RoomValidateResponse validateCode(final String code) {
+        return new RoomValidateResponse(roomManager.validateCode(code));
     }
 }
