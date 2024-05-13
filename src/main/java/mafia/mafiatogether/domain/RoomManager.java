@@ -34,9 +34,6 @@ public class RoomManager {
     }
 
     public boolean validateCode(final String code) {
-        if (rooms.containsKey(code)) {
-            return false;
-        }
-        return true;
+        return !rooms.containsKey(code);
     }
 }
