@@ -1,11 +1,13 @@
 package mafia.mafiatogether.service;
 
+import java.time.Clock;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomManager;
 import mafia.mafiatogether.service.dto.RoomCodeResponse;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
+import mafia.mafiatogether.service.dto.RoomInfoResponse;
 import mafia.mafiatogether.service.dto.RoomModifyRequest;
 import mafia.mafiatogether.service.dto.RoomStatusResponse;
 import org.springframework.stereotype.Service;
@@ -28,11 +30,17 @@ public class RoomService {
 
     public RoomStatusResponse findStatus(final String code) {
         final Room room = roomManager.findByCode(code);
-        return new RoomStatusResponse(room.getStatus());
+        return new RoomStatusResponse(room.getStatusType(Clock.systemDefaultZone()));
     }
 
     public void modifyStatus(final String code, final RoomModifyRequest request) {
         final Room room = roomManager.findByCode(code);
-        room.modifyStatus(request.status());
+        room.modifyStatus(request.statusType(), Clock.systemDefaultZone());
+    }
+
+    public RoomInfoResponse findRoomInfo(final String code, final String name) {
+        final Room room = roomManager.findByCode(code);
+        final Player player = room.getPlayer(name);
+        return RoomInfoResponse.of(room, player.isAlive(), room.isMaster(player));
     }
 }

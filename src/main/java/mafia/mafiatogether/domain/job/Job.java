@@ -4,6 +4,7 @@ import mafia.mafiatogether.domain.Player;
 
 public interface Job {
 
-    String executeAbility(final Player player, final JobTarget jobTarget);
+    String applySkill(final Player player, final JobTarget jobTarget);
+
     JobType getRoleSymbol();
 }

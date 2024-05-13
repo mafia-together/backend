@@ -4,9 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 import mafia.mafiatogether.domain.job.JobType;
+import mafia.mafiatogether.domain.status.StatusType;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -15,7 +17,7 @@ class RoomTest {
     @Test
     void 직업을_배정할_수_있다() {
         //given
-        Room room = Room.create(new RoomInfo(5, 3, 0, 1));
+        Room room = Room.create(new RoomInfo(5, 3, 0, 1), Clock.systemDefaultZone());
         Player a = Player.create("A");
         Player b = Player.create("B");
         Player c = Player.create("C");
@@ -29,7 +31,7 @@ class RoomTest {
         room.joinPlayer(e);
 
         //when
-        room.modifyStatus(Status.NIGHT);
+        room.modifyStatus(StatusType.NIGHT, Clock.systemDefaultZone());
 
         //then
 
@@ -58,7 +60,7 @@ class RoomTest {
     @Test
     void 투표를_할_수_있다() {
         // given
-        final Room room = Room.create(new RoomInfo(5, 3, 0, 1));
+        final Room room = Room.create(new RoomInfo(5, 3, 0, 1), Clock.systemDefaultZone());
         Player a = Player.create("A");
         Player b = Player.create("B");
         Player c = Player.create("C");
@@ -71,7 +73,7 @@ class RoomTest {
         room.joinPlayer(d);
         room.joinPlayer(e);
 
-        room.modifyStatus(Status.DAY);
+        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone());
 
         // when
         room.votePlayer(a.getName(), b.getName());
@@ -84,9 +86,9 @@ class RoomTest {
     }
 
     @Test
-    void 동표일떄_투표가_무효가_된다(){
+    void 동표일떄_투표가_무효가_된다() {
         // given
-        final Room room = Room.create(new RoomInfo(5, 3, 0, 1));
+        final Room room = Room.create(new RoomInfo(5, 3, 0, 1), Clock.systemDefaultZone());
         Player a = Player.create("A");
         Player b = Player.create("B");
         Player c = Player.create("C");
@@ -99,7 +101,7 @@ class RoomTest {
         room.joinPlayer(d);
         room.joinPlayer(e);
 
-        room.modifyStatus(Status.DAY);
+        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone());
 
         // when
         room.votePlayer(a.getName(), c.getName());
