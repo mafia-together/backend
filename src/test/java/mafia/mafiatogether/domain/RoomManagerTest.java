@@ -14,4 +14,18 @@ class RoomManagerTest {
 
         Assertions.assertThat(roomA).isNotEqualTo(roomB);
     }
+
+    @Test
+    void 방_코드를_검증할_수_있다() {
+        //given
+        RoomManager roomManager = new RoomManager();
+        RoomInfo roomInfo = new RoomInfo(5, 1, 1, 1);
+        String roomA = roomManager.create(roomInfo);
+
+        //when
+        boolean result = roomManager.validateCode(roomA);
+
+        //then
+        Assertions.assertThat(result).isEqualTo(false);
+    }
 }

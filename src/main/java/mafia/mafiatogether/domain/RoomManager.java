@@ -33,4 +33,8 @@ public class RoomManager {
         }
         return rooms.get(code);
     }
+
+    public boolean validateCode(final String code) {
+        return !rooms.containsKey(code);
+    }
 }

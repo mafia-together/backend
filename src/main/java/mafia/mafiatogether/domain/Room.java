@@ -40,6 +40,13 @@ public class Room {
         );
     }
 
+    public StatusType getStatusType(final Clock clock) {
+        if (status.isTimeOver(clock)) {
+            status = status.getNextStatus(this, clock);
+        }
+        return status.getType();
+    }
+
     public void modifyStatus(final StatusType statusType, final Clock clock) {
         this.status = status.getNextStatus(this, clock);
     }
@@ -51,20 +58,13 @@ public class Room {
         players.put(player.getName(), player);
     }
 
-    public StatusType getStatusType(final Clock clock) {
-        if (status.isTimeOver(clock)) {
-            status = status.getNextStatus(this, clock);
-        }
-        return status.getType();
-    }
-
     public void distributeRole() {
         final Queue<Job> jobs = roomInfo.getRandomJobQueue();
         for (Player player : players.values()) {
             if (jobs.isEmpty()) {
                 break;
             }
-            player.modifyRole(jobs.poll());
+            player.modifyJob(jobs.poll());
         }
     }
 
@@ -75,14 +75,14 @@ public class Room {
         return players.get(name);
     }
 
-    public String executeAbility(final String name, final Player target) {
+    public String executeSkill(final String name, final Player target) {
         final Player player = players.get(name);
         return player.getJob().applySkill(target, jobTarget);
     }
 
     public String getJobsTarget(final String name) {
         final Player player = players.get(name);
-        final JobType jobType = player.getRoleSymbol();
+        final JobType jobType = player.getJobSymbol();
         return jobTarget.getTarget(jobType).getName();
     }
 
@@ -105,7 +105,7 @@ public class Room {
     public boolean isEnd() {
         final long playerCount = getPlayerCount();
         final long mafia = players.values().stream()
-                .filter(player -> player.getRoleSymbol().equals(JobType.MAFIA))
+                .filter(player -> player.getJobSymbol().equals(JobType.MAFIA))
                 .count();
         return playerCount / 2 < mafia || mafia == 0;
     }

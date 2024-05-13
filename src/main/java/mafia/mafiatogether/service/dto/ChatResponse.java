@@ -7,7 +7,7 @@ public record ChatResponse(
         String name,
         String contents,
         Timestamp timestamp,
-        boolean owner
+        Boolean isOwner
 ) {
 
     public static ChatResponse of(final Message message, final String name) {

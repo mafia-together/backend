@@ -19,7 +19,7 @@ public class Mafia implements Job {
     }
 
     @Override
-    public JobType getRoleSymbol() {
+    public JobType getJobSymbol() {
         return JobType.MAFIA;
     }
 }

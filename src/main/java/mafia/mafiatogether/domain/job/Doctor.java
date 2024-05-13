@@ -17,7 +17,7 @@ public class Doctor implements Job {
     }
 
     @Override
-    public JobType getRoleSymbol() {
+    public JobType getJobSymbol() {
         return JobType.DOCTOR;
     }
 }
