@@ -49,7 +49,7 @@ class PlayerControllerTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/player/role")
+                .when().get("/players/my/job")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("role", equalTo("CITIZEN"));

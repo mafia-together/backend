@@ -40,6 +40,12 @@ public class Room {
         );
     }
 
+    public StatusType getStatusType(final Clock clock) {
+        if (status.isTimeOver(clock)) {
+            status = status.getNextStatus(this, clock);
+        }
+        return status.getType();
+    }
 
     public void modifyStatus(final StatusType statusType, final Clock clock) {
         this.status = status.getNextStatus(this, clock);
@@ -99,7 +105,7 @@ public class Room {
     public boolean isEnd() {
         final long playerCount = getPlayerCount();
         final long mafia = players.values().stream()
-                .filter(player -> player.getRoleSymbol().equals(JobType.MAFIA))
+                .filter(player -> player.getJobSymbol().equals(JobType.MAFIA))
                 .count();
         return playerCount / 2 < mafia || mafia == 0;
     }

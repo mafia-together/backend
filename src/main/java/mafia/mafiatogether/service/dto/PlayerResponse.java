@@ -13,7 +13,7 @@ public record PlayerResponse(
         return new PlayerResponse(
                 player.getName(),
                 player.isAlive(),
-                player.getRoleSymbol()
+                player.getJobSymbol()
         );
     }
 

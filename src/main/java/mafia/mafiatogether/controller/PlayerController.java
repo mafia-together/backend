@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/player")
+@RequestMapping("/players")
 @RequiredArgsConstructor
 public class PlayerController {
 

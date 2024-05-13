@@ -153,7 +153,9 @@ class RoomControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("exist", Matchers.equalTo(false));
+    }
 
+    @Test
     void 생존한_사람이_방의_정보를_찾는다() {
         // given
         final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
