@@ -13,10 +13,7 @@ public class Doctor implements Job {
 
     public static void executeSkill(Map<JobType, Player> targets) {
         final Player target = targets.getOrDefault(JobType.DOCTOR, Player.NONE);
-        final Player mafiaTarget = targets.getOrDefault(JobType.MAFIA, Player.NONE);
-        if (target.equals(mafiaTarget)){
-            target.heal();
-        }
+        target.heal();
     }
 
     @Override

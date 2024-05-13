@@ -15,7 +15,7 @@ public class Mafia implements Job {
 
     public static void executeSkill(Map<JobType, Player> targets) {
         final Player target = targets.getOrDefault(JobType.MAFIA, Player.NONE);
-        target.execute();
+        target.kill();
     }
 
     @Override

@@ -177,7 +177,7 @@ class RoomControllerTest {
         final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
         final Room room = roomManager.findByCode(code);
         room.joinPlayer(Player.create("power"));
-        room.getPlayer("power").execute();
+        room.getPlayer("power").kill();
 
         // when & then
         final RoomInfoResponse response = RestAssured.given().log().all()

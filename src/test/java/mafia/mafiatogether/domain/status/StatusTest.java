@@ -105,9 +105,9 @@ class StatusTest {
         room.modifyStatus(StatusType.DAY, roomCreatedTime);
         room.getStatusType(dayEndTime);
         room.getStatusType(voteEndTime);
-        a.execute();
-        b.execute();
-        c.execute();
+        a.kill();
+        b.kill();
+        c.kill();
 
         // when & then
         assertEquals(StatusType.END, room.getStatusType(nightEndTime));
@@ -125,9 +125,9 @@ class StatusTest {
         room.modifyStatus(StatusType.DAY, roomCreatedTime);
         room.getStatusType(dayEndTime);
         room.getStatusType(voteEndTime);
-        a.execute();
-        b.execute();
-        c.execute();
+        a.kill();
+        b.kill();
+        c.kill();
         room.getStatusType(nightEndTime);
 
         // when & then

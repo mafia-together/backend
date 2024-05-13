@@ -28,7 +28,7 @@ public class Player {
         return job.getRoleSymbol();
     }
 
-    public void execute() {
+    public void kill() {
         this.alive = false;
     }
 

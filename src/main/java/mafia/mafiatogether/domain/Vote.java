@@ -53,7 +53,7 @@ public class Vote {
 
     public void executeVote() {
         final Player player = countVotes();
-        player.execute();
+        player.kill();
         playerVote.clear();
     }
 }
