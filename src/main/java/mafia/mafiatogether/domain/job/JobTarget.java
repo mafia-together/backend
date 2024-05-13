@@ -23,4 +23,10 @@ public class JobTarget {
     public Player getTarget(final JobType jobType) {
         return targets.get(jobType);
     }
+
+    public void execute(){
+        Mafia.executeSkill(targets);
+        Doctor.executeSkill(targets);
+        targets.clear();
+    }
 }

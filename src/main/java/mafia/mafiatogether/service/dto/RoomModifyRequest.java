@@ -1,8 +1,8 @@
 package mafia.mafiatogether.service.dto;
 
-import mafia.mafiatogether.domain.Status;
+import mafia.mafiatogether.domain.status.StatusType;
 
 public record RoomModifyRequest(
-        Status status
+        StatusType statusType
 ) {
 }

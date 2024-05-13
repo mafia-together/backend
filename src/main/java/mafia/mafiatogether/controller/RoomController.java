@@ -7,6 +7,7 @@ import mafia.mafiatogether.service.dto.PlayerInfoDto;
 import mafia.mafiatogether.service.dto.RoomAuthResponse;
 import mafia.mafiatogether.service.dto.RoomCodeResponse;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
+import mafia.mafiatogether.service.dto.RoomInfoResponse;
 import mafia.mafiatogether.service.dto.RoomModifyRequest;
 import mafia.mafiatogether.service.dto.RoomStatusResponse;
 import mafia.mafiatogether.service.dto.RoomValidateResponse;
@@ -64,10 +65,18 @@ public class RoomController {
         return ResponseEntity.ok(new RoomCodeResponse(playerInfoDto.code()));
     }
 
+
     @GetMapping("/code/exist")
     public ResponseEntity<RoomValidateResponse> validateCode(
             @RequestParam("code") final String code
     ) {
         return ResponseEntity.ok(roomService.validateCode(code));
+    }
+
+    @GetMapping("/info")
+    public ResponseEntity<RoomInfoResponse> findRoomInfo(
+            @PlayerInfo PlayerInfoDto playerInfoDto
+    ) {
+        return ResponseEntity.ok(roomService.findRoomInfo(playerInfoDto.code(), playerInfoDto.name()));
     }
 }

@@ -4,12 +4,13 @@ import static org.hamcrest.Matchers.equalTo;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.time.Clock;
 import java.util.Base64;
 import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.RoomManager;
-import mafia.mafiatogether.domain.Status;
+import mafia.mafiatogether.domain.status.StatusType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ class PlayerControllerTest {
         room.joinPlayer(Player.create("power"));
 
         //when
-        room.modifyStatus(Status.NIGHT);
+        room.modifyStatus(StatusType.NIGHT, Clock.systemDefaultZone());
 
         //then
         RestAssured.given().log().all()

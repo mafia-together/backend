@@ -27,4 +27,12 @@ public class Player {
     public JobType getJobSymbol() {
         return job.getJobSymbol();
     }
+
+    public void kill() {
+        this.alive = false;
+    }
+
+    public void heal() {
+        this.alive = true;
+    }
 }

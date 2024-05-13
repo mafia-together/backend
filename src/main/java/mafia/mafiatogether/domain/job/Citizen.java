@@ -7,7 +7,7 @@ import mafia.mafiatogether.domain.Player;
 public class Citizen implements Job {
 
     @Override
-    public String executeAbility(final Player player, final JobTarget jobTarget) {
+    public String applySkill(final Player player, final JobTarget jobTarget) {
         throw new CitizenException(ExceptionCode.INVALID_REQUEST);
     }
 
