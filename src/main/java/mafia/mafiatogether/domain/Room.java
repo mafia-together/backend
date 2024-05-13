@@ -121,4 +121,8 @@ public class Room {
     public Boolean isMaster(final Player player) {
         return this.master.equals(player);
     }
+
+    public Integer getTotalPlayers(){
+        return roomInfo.getTotal();
+    }
 }

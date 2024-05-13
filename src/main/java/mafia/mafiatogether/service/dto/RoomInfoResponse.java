@@ -10,7 +10,7 @@ public record RoomInfoResponse(
         Timestamp startTime,
         Timestamp endTime,
         Boolean isAlive,
-        Integer totalPlayer,
+        Integer totalPlayers,
         Boolean isMaster,
         List<PlayerResponse> players
 ) {
@@ -24,7 +24,7 @@ public record RoomInfoResponse(
                 room.getStatus().getStartTime(),
                 room.getStatus().getEndTime(),
                 isAlive,
-                room.getPlayers().size(),
+                room.getTotalPlayers(),
                 isMaster,
                 convertFrom(isAlive, room.getPlayers())
         );
