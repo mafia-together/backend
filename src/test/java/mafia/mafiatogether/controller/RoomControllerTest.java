@@ -6,7 +6,9 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.time.Clock;
 import java.util.Base64;
-import mafia.mafiatogether.domain.Player;
+import java.util.stream.Stream;
+import mafia.mafiatogether.config.exception.ErrorResponse;
+import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.RoomManager;
@@ -20,6 +22,9 @@ import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -61,6 +66,38 @@ class RoomControllerTest {
         Assertions.assertThat(response.code()).isNotBlank();
     }
 
+    @ParameterizedTest(name = "{0}일 때 방 생성에 실패한다")
+    @MethodSource("provideRoomCreateFailCase")
+    void 방_생성에_실패한다(
+            final String testCase,
+            final int total,
+            final int mafia
+    ) {
+        //given
+        final RoomCreateRequest request = new RoomCreateRequest(total, mafia, 1, 1);
+
+        //when
+        final ErrorResponse response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/rooms")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract()
+                .as(ErrorResponse.class);
+
+        // then
+        Assertions.assertThat(response.errorCode()).isEqualTo(ExceptionCode.INVALID_ROOM_INFORMATION.getCode());
+    }
+
+    static Stream<Arguments> provideRoomCreateFailCase() {
+        return Stream.of(
+                Arguments.of("마피아 수가 허용인원 수보다 많을때", 3, 2),
+                Arguments.of("총인원수가 3 미만일때", 2, 1),
+                Arguments.of("마피아 수가 0일때", 3, 0)
+        );
+    }
+
     @Test
     void 방을_상태를_확인할_수_있다() {
         //given
@@ -88,11 +125,11 @@ class RoomControllerTest {
         String basic = Base64.getEncoder().encodeToString((code + ":" + "player1").getBytes());
         RoomModifyRequest request = new RoomModifyRequest(StatusType.DAY);
         Room room = roomManager.findByCode(code);
-        room.joinPlayer(Player.create("player1"));
-        room.joinPlayer(Player.create("player2"));
-        room.joinPlayer(Player.create("player3"));
-        room.joinPlayer(Player.create("player4"));
-        room.joinPlayer(Player.create("player5"));
+        room.joinPlayer("player1");
+        room.joinPlayer("player2");
+        room.joinPlayer("player3");
+        room.joinPlayer("player4");
+        room.joinPlayer("player5");
 
         //when
         RestAssured.given().log().all()
@@ -106,6 +143,31 @@ class RoomControllerTest {
         //then
         StatusType actual = room.getStatusType(Clock.systemDefaultZone());
         Assertions.assertThat(actual).isEqualTo(StatusType.DAY);
+    }
+
+    @Test
+    void 인원부족시_게임을_시작할_수_없다() {
+        //given
+        String code = roomManager.create(new RoomInfo(3, 1, 1, 1));
+        String basic = Base64.getEncoder().encodeToString((code + ":" + "player1").getBytes());
+        RoomModifyRequest request = new RoomModifyRequest(StatusType.DAY);
+        Room room = roomManager.findByCode(code);
+        room.joinPlayer("player1");
+        room.joinPlayer("player2");
+
+        //when
+        final ErrorResponse response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .header("Authorization", "Basic " + basic)
+                .when().patch("/rooms/status")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract()
+                .as(ErrorResponse.class);
+
+        // then
+        Assertions.assertThat(response.errorCode()).isEqualTo(ExceptionCode.NOT_ENOUGH_PLAYER.getCode());
     }
 
     @Test
@@ -123,6 +185,46 @@ class RoomControllerTest {
         //then
         Room room = roomManager.findByCode(code);
         Assertions.assertThat(room.getPlayer("power")).isNotNull();
+    }
+
+    @Test
+    void 방이_꽉_차_있을때_참가에_실패한다() {
+        //given
+        final String code = roomManager.create(new RoomInfo(3, 1, 1, 1));
+        final Room room = roomManager.findByCode(code);
+        room.joinPlayer("A");
+        room.joinPlayer("C");
+        room.joinPlayer("D");
+        //when
+        final ErrorResponse response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when().get("/rooms?code=" + code + "&name=E")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract()
+                .as(ErrorResponse.class);
+
+        //then
+        Assertions.assertThat(response.errorCode()).isEqualTo(ExceptionCode.ROOM_FULL.getCode());
+    }
+
+    @Test
+    void 방에_이미_존재한느_이름으로_참가할때_참가에_실패한다() {
+        //given
+        final String code = roomManager.create(new RoomInfo(3, 1, 1, 1));
+        final Room room = roomManager.findByCode(code);
+        room.joinPlayer("A");
+        //when
+        final ErrorResponse response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when().get("/rooms?code=" + code + "&name=A")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract()
+                .as(ErrorResponse.class);
+
+        //then
+        Assertions.assertThat(response.errorCode()).isEqualTo(ExceptionCode.INVALID_NAMES.getCode());
     }
 
     @Test
@@ -161,7 +263,7 @@ class RoomControllerTest {
         final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
         final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
         final Room room = roomManager.findByCode(code);
-        room.joinPlayer(Player.create("power"));
+        room.joinPlayer("power");
 
         // when & then
         final RoomInfoResponse response = RestAssured.given().log().all()
@@ -190,7 +292,7 @@ class RoomControllerTest {
         final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
         final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
         final Room room = roomManager.findByCode(code);
-        room.joinPlayer(Player.create("power"));
+        room.joinPlayer("power");
         room.getPlayer("power").kill();
 
         // when & then
@@ -212,6 +314,5 @@ class RoomControllerTest {
                     softly.assertThat(response.players().getFirst().job()).isNotNull();
                 }
         );
-
     }
 }

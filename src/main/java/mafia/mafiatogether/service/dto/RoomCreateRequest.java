@@ -10,6 +10,6 @@ public record RoomCreateRequest(
 ) {
 
     public RoomInfo toDomain() {
-        return new RoomInfo(total, mafia, doctor, police);
+        return RoomInfo.of(total, mafia, doctor, police);
     }
 }
