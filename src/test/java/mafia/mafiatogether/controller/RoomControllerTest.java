@@ -163,6 +163,46 @@ class RoomControllerTest {
     }
 
     @Test
+    void 방이_꽉_차_있을때_참가에_실패한다(){
+        //given
+        final String code = roomManager.create(new RoomInfo(3, 1, 1, 1));
+        final Room room = roomManager.findByCode(code);
+        room.joinPlayer("A");
+        room.joinPlayer("C");
+        room.joinPlayer("D");
+        //when
+        final ErrorResponse response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when().get("/rooms?code=" + code + "&name=E")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract()
+                .as(ErrorResponse.class);
+
+        //then
+        Assertions.assertThat(response.errorCode()).isEqualTo(ExceptionCode.ROOM_FULL.getCode());
+    }
+
+    @Test
+    void 방에_이미_존재한느_이름으로_참가할때_참가에_실패한다(){
+        //given
+        final String code = roomManager.create(new RoomInfo(3, 1, 1, 1));
+        final Room room = roomManager.findByCode(code);
+        room.joinPlayer("A");
+        //when
+        final ErrorResponse response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when().get("/rooms?code=" + code + "&name=A")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract()
+                .as(ErrorResponse.class);
+
+        //then
+        Assertions.assertThat(response.errorCode()).isEqualTo(ExceptionCode.INVALID_NAMES.getCode());
+    }
+
+    @Test
     void 방의_코드를_찾는다() {
         // given
         final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
