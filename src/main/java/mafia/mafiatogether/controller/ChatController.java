@@ -1,5 +1,6 @@
 package mafia.mafiatogether.controller;
 
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.service.ChatService;
@@ -30,7 +31,7 @@ public class ChatController {
     @PostMapping
     public ResponseEntity<Void> saveChat(
             @PlayerInfo PlayerInfoDto playerInfoDto,
-            @RequestBody ChatRequest request
+            @Valid @RequestBody ChatRequest request
     ) {
         chatService.saveChat(playerInfoDto.code(), playerInfoDto.name(), request);
         return ResponseEntity.status(HttpStatus.CREATED).build();

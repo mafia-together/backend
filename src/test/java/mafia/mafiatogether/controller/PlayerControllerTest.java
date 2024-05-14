@@ -36,10 +36,12 @@ class PlayerControllerTest {
     @Test
     void 직업을_조회한다() {
         //given
-        String code = roomManager.create(new RoomInfo(5, 0, 0, 0));
+        String code = roomManager.create(new RoomInfo(3, 0, 0, 0));
         String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
         Room room = roomManager.findByCode(code);
         room.joinPlayer("power");
+        room.joinPlayer("t1");
+        room.joinPlayer("t2");
 
         //when
         room.modifyStatus(StatusType.NIGHT, Clock.systemDefaultZone());

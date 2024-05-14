@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 import mafia.mafiatogether.domain.Message;
 import mafia.mafiatogether.domain.Player;
@@ -109,7 +110,8 @@ public class ChatControllerTest {
     void 채팅_전송에_실패한다(
             final String testCase,
             final String code,
-            final String name
+            final String name,
+            final Optional<String> contents
     ) {
         // given
         final String basic = Base64.getEncoder().encodeToString((code + ":" + name).getBytes());
@@ -118,7 +120,7 @@ public class ChatControllerTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .body(Map.of("contents", "contents"))
+                .body(Map.of("contents", contents))
                 .when().post("/chat")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
@@ -126,8 +128,9 @@ public class ChatControllerTest {
 
     static Stream<Arguments> failCaseProvider() {
         return Stream.of(
-                Arguments.of("방에 존재하지 않는 유저의 경우", code, "dali"),
-                Arguments.of("존재하지 않는 방의 경우", "testCode", "metthew")
+                Arguments.of("방에 존재하지 않는 유저의 경우", code, "dali", Optional.of("contents")),
+                Arguments.of("존재하지 않는 방의 경우", "testCode", "metthew", Optional.of("contents")),
+                Arguments.of("문자열이 비어있는 경우", code, "metthew", Optional.empty())
         );
     }
 }
