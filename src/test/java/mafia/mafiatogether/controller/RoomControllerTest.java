@@ -6,7 +6,6 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.time.Clock;
 import java.util.Base64;
-import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.RoomManager;
@@ -88,11 +87,11 @@ class RoomControllerTest {
         String basic = Base64.getEncoder().encodeToString((code + ":" + "player1").getBytes());
         RoomModifyRequest request = new RoomModifyRequest(StatusType.DAY);
         Room room = roomManager.findByCode(code);
-        room.joinPlayer(Player.create("player1"));
-        room.joinPlayer(Player.create("player2"));
-        room.joinPlayer(Player.create("player3"));
-        room.joinPlayer(Player.create("player4"));
-        room.joinPlayer(Player.create("player5"));
+        room.joinPlayer("player1");
+        room.joinPlayer("player2");
+        room.joinPlayer("player3");
+        room.joinPlayer("player4");
+        room.joinPlayer("player5");
 
         //when
         RestAssured.given().log().all()
@@ -161,7 +160,7 @@ class RoomControllerTest {
         final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
         final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
         final Room room = roomManager.findByCode(code);
-        room.joinPlayer(Player.create("power"));
+        room.joinPlayer("power");
 
         // when & then
         final RoomInfoResponse response = RestAssured.given().log().all()
@@ -190,7 +189,7 @@ class RoomControllerTest {
         final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
         final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
         final Room room = roomManager.findByCode(code);
-        room.joinPlayer(Player.create("power"));
+        room.joinPlayer("power");
         room.getPlayer("power").kill();
 
         // when & then

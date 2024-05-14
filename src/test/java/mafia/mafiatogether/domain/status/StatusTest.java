@@ -19,24 +19,21 @@ class StatusTest {
     private static final Clock roomCreatedTime = Clock.fixed(Instant.parse("2024-01-01T00:00:00.000000Z"), TIME_ZONE);
 
     private Room room;
-    private Player a = Player.create("A");
-    private Player b = Player.create("B");
-    private Player c = Player.create("C");
 
     @BeforeEach
     void setRoom() {
         room = Room.create(new RoomInfo(5, 2, 0, 1), roomCreatedTime);
-        a = Player.create("A");
-        b = Player.create("B");
-        c = Player.create("C");
+        Player a = Player.create("A");
+        Player b = Player.create("B");
+        Player c = Player.create("C");
         Player d = Player.create("D");
         Player e = Player.create("E");
 
-        room.joinPlayer(a);
-        room.joinPlayer(b);
-        room.joinPlayer(c);
-        room.joinPlayer(d);
-        room.joinPlayer(e);
+        room.joinPlayer(a.getName());
+        room.joinPlayer(b.getName());
+        room.joinPlayer(c.getName());
+        room.joinPlayer(d.getName());
+        room.joinPlayer(e.getName());
     }
 
     @Test
@@ -105,9 +102,9 @@ class StatusTest {
         room.modifyStatus(StatusType.DAY, roomCreatedTime);
         room.getStatusType(dayEndTime);
         room.getStatusType(voteEndTime);
-        a.kill();
-        b.kill();
-        c.kill();
+        room.getPlayer("A").kill();
+        room.getPlayer("B").kill();
+        room.getPlayer("C").kill();
 
         // when & then
         assertEquals(StatusType.END, room.getStatusType(nightEndTime));
@@ -125,9 +122,9 @@ class StatusTest {
         room.modifyStatus(StatusType.DAY, roomCreatedTime);
         room.getStatusType(dayEndTime);
         room.getStatusType(voteEndTime);
-        a.kill();
-        b.kill();
-        c.kill();
+        room.getPlayer("A").kill();
+        room.getPlayer("B").kill();
+        room.getPlayer("C").kill();
         room.getStatusType(nightEndTime);
 
         // when & then

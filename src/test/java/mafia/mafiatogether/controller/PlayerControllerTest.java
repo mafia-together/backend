@@ -6,7 +6,6 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.time.Clock;
 import java.util.Base64;
-import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.RoomManager;
@@ -40,7 +39,7 @@ class PlayerControllerTest {
         String code = roomManager.create(new RoomInfo(5, 0, 0, 0));
         String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
         Room room = roomManager.findByCode(code);
-        room.joinPlayer(Player.create("power"));
+        room.joinPlayer("power");
 
         //when
         room.modifyStatus(StatusType.NIGHT, Clock.systemDefaultZone());

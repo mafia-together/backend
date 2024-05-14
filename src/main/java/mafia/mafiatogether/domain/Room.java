@@ -51,7 +51,14 @@ public class Room {
         this.status = status.getNextStatus(this, clock);
     }
 
-    public void joinPlayer(final Player player) {
+    public void joinPlayer(final String name) {
+        if (players.containsKey(name)) {
+            throw new RoomException(ExceptionCode.INVALID_NAMES);
+        }
+        if (players.size() >= roomInfo.getTotal()) {
+            throw new RoomException(ExceptionCode.ROOM_FULL);
+        }
+        final Player player = Player.create(name);
         if (master.equals(Player.NONE)) {
             master = player;
         }
@@ -122,7 +129,7 @@ public class Room {
         return this.master.equals(player);
     }
 
-    public Integer getTotalPlayers(){
+    public Integer getTotalPlayers() {
         return roomInfo.getTotal();
     }
 }

@@ -24,7 +24,7 @@ public class RoomInfo {
     private final int police;
 
     public static RoomInfo of(final int total, final int mafia, final int doctor, final int police) {
-        if (total / 2 > mafia) {
+        if (total / 2 < mafia) {
             throw new RoomException(ExceptionCode.INVALID_ROOM_INFORMATION);
         }
         return new RoomInfo(total, mafia, doctor, police);

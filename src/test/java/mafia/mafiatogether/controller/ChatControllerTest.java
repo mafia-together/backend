@@ -53,8 +53,8 @@ public class ChatControllerTest {
         room = roomManager.findByCode(code);
         player1 = Player.create("power");
         player2 = Player.create("metthew");
-        room.joinPlayer(player1);
-        room.joinPlayer(player2);
+        room.joinPlayer(player1.getName());
+        room.joinPlayer(player2.getName());
     }
 
     @Test

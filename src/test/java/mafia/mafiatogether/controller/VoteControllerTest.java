@@ -46,9 +46,9 @@ class VoteControllerTest {
         player1 = Player.create("power");
         player2 = Player.create("metthew");
         player3 = Player.create("dali");
-        room.joinPlayer(player1);
-        room.joinPlayer(player2);
-        room.joinPlayer(player3);
+        room.joinPlayer(player1.getName());
+        room.joinPlayer(player2.getName());
+        room.joinPlayer(player3.getName());
     }
 
     @Test

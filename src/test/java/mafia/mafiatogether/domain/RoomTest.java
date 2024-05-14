@@ -17,18 +17,19 @@ class RoomTest {
     @Test
     void 직업을_배정할_수_있다() {
         //given
-        Room room = Room.create(new RoomInfo(5, 3, 0, 1), Clock.systemDefaultZone());
-        Player a = Player.create("A");
-        Player b = Player.create("B");
-        Player c = Player.create("C");
-        Player d = Player.create("D");
-        Player e = Player.create("E");
+        Room room = Room.create(new RoomInfo(5, 2, 0, 1), Clock.systemDefaultZone());
 
-        room.joinPlayer(a);
-        room.joinPlayer(b);
-        room.joinPlayer(c);
-        room.joinPlayer(d);
-        room.joinPlayer(e);
+        room.joinPlayer("A");
+        room.joinPlayer("B");
+        room.joinPlayer("C");
+        room.joinPlayer("D");
+        room.joinPlayer("E");
+
+        Player a = room.getPlayer("A");
+        Player b = room.getPlayer("B");
+        Player c = room.getPlayer("C");
+        Player d = room.getPlayer("D");
+        Player e = room.getPlayer("E");
 
         //when
         room.modifyStatus(StatusType.NIGHT, Clock.systemDefaultZone());
@@ -54,24 +55,23 @@ class RoomTest {
             }
         }
 
-        assertEquals(3, mafiaPlayers);
+        assertEquals(2, mafiaPlayers);
     }
 
     @Test
     void 투표를_할_수_있다() {
         // given
         final Room room = Room.create(new RoomInfo(5, 3, 0, 1), Clock.systemDefaultZone());
-        Player a = Player.create("A");
-        Player b = Player.create("B");
-        Player c = Player.create("C");
-        Player d = Player.create("D");
-        Player e = Player.create("E");
+        room.joinPlayer("A");
+        room.joinPlayer("B");
+        room.joinPlayer("C");
+        room.joinPlayer("D");
+        room.joinPlayer("E");
 
-        room.joinPlayer(a);
-        room.joinPlayer(b);
-        room.joinPlayer(c);
-        room.joinPlayer(d);
-        room.joinPlayer(e);
+        Player a = room.getPlayer("A");
+        Player b = room.getPlayer("B");
+        Player c = room.getPlayer("C");
+        Player d = room.getPlayer("D");
 
         room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone());
 
@@ -89,17 +89,17 @@ class RoomTest {
     void 동표일떄_투표가_무효가_된다() {
         // given
         final Room room = Room.create(new RoomInfo(5, 3, 0, 1), Clock.systemDefaultZone());
-        Player a = Player.create("A");
-        Player b = Player.create("B");
-        Player c = Player.create("C");
-        Player d = Player.create("D");
-        Player e = Player.create("E");
+        room.joinPlayer("A");
+        room.joinPlayer("B");
+        room.joinPlayer("C");
+        room.joinPlayer("D");
+        room.joinPlayer("E");
 
-        room.joinPlayer(a);
-        room.joinPlayer(b);
-        room.joinPlayer(c);
-        room.joinPlayer(d);
-        room.joinPlayer(e);
+        Player a = room.getPlayer("A");
+        Player b = room.getPlayer("B");
+        Player c = room.getPlayer("C");
+        Player d = room.getPlayer("D");
+        Player e = room.getPlayer("E");
 
         room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone());
 
