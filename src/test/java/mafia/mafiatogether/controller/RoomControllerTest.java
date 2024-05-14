@@ -6,6 +6,9 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.time.Clock;
 import java.util.Base64;
+import java.util.stream.Stream;
+import mafia.mafiatogether.config.exception.ErrorResponse;
+import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.RoomManager;
@@ -19,6 +22,9 @@ import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -58,6 +64,38 @@ class RoomControllerTest {
 
         //then
         Assertions.assertThat(response.code()).isNotBlank();
+    }
+
+    @ParameterizedTest(name = "{0}일 때 방 생성에 실패한다")
+    @MethodSource("provideRoomCreateFailCase")
+    void 방_생성에_실패한다(
+            final String testCase,
+            final int total,
+            final int mafia
+    ){
+        //given
+        final RoomCreateRequest request = new RoomCreateRequest(total, mafia, 1, 1);
+
+        //when
+        final ErrorResponse response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post("/rooms")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract()
+                .as(ErrorResponse.class);
+
+        // then
+        Assertions.assertThat(response.errorCode()).isEqualTo(ExceptionCode.INVALID_ROOM_INFORMATION.getCode());
+    }
+
+    static Stream<Arguments> provideRoomCreateFailCase(){
+        return Stream.of(
+                Arguments.of("마피아 수가 허용인원 수보다 많을때",3,2),
+                Arguments.of("총인원수가 3 미만일때", 2, 1),
+                Arguments.of("마피아 수가 0일때", 3, 0)
+        );
     }
 
     @Test
@@ -211,6 +249,5 @@ class RoomControllerTest {
                     softly.assertThat(response.players().getFirst().job()).isNotNull();
                 }
         );
-
     }
 }

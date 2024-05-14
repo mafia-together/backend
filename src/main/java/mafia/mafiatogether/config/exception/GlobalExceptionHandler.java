@@ -21,6 +21,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> Exception(Exception e) {
         final ErrorResponse errorResponse = ErrorResponse.create(
+                ExceptionCode.UNEXPECTED_EXCEPTION.getCode(),
                 "예기치 않은 예외가 발생 했습니다."
         );
 
@@ -42,6 +43,7 @@ public class GlobalExceptionHandler {
         }
 
         final ErrorResponse errorResponse = ErrorResponse.create(
+                ExceptionCode.INVALID_REQUEST.getCode(),
                 "",
                 errors
         );
@@ -50,9 +52,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
-    @ExceptionHandler({RoomException.class, CitizenException.class, AuthException.class})
-    protected ResponseEntity<ErrorResponse> GlobalException(RuntimeException e) {
+    @ExceptionHandler(GlobalException.class)
+    protected ResponseEntity<ErrorResponse> GlobalException(GlobalException e) {
         final ErrorResponse errorResponse = ErrorResponse.create(
+                e.getCodes(),
                 e.getMessage()
         );
 
@@ -65,6 +68,7 @@ public class GlobalExceptionHandler {
             final HttpRequestMethodNotSupportedException e
     ) {
         final ErrorResponse errorResponse = ErrorResponse.create(
+                ExceptionCode.MISSING_AUTHENTICATION_HEADER.getCode(),
                 "HTTP 메서드를 확인해 주세요"
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
@@ -75,6 +79,7 @@ public class GlobalExceptionHandler {
             final MissingServletRequestParameterException e
     ) {
         final ErrorResponse errorResponse = ErrorResponse.create(
+                ExceptionCode.INVALID_CONTENT.getCode(),
                 "요청 파라미터를 확인해 주세요"
         );
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);

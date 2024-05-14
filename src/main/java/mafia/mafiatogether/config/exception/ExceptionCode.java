@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ExceptionCode {
+    UNEXPECTED_EXCEPTION(000, "예상치 못한 예외입니다."),
 
     INVALID_REQUEST(100, "잘못된 요청입니다."),
     INVALID_ROOM_INFORMATION(101, "방 구성이 잘 못 되었습니다."),
