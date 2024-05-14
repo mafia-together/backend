@@ -52,6 +52,6 @@ class PlayerControllerTest {
                 .when().get("/players/my/job")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("role", equalTo("CITIZEN"));
+                .body("job", equalTo("CITIZEN"));
     }
 }
