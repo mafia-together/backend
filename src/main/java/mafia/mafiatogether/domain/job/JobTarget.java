@@ -21,6 +21,9 @@ public class JobTarget {
     }
 
     public Player getTarget(final JobType jobType) {
+        if (!targets.containsKey(jobType)){
+            return Player.NONE;
+        }
         return targets.get(jobType);
     }
 
