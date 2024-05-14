@@ -132,4 +132,8 @@ public class Room {
     public Integer getTotalPlayers() {
         return roomInfo.getTotal();
     }
+
+    public boolean validateStartStatus() {
+        return roomInfo.getTotal() == players.size();
+    }
 }
