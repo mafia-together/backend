@@ -7,7 +7,7 @@ import mafia.mafiatogether.domain.Room;
 
 public class VoteStatus extends Status {
 
-    private static final Long UNIT = 10000L;
+    private static final Long UNIT = 9999L;
 
     private VoteStatus(final Timestamp startTime, final Timestamp endTime) {
         super(startTime, endTime);

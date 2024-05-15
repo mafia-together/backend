@@ -9,7 +9,7 @@ import mafia.mafiatogether.domain.Room;
 
 public class WaitStatus extends Status {
 
-    private static final Long UNIT = 300000L;
+    private static final Long UNIT = 2999999L;
 
     public WaitStatus(final Timestamp startTime, final Timestamp endTime) {
         super(startTime, endTime);
@@ -27,7 +27,7 @@ public class WaitStatus extends Status {
             throw new RoomException(ExceptionCode.NOT_ENOUGH_PLAYER);
         }
         room.distributeRole();
-        return DayStatus.create(room.getPlayerCount(), clock);
+        return DayIntroStatus.create(clock);
     }
 
     @Override
