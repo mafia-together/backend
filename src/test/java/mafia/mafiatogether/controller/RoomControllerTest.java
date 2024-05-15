@@ -9,9 +9,11 @@ import java.util.Base64;
 import java.util.stream.Stream;
 import mafia.mafiatogether.config.exception.ErrorResponse;
 import mafia.mafiatogether.config.exception.ExceptionCode;
+import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.RoomManager;
+import mafia.mafiatogether.domain.job.JobType;
 import mafia.mafiatogether.domain.status.StatusType;
 import mafia.mafiatogether.service.dto.RoomCodeResponse;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
@@ -279,6 +281,7 @@ class RoomControllerTest {
                 softly -> {
                     softly.assertThat(response.startTime()).isNotNull();
                     softly.assertThat(response.endTime()).isNotNull();
+                    softly.assertThat(response.myName()).isNotNull();
                     softly.assertThat(response.isAlive()).isTrue();
                     softly.assertThat(response.isMaster()).isTrue();
                     softly.assertThat(response.players().getFirst().job()).isNull();
@@ -314,5 +317,58 @@ class RoomControllerTest {
                     softly.assertThat(response.players().getFirst().job()).isNotNull();
                 }
         );
+    }
+
+    @Test
+    void 마피아가_방의_정보를_찾는다() {
+        // given
+        final String code = roomManager.create(new RoomInfo(5, 2, 1, 0));
+        final Room room = roomManager.findByCode(code);
+        room.joinPlayer("p1");
+        room.joinPlayer("p2");
+        room.joinPlayer("p3");
+        room.joinPlayer("p4");
+        room.joinPlayer("p5");
+        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone());
+        final Player mafia = findPlayer(room, JobType.MAFIA);
+        final String mafiaBasic = Base64.getEncoder().encodeToString((code + ":" + mafia.getName()).getBytes());
+        final Player doctor = findPlayer(room, JobType.DOCTOR);
+        final String doctorBasic = Base64.getEncoder().encodeToString((code + ":" + doctor.getName()).getBytes());
+        final Player citizen = findPlayer(room, JobType.CITIZEN);
+        final String citizenBasic = Base64.getEncoder().encodeToString((code + ":" + citizen.getName()).getBytes());
+
+        // when & then
+        final Long mafiaCount = countMafiaResponse(mafiaBasic);
+        final Long doctorCount = countMafiaResponse(doctorBasic);
+        final Long citizenCount = countMafiaResponse(citizenBasic);
+        assertSoftly(
+                softly -> {
+                    softly.assertThat(mafiaCount).isEqualTo(2);
+                    softly.assertThat(doctorCount).isEqualTo(0);
+                    softly.assertThat(citizenCount).isEqualTo(0);
+                }
+        );
+    }
+
+    private Player findPlayer(Room room, JobType jobType) {
+        return room.getPlayers().values().stream()
+                .filter(player -> player.getJobType().equals(jobType))
+                .findFirst()
+                .get();
+    }
+
+    private long countMafiaResponse(final String basic) {
+        final RoomInfoResponse roomInfoResponse = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Basic " + basic)
+                .when().get("/rooms/info")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(RoomInfoResponse.class);
+
+        return roomInfoResponse.players().stream()
+                .filter(response -> response.job() != null && response.job().equals(JobType.MAFIA))
+                .count();
     }
 }

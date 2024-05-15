@@ -24,8 +24,8 @@ public class Player {
         this.job = job;
     }
 
-    public JobType getJobSymbol() {
-        return job.getJobSymbol();
+    public JobType getJobType() {
+        return job.getJobType();
     }
 
     public void kill() {
@@ -34,5 +34,9 @@ public class Player {
 
     public void heal() {
         this.alive = true;
+    }
+
+    public boolean isMafia() {
+        return getJobType().equals(JobType.MAFIA);
     }
 }

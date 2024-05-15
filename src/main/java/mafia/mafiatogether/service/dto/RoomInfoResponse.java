@@ -12,32 +12,39 @@ public record RoomInfoResponse(
         Boolean isAlive,
         Integer totalPlayers,
         Boolean isMaster,
+        String myName,
         List<PlayerResponse> players
 ) {
 
     public static RoomInfoResponse of(
             final Room room,
-            final Boolean isAlive,
+            final Player player,
             final Boolean isMaster
     ) {
         return new RoomInfoResponse(
                 room.getStatus().getStartTime(),
                 room.getStatus().getEndTime(),
-                isAlive,
+                player.isAlive(),
                 room.getTotalPlayers(),
                 isMaster,
-                convertFrom(isAlive, room.getPlayers())
+                player.getName(),
+                convertFrom(player, room.getPlayers())
         );
     }
 
-    private static List<PlayerResponse> convertFrom(final boolean isAlive, final Map<String, Player> players) {
-        if (isAlive) {
+    private static List<PlayerResponse> convertFrom(final Player player, final Map<String, Player> players) {
+        if (!player.isAlive()) {
             return players.values().stream()
-                    .map(PlayerResponse::forAlive)
+                    .map(PlayerResponse::forDead)
+                    .toList();
+        }
+        if (player.isMafia()) {
+            return players.values().stream()
+                    .map(PlayerResponse::forMafia)
                     .toList();
         }
         return players.values().stream()
-                .map(PlayerResponse::forDead)
+                .map(PlayerResponse::forAlive)
                 .toList();
     }
 }

@@ -12,7 +12,7 @@ public class Citizen implements Job {
     }
 
     @Override
-    public JobType getJobSymbol() {
+    public JobType getJobType() {
         return JobType.CITIZEN;
     }
 }

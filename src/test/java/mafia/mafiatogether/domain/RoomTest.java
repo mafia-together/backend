@@ -37,11 +37,11 @@ class RoomTest {
         //then
 
         List<JobType> jobTypes = new ArrayList<>();
-        jobTypes.add(a.getJobSymbol());
-        jobTypes.add(b.getJobSymbol());
-        jobTypes.add(c.getJobSymbol());
-        jobTypes.add(d.getJobSymbol());
-        jobTypes.add(e.getJobSymbol());
+        jobTypes.add(a.getJobType());
+        jobTypes.add(b.getJobType());
+        jobTypes.add(c.getJobType());
+        jobTypes.add(d.getJobType());
+        jobTypes.add(e.getJobType());
 
         assertEquals(5, jobTypes.size());
         assertTrue(jobTypes.contains(JobType.CITIZEN));

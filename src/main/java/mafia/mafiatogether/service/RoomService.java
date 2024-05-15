@@ -42,7 +42,7 @@ public class RoomService {
     public RoomInfoResponse findRoomInfo(final String code, final String name) {
         final Room room = roomManager.findByCode(code);
         final Player player = room.getPlayer(name);
-        return RoomInfoResponse.of(room, player.isAlive(), room.isMaster(player));
+        return RoomInfoResponse.of(room, player, room.isMaster(player));
     }
 
     public RoomValidateResponse validateCode(final String code) {

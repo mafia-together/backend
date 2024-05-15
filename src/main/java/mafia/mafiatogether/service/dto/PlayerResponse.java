@@ -13,7 +13,7 @@ public record PlayerResponse(
         return new PlayerResponse(
                 player.getName(),
                 player.isAlive(),
-                player.getJobSymbol()
+                player.getJobType()
         );
     }
 
@@ -22,6 +22,14 @@ public record PlayerResponse(
                 player.getName(),
                 player.isAlive(),
                 null
+        );
+    }
+
+    public static PlayerResponse forMafia(final Player player) {
+        return new PlayerResponse(
+                player.getName(),
+                player.isAlive(),
+                player.isMafia() ? JobType.MAFIA : null
         );
     }
 }

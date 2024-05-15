@@ -94,7 +94,7 @@ public class Room {
 
     public String getJobsTarget(final String name) {
         final Player player = players.get(name);
-        final JobType jobType = player.getJobSymbol();
+        final JobType jobType = player.getJobType();
         return jobTarget.getTarget(jobType).getName();
     }
 
@@ -117,7 +117,7 @@ public class Room {
     public boolean isEnd() {
         final long playerCount = getPlayerCount();
         final long mafia = players.values().stream()
-                .filter(player -> player.getJobSymbol().equals(JobType.MAFIA))
+                .filter(player -> player.getJobType().equals(JobType.MAFIA))
                 .count();
         return playerCount / 2 < mafia || mafia == 0;
     }
