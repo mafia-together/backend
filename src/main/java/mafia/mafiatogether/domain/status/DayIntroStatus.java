@@ -21,7 +21,7 @@ public class DayIntroStatus extends Status {
 
     @Override
     public Status getNextStatus(Room room, Clock clock) {
-        return DayStatus.create(room.getPlayerCount(), clock);
+        return NoticeStatus.create(clock);
     }
 
     @Override

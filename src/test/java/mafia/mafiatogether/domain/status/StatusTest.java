@@ -17,6 +17,20 @@ class StatusTest {
 
     private static final ZoneId TIME_ZONE = ZoneId.of("UTC");
     private static final Clock roomCreatedTime = Clock.fixed(Instant.parse("2024-01-01T00:00:00.000000Z"), TIME_ZONE);
+    private static final Clock dayIntroEndTime = Clock.fixed(Instant.parse("2024-01-01T00:00:02.000000Z"), TIME_ZONE);
+    private static final Clock noticeTime = Clock.fixed(Instant.parse("2024-01-01T00:00:03.000000Z"), TIME_ZONE);
+    private static final Clock noticeEndTime = Clock.fixed(Instant.parse("2024-01-01T00:00:05.000000Z"), TIME_ZONE);
+    private static final Clock dayTime = Clock.fixed(Instant.parse("2024-01-01T00:00:06.000000Z"), TIME_ZONE);
+    private static final Clock dayEndTime = Clock.fixed(Instant.parse("2024-01-01T00:01:05.000000Z"), TIME_ZONE);
+    private static final Clock voteTime = Clock.fixed(Instant.parse("2024-01-01T00:01:06.000000Z"), TIME_ZONE);
+    private static final Clock voteEndTime = Clock.fixed(Instant.parse("2024-01-01T00:01:15.000000Z"), TIME_ZONE);
+    private static final Clock voteResultTime = Clock.fixed(Instant.parse("2024-01-01T00:01:16.000000Z"), TIME_ZONE);
+    private static final Clock voteResultEndTime = Clock.fixed(Instant.parse("2024-01-01T00:01:18.000000Z"), TIME_ZONE);
+    private static final Clock nightIntroTime = Clock.fixed(Instant.parse("2024-01-01T00:01:19.000000Z"), TIME_ZONE);
+    private static final Clock nightIntroEndTime = Clock.fixed(Instant.parse("2024-01-01T00:01:21.000000Z"), TIME_ZONE);
+    private static final Clock nightTime = Clock.fixed(Instant.parse("2024-01-01T00:01:22.000000Z"), TIME_ZONE);
+    private static final Clock nightEndTime = Clock.fixed(Instant.parse("2024-01-01T00:02:01.000000Z"), TIME_ZONE);
+    private static final Clock nextDay = Clock.fixed(Instant.parse("2024-01-01T00:02:02.000000Z"), TIME_ZONE);
 
     private Room room;
 
@@ -36,24 +50,24 @@ class StatusTest {
     void 게임이_진행되며_상태가_바뀐다() {
         // given
         room.modifyStatus(StatusType.DAY, roomCreatedTime);
-        final Clock dayIntroEndTime = Clock.fixed(Instant.parse("2024-01-01T00:00:02.000000Z"), TIME_ZONE);
-        final Clock dayTime = Clock.fixed(Instant.parse("2024-01-01T00:00:03.000000Z"), TIME_ZONE);
-        final Clock dayEndTime = Clock.fixed(Instant.parse("2024-01-01T00:01:02.000000Z"), TIME_ZONE);
-        final Clock voteTime = Clock.fixed(Instant.parse("2024-01-01T00:01:03.000000Z"), TIME_ZONE);
-        final Clock voteEndTime = Clock.fixed(Instant.parse("2024-01-01T00:01:12.000000Z"), TIME_ZONE);
-        final Clock nightTime = Clock.fixed(Instant.parse("2024-01-01T00:01:13.000000Z"), TIME_ZONE);
-        final Clock nightEndTime = Clock.fixed(Instant.parse("2024-01-01T00:01:53.000000Z"), TIME_ZONE);
 
         // when & then
         assertSoftly(
                 softly -> {
                     softly.assertThat(room.getStatusType(dayIntroEndTime)).isEqualTo(StatusType.DAY_INTRO);
+                    softly.assertThat(room.getStatusType(noticeTime)).isEqualTo(StatusType.NOTICE);
+                    softly.assertThat(room.getStatusType(noticeEndTime)).isEqualTo(StatusType.NOTICE);
                     softly.assertThat(room.getStatusType(dayTime)).isEqualTo(StatusType.DAY);
                     softly.assertThat(room.getStatusType(dayEndTime)).isEqualTo(StatusType.DAY);
                     softly.assertThat(room.getStatusType(voteTime)).isEqualTo(StatusType.VOTE);
                     softly.assertThat(room.getStatusType(voteEndTime)).isEqualTo(StatusType.VOTE);
+                    softly.assertThat(room.getStatusType(voteResultTime)).isEqualTo(StatusType.VOTE_RESULT);
+                    softly.assertThat(room.getStatusType(voteResultEndTime)).isEqualTo(StatusType.VOTE_RESULT);
+                    softly.assertThat(room.getStatusType(nightIntroTime)).isEqualTo(StatusType.NIGHT_INTRO);
+                    softly.assertThat(room.getStatusType(nightIntroEndTime)).isEqualTo(StatusType.NIGHT_INTRO);
                     softly.assertThat(room.getStatusType(nightTime)).isEqualTo(StatusType.NIGHT);
                     softly.assertThat(room.getStatusType(nightEndTime)).isEqualTo(StatusType.NIGHT);
+                    softly.assertThat(room.getStatusType(nextDay)).isEqualTo(StatusType.DAY_INTRO);
                 }
         );
     }
@@ -61,15 +75,15 @@ class StatusTest {
     @Test
     void 투표결과_게임종료_조건달성시_게임이_종료된다() {
         // given
-        final Clock dayTime = Clock.fixed(Instant.parse("2024-01-01T00:00:03.000000Z"), TIME_ZONE);
-        final Clock voteTime = Clock.fixed(Instant.parse("2024-01-01T00:01:03.000000Z"), TIME_ZONE);
-        final Clock endTime = Clock.fixed(Instant.parse("2024-01-01T00:01:13.000000Z"), TIME_ZONE);
+        final Clock endTime = Clock.fixed(Instant.parse("2024-01-01T00:01:19.000000Z"), TIME_ZONE);
 
         room.modifyStatus(StatusType.DAY, roomCreatedTime);
+        room.getStatusType(noticeTime);
         room.getStatusType(dayTime);
         room.getStatusType(voteTime);
         room.getPlayer("A").kill();
         room.getPlayer("B").kill();
+        room.getStatusType(voteResultTime);
 
         // when & then
         Assertions.assertThat(room.getStatusType(endTime)).isEqualTo(StatusType.END);
@@ -78,14 +92,14 @@ class StatusTest {
     @Test
     void 밤_이후_게임종료_조건달성시_게임이_종료된다() {
         // given
-        final Clock dayTime = Clock.fixed(Instant.parse("2024-01-01T00:00:03.000000Z"), TIME_ZONE);
-        final Clock voteTime = Clock.fixed(Instant.parse("2024-01-01T00:01:03.000000Z"), TIME_ZONE);
-        final Clock nightTime = Clock.fixed(Instant.parse("2024-01-01T00:01:13.000000Z"), TIME_ZONE);
-        final Clock endTime = Clock.fixed(Instant.parse("2024-01-01T00:01:53.000000Z"), TIME_ZONE);
+        final Clock endTime = Clock.fixed(Instant.parse("2024-01-01T00:02:02.000000Z"), TIME_ZONE);
 
         room.modifyStatus(StatusType.DAY, roomCreatedTime);
+        room.getStatusType(noticeTime);
         room.getStatusType(dayTime);
         room.getStatusType(voteTime);
+        room.getStatusType(voteResultTime);
+        room.getStatusType(nightIntroTime);
         room.getStatusType(nightTime);
         room.getPlayer("A").kill();
         room.getPlayer("B").kill();
@@ -97,19 +111,17 @@ class StatusTest {
     @Test
     void 종료상태_일정_시간_이후_대기상태가_된다() {
         // given
-        final Clock dayTime = Clock.fixed(Instant.parse("2024-01-01T00:00:03.000000Z"), TIME_ZONE);
-        final Clock voteTime = Clock.fixed(Instant.parse("2024-01-01T00:01:03.000000Z"), TIME_ZONE);
-        final Clock nightTime = Clock.fixed(Instant.parse("2024-01-01T00:01:13.000000Z"), TIME_ZONE);
-        final Clock endTime = Clock.fixed(Instant.parse("2024-01-01T00:01:53.000000Z"), TIME_ZONE);
-        final Clock endEndTime = Clock.fixed(Instant.parse("2024-01-01T00:02:52.000000Z"), TIME_ZONE);
-        final Clock waitTime = Clock.fixed(Instant.parse("2024-01-01T00:02:53.000000Z"), TIME_ZONE);
+        final Clock endTime = Clock.fixed(Instant.parse("2024-01-01T00:01:19.000000Z"), TIME_ZONE);
+        final Clock endEndTime = Clock.fixed(Instant.parse("2024-01-01T00:02:18.000000Z"), TIME_ZONE);
+        final Clock waitTime = Clock.fixed(Instant.parse("2024-01-01T00:02:19.000000Z"), TIME_ZONE);
 
         room.modifyStatus(StatusType.DAY, roomCreatedTime);
+        room.getStatusType(noticeTime);
         room.getStatusType(dayTime);
         room.getStatusType(voteTime);
-        room.getStatusType(nightTime);
         room.getPlayer("A").kill();
         room.getPlayer("B").kill();
+        room.getStatusType(voteResultTime);
         room.getStatusType(endTime);
 
         // when & then

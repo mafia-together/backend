@@ -5,31 +5,30 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import mafia.mafiatogether.domain.Room;
 
-public class NightStatus extends Status {
+public class VoteResultStatus extends Status {
 
-    public static final Long UNIT = 39999L;
+    public static final Long UNIT = 2999L;
 
-    public NightStatus(final Timestamp startTime, final Timestamp endTime) {
+    public VoteResultStatus(Timestamp startTime, Timestamp endTime) {
         super(startTime, endTime);
     }
 
-    public static NightStatus create(final Clock clock) {
+    protected static VoteResultStatus create(final Clock clock) {
         final Timestamp startTime = Timestamp.valueOf(LocalDateTime.now(clock));
         final Timestamp endTime = new Timestamp(startTime.getTime() + UNIT);
-        return new NightStatus(startTime, endTime);
+        return new VoteResultStatus(startTime, endTime);
     }
 
     @Override
-    public Status getNextStatus(final Room room, final Clock clock) {
-        room.executeJobTarget();
+    public Status getNextStatus(Room room, Clock clock) {
         if (room.isEnd()) {
             return EndStatus.create(clock);
         }
-        return DayIntroStatus.create(clock);
+        return NightIntroStatus.create(clock);
     }
 
     @Override
     public StatusType getType() {
-        return StatusType.NIGHT;
+        return StatusType.VOTE_RESULT;
     }
 }
