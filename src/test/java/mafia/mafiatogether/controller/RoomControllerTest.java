@@ -144,7 +144,7 @@ class RoomControllerTest {
 
         //then
         StatusType actual = room.getStatusType(Clock.systemDefaultZone());
-        Assertions.assertThat(actual).isEqualTo(StatusType.DAY);
+        Assertions.assertThat(actual).isEqualTo(StatusType.DAY_INTRO);
     }
 
     @Test
