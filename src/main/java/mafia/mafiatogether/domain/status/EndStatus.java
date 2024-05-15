@@ -7,9 +7,9 @@ import mafia.mafiatogether.domain.Room;
 
 public class EndStatus extends Status {
 
-    public static final Long UNIT = 60000L;
+    public static final Long UNIT = 59999L;
 
-    private EndStatus(final Timestamp startTime , final Timestamp endTime) {
+    private EndStatus(final Timestamp startTime, final Timestamp endTime) {
         super(startTime, endTime);
     }
 

@@ -15,7 +15,7 @@ public class DayStatus extends Status {
 
     public static DayStatus create(final Long playerCount, final Clock clock) {
         final Timestamp startTime = Timestamp.valueOf(LocalDateTime.now(clock));
-        final Timestamp endTime = new Timestamp(startTime.getTime() + playerCount * UNIT);
+        final Timestamp endTime = new Timestamp(startTime.getTime() + playerCount * UNIT - 1L);
         return new DayStatus(startTime, endTime);
     }
 
