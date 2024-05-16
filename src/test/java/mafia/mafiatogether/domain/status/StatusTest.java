@@ -28,15 +28,18 @@ class StatusTest {
     private static final Long nightTime = nightIntroEndTime + 1_000L;
     private static final Long nightEndTime = nightTime + 39_000L;
     private static final Long nextDay = nightEndTime + 2_000L;
+    private static final String PLAYER1 = "A";
+    private static final String PLAYER2 = "B";
+    private static final String PLAYER3 = "C";
 
     private Room room;
 
     @BeforeEach
     void setRoom() {
         room = Room.create(new RoomInfo(3, 1, 0, 1), dayIntroTime);
-        Player a = Player.create("A");
-        Player b = Player.create("B");
-        Player c = Player.create("C");
+        Player a = Player.create(PLAYER1);
+        Player b = Player.create(PLAYER2);
+        Player c = Player.create(PLAYER3);
 
         room.joinPlayer(a.getName());
         room.joinPlayer(b.getName());
@@ -78,8 +81,8 @@ class StatusTest {
         room.getStatusType(noticeTime);
         room.getStatusType(dayTime);
         room.getStatusType(voteTime);
-        room.getPlayer("A").kill();
-        room.getPlayer("B").kill();
+        room.getPlayer(PLAYER1).kill();
+        room.getPlayer(PLAYER2).kill();
         room.getStatusType(voteResultTime);
 
         // when & then
@@ -98,8 +101,8 @@ class StatusTest {
         room.getStatusType(voteResultTime);
         room.getStatusType(nightIntroTime);
         room.getStatusType(nightTime);
-        room.getPlayer("A").kill();
-        room.getPlayer("B").kill();
+        room.getPlayer(PLAYER1).kill();
+        room.getPlayer(PLAYER2).kill();
 
         // when & then
         Assertions.assertThat(room.getStatusType(endTime)).isEqualTo(StatusType.END);
@@ -116,8 +119,8 @@ class StatusTest {
         room.getStatusType(noticeTime);
         room.getStatusType(dayTime);
         room.getStatusType(voteTime);
-        room.getPlayer("A").kill();
-        room.getPlayer("B").kill();
+        room.getPlayer(PLAYER1).kill();
+        room.getPlayer(PLAYER2).kill();
         room.getStatusType(voteResultTime);
         room.getStatusType(endTime);
 
