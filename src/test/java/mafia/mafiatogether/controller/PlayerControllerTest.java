@@ -51,7 +51,7 @@ class PlayerControllerTest {
         room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone());
 
         Player mafia = room.getPlayers().values().stream()
-                .filter(player -> player.getJobSymbol().equals(JobType.MAFIA))
+                .filter(player -> player.getJobType().equals(JobType.MAFIA))
                 .findFirst()
                 .get();
         String basic = Base64.getEncoder().encodeToString((code + ":" + mafia.getName()).getBytes());
@@ -79,7 +79,7 @@ class PlayerControllerTest {
         room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone());
 
         Player mafia = room.getPlayers().values().stream()
-                .filter(player -> player.getJobSymbol().equals(JobType.MAFIA))
+                .filter(player -> player.getJobType().equals(JobType.MAFIA))
                 .findFirst()
                 .get();
         Player dead = room.getPlayers().values().stream()
@@ -116,7 +116,7 @@ class PlayerControllerTest {
         room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone());
 
         Player mafia = room.getPlayers().values().stream()
-                .filter(player -> player.getJobSymbol().equals(JobType.MAFIA))
+                .filter(player -> player.getJobType().equals(JobType.MAFIA))
                 .findFirst()
                 .get();
 
@@ -147,7 +147,7 @@ class PlayerControllerTest {
 
         room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone());
         final Player citizen = room.getPlayers().values().stream()
-                .filter(player -> player.getJobSymbol().equals(JobType.CITIZEN))
+                .filter(player -> player.getJobType().equals(JobType.CITIZEN))
                 .findFirst()
                 .get();
         String basic = Base64.getEncoder().encodeToString((code + ":" + citizen.getName()).getBytes());

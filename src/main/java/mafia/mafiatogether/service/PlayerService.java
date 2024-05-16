@@ -19,7 +19,7 @@ public class PlayerService {
     public JobResponse getPlayerJob(final String code, final String name) {
         final Room room = roomManager.findByCode(code);
         final Player player = room.getPlayer(name);
-        return new JobResponse(player.getJobSymbol().name());
+        return new JobResponse(player.getJobType().name());
     }
 
     public PlayerExecuteAbilityResponse executeSkill(
@@ -31,7 +31,7 @@ public class PlayerService {
         final Player player = room.getPlayer(name);
         final String result = room.executeSkill(name, request.target());
 
-        return new PlayerExecuteAbilityResponse(player.getJobSymbol().name(), result);
+        return new PlayerExecuteAbilityResponse(player.getJobType().name(), result);
     }
 
     public MafiaTargetResponse getTarget(

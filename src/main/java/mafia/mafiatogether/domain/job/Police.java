@@ -7,11 +7,11 @@ public class Police implements Job {
     @Override
     public String applySkill(final Player player, final JobTarget jobTarget) {
         jobTarget.addTarget(JobType.POLICE, player);
-        return player.getJob().getJobSymbol().name();
+        return player.getJob().getJobType().name();
     }
 
     @Override
-    public JobType getJobSymbol() {
+    public JobType getJobType() {
         return JobType.POLICE;
     }
 }
