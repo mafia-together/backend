@@ -1,6 +1,5 @@
 package mafia.mafiatogether.domain;
 
-import java.time.Clock;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,11 +28,11 @@ public class Room {
     private final JobTarget jobTarget;
     private Player master;
 
-    public static Room create(final RoomInfo roomInfo, final Clock clock) {
+    public static Room create(final RoomInfo roomInfo, final Long now) {
         return new Room(
                 new ConcurrentHashMap<>(),
                 Vote.create(),
-                WaitStatus.create(clock),
+                WaitStatus.create(now),
                 roomInfo,
                 Chat.chat(),
                 new JobTarget(),
@@ -41,15 +40,15 @@ public class Room {
         );
     }
 
-    public StatusType getStatusType(final Clock clock) {
-        if (status.isTimeOver(clock)) {
-            status = status.getNextStatus(this, clock);
+    public StatusType getStatusType(final Long now) {
+        if (status.isTimeOver(now)) {
+            status = status.getNextStatus(this, now);
         }
         return status.getType();
     }
 
-    public void modifyStatus(final StatusType statusType, final Clock clock) {
-        this.status = status.getNextStatus(this, clock);
+    public void modifyStatus(final StatusType statusType, final Long now) {
+        this.status = status.getNextStatus(this, now);
     }
 
     public void joinPlayer(final String name) {

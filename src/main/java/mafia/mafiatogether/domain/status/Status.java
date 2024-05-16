@@ -1,7 +1,6 @@
 package mafia.mafiatogether.domain.status;
 
 import java.sql.Timestamp;
-import java.time.Clock;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.domain.Room;
 
@@ -11,12 +10,11 @@ public abstract class Status {
     protected final Long startTime;
     protected final Long endTime;
 
-    public abstract Status getNextStatus(final Room room, final Clock clock);
+    public abstract Status getNextStatus(final Room room, final Long now);
 
     public abstract StatusType getType();
 
-    public boolean isTimeOver(final Clock clock) {
-        final Long now = clock.millis();
+    public boolean isTimeOver(final Long now) {
         return now >= endTime;
     }
 

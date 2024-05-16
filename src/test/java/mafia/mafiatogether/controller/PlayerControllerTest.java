@@ -48,7 +48,7 @@ class PlayerControllerTest {
         room.joinPlayer("t2");
         room.joinPlayer("t3");
 
-        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone());
+        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
 
         Player mafia = room.getPlayers().values().stream()
                 .filter(player -> player.getJobType().equals(JobType.MAFIA))
@@ -76,7 +76,7 @@ class PlayerControllerTest {
         room.joinPlayer("t2");
         room.joinPlayer("t3");
 
-        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone());
+        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
 
         Player mafia = room.getPlayers().values().stream()
                 .filter(player -> player.getJobType().equals(JobType.MAFIA))
@@ -113,7 +113,7 @@ class PlayerControllerTest {
         room.joinPlayer("t2");
         room.joinPlayer("t3");
 
-        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone());
+        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
 
         Player mafia = room.getPlayers().values().stream()
                 .filter(player -> player.getJobType().equals(JobType.MAFIA))
@@ -145,7 +145,7 @@ class PlayerControllerTest {
         room.joinPlayer("t2");
         room.joinPlayer("t3");
 
-        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone());
+        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
         final Player citizen = room.getPlayers().values().stream()
                 .filter(player -> player.getJobType().equals(JobType.CITIZEN))
                 .findFirst()

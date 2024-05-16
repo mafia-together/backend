@@ -3,8 +3,6 @@ package mafia.mafiatogether.domain.status;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.Clock;
-import java.time.Duration;
-import java.time.Instant;
 import java.time.ZoneId;
 import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
@@ -17,21 +15,21 @@ import org.junit.jupiter.api.Test;
 class StatusTest {
 
     private static final ZoneId TIME_ZONE = ZoneId.of("UTC");
-    private static final Clock dayIntroTime = Clock.fixed(Instant.parse("2024-01-01T00:00:00.000000Z"), TIME_ZONE);
-    private static final Clock dayIntroEndTime = Clock.offset(dayIntroTime, Duration.ofSeconds(2));
-    private static final Clock noticeTime = Clock.offset(dayIntroEndTime, Duration.ofSeconds(1));
-    private static final Clock noticeEndTime = Clock.offset(noticeTime, Duration.ofSeconds(2));
-    private static final Clock dayTime = Clock.offset(noticeEndTime, Duration.ofSeconds(1));
-    private static final Clock dayEndTime = Clock.offset(dayTime, Duration.ofSeconds(59));
-    private static final Clock voteTime = Clock.offset(dayEndTime, Duration.ofSeconds(1));
-    private static final Clock voteEndTime = Clock.offset(voteTime, Duration.ofSeconds(9));
-    private static final Clock voteResultTime = Clock.offset(voteEndTime, Duration.ofSeconds(1));
-    private static final Clock voteResultEndTime = Clock.offset(voteResultTime, Duration.ofSeconds(2));
-    private static final Clock nightIntroTime = Clock.offset(voteResultEndTime, Duration.ofSeconds(1));
-    private static final Clock nightIntroEndTime = Clock.offset(nightIntroTime, Duration.ofSeconds(2));
-    private static final Clock nightTime = Clock.offset(nightIntroEndTime, Duration.ofSeconds(1));
-    private static final Clock nightEndTime = Clock.offset(nightTime, Duration.ofSeconds(39));
-    private static final Clock nextDay = Clock.offset(nightEndTime, Duration.ofSeconds(1));
+    private static final Long dayIntroTime = Clock.systemDefaultZone().millis();
+    private static final Long dayIntroEndTime = dayIntroTime + 2_000L;
+    private static final Long noticeTime = dayIntroEndTime + 1_000L;
+    private static final Long noticeEndTime = noticeTime + 2_000L;
+    private static final Long dayTime = noticeEndTime + 1_000L;
+    private static final Long dayEndTime = dayTime + 59_000L;
+    private static final Long voteTime = dayEndTime + 1_000L;
+    private static final Long voteEndTime = voteTime + 9_000L;
+    private static final Long voteResultTime = voteEndTime + 1_000L;
+    private static final Long voteResultEndTime = voteResultTime + 2_000L;
+    private static final Long nightIntroTime = voteResultEndTime + 1_000L;
+    private static final Long nightIntroEndTime = nightIntroTime + 2_000L;
+    private static final Long nightTime = nightIntroEndTime + 1_000L;
+    private static final Long nightEndTime = nightTime + 39_000L;
+    private static final Long nextDay = nightEndTime + 2_000L;
 
     private Room room;
 
@@ -76,7 +74,7 @@ class StatusTest {
     @Test
     void 투표결과_게임종료_조건달성시_게임이_종료된다() {
         // given
-        final Clock endTime = Clock.fixed(Instant.parse("2024-01-01T00:01:19.000000Z"), TIME_ZONE);
+        final Long endTime = voteResultEndTime + 2_000L;
 
         room.modifyStatus(StatusType.DAY, dayIntroTime);
         room.getStatusType(noticeTime);
@@ -93,7 +91,7 @@ class StatusTest {
     @Test
     void 밤_이후_게임종료_조건달성시_게임이_종료된다() {
         // given
-        final Clock endTime = Clock.offset(nightEndTime, Duration.ofSeconds(1));
+        final Long endTime = nightEndTime + 1_000L;
 
         room.modifyStatus(StatusType.DAY, dayIntroTime);
         room.getStatusType(noticeTime);
@@ -112,9 +110,9 @@ class StatusTest {
     @Test
     void 종료상태_일정_시간_이후_대기상태가_된다() {
         // given
-        final Clock endTime = Clock.offset(nightEndTime, Duration.ofSeconds(1));
-        final Clock endEndTime = Clock.offset(endTime, Duration.ofSeconds(59));
-        final Clock waitTime = Clock.offset(endEndTime, Duration.ofSeconds(1));
+        final Long endTime = nightEndTime + 1_000L;
+        final Long endEndTime = endTime + 59_000L;
+        final Long waitTime = endEndTime + 1_000L;
 
         room.modifyStatus(StatusType.DAY, dayIntroTime);
         room.getStatusType(noticeTime);

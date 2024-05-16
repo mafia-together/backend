@@ -1,6 +1,5 @@
 package mafia.mafiatogether.domain.status;
 
-import java.time.Clock;
 import mafia.mafiatogether.domain.Room;
 
 public class NoticeStatus extends Status {
@@ -11,13 +10,13 @@ public class NoticeStatus extends Status {
         super(start, end);
     }
 
-    protected static NoticeStatus create(final Clock clock) {
-        return new NoticeStatus(clock.millis(), clock.millis() + THREE_SECOND);
+    protected static NoticeStatus create(final Long now) {
+        return new NoticeStatus(now, now + THREE_SECOND);
     }
 
     @Override
-    public Status getNextStatus(Room room, Clock clock) {
-        return DayStatus.create(room.getPlayerCount(), clock);
+    public Status getNextStatus(final Room room, final Long now) {
+        return DayStatus.create(room.getPlayerCount(), now);
     }
 
     @Override

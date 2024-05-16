@@ -1,6 +1,5 @@
 package mafia.mafiatogether.domain.status;
 
-import java.time.Clock;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.domain.Room;
@@ -13,19 +12,17 @@ public class WaitStatus extends Status {
         super(start, end);
     }
 
-    public static WaitStatus create(final Clock clock) {
-        final Long startTime = clock.millis();
-        final long endTime = clock.millis() + THIRTY_MINUTE;
-        return new WaitStatus(startTime, endTime);
+    public static WaitStatus create(final Long now) {
+        return new WaitStatus(now, now + THIRTY_MINUTE);
     }
 
     @Override
-    public Status getNextStatus(final Room room, final Clock clock) {
+    public Status getNextStatus(final Room room, final Long now) {
         if (!room.validateStartStatus()) {
             throw new RoomException(ExceptionCode.NOT_ENOUGH_PLAYER);
         }
         room.distributeRole();
-        return DayIntroStatus.create(clock);
+        return DayIntroStatus.create(now);
     }
 
     @Override

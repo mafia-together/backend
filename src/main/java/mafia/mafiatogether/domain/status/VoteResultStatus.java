@@ -1,6 +1,5 @@
 package mafia.mafiatogether.domain.status;
 
-import java.time.Clock;
 import mafia.mafiatogether.domain.Room;
 
 public class VoteResultStatus extends Status {
@@ -11,18 +10,16 @@ public class VoteResultStatus extends Status {
         super(start, end);
     }
 
-    protected static VoteResultStatus create(final Clock clock) {
-        final Long startTime = clock.millis();
-        final long endTime = clock.millis() + THREE_SECOND;
-        return new VoteResultStatus(startTime, endTime);
+    protected static VoteResultStatus create(final Long now) {
+        return new VoteResultStatus(now, now + THREE_SECOND);
     }
 
     @Override
-    public Status getNextStatus(Room room, Clock clock) {
+    public Status getNextStatus(final Room room, final Long now) {
         if (room.isEnd()) {
-            return EndStatus.create(clock);
+            return EndStatus.create(now);
         }
-        return NightIntroStatus.create(clock);
+        return NightIntroStatus.create(now);
     }
 
     @Override
