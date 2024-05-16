@@ -1,21 +1,19 @@
 package mafia.mafiatogether.domain.status;
 
-import java.sql.Timestamp;
 import java.time.Clock;
-import java.time.LocalDateTime;
 import mafia.mafiatogether.domain.Room;
 
 public class VoteStatus extends Status {
 
-    private static final Long UNIT = 9999L;
+    private static final Long TEN_SECOND = 10_000L;
 
-    private VoteStatus(final Timestamp startTime, final Timestamp endTime) {
-        super(startTime, endTime);
+    private VoteStatus(final Long start, final Long end) {
+        super(start, end);
     }
 
     public static VoteStatus create(final Clock clock) {
-        final Timestamp startTime = Timestamp.valueOf(LocalDateTime.now(clock));
-        final Timestamp endTime = new Timestamp(startTime.getTime() + UNIT);
+        final Long startTime = clock.millis();
+        final long endTime = clock.millis() + TEN_SECOND;
         return new VoteStatus(startTime, endTime);
     }
 

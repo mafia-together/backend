@@ -3,6 +3,7 @@ package mafia.mafiatogether.domain.status;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import mafia.mafiatogether.domain.Player;
@@ -16,27 +17,27 @@ import org.junit.jupiter.api.Test;
 class StatusTest {
 
     private static final ZoneId TIME_ZONE = ZoneId.of("UTC");
-    private static final Clock roomCreatedTime = Clock.fixed(Instant.parse("2024-01-01T00:00:00.000000Z"), TIME_ZONE);
-    private static final Clock dayIntroEndTime = Clock.fixed(Instant.parse("2024-01-01T00:00:02.000000Z"), TIME_ZONE);
-    private static final Clock noticeTime = Clock.fixed(Instant.parse("2024-01-01T00:00:03.000000Z"), TIME_ZONE);
-    private static final Clock noticeEndTime = Clock.fixed(Instant.parse("2024-01-01T00:00:05.000000Z"), TIME_ZONE);
-    private static final Clock dayTime = Clock.fixed(Instant.parse("2024-01-01T00:00:06.000000Z"), TIME_ZONE);
-    private static final Clock dayEndTime = Clock.fixed(Instant.parse("2024-01-01T00:01:05.000000Z"), TIME_ZONE);
-    private static final Clock voteTime = Clock.fixed(Instant.parse("2024-01-01T00:01:06.000000Z"), TIME_ZONE);
-    private static final Clock voteEndTime = Clock.fixed(Instant.parse("2024-01-01T00:01:15.000000Z"), TIME_ZONE);
-    private static final Clock voteResultTime = Clock.fixed(Instant.parse("2024-01-01T00:01:16.000000Z"), TIME_ZONE);
-    private static final Clock voteResultEndTime = Clock.fixed(Instant.parse("2024-01-01T00:01:18.000000Z"), TIME_ZONE);
-    private static final Clock nightIntroTime = Clock.fixed(Instant.parse("2024-01-01T00:01:19.000000Z"), TIME_ZONE);
-    private static final Clock nightIntroEndTime = Clock.fixed(Instant.parse("2024-01-01T00:01:21.000000Z"), TIME_ZONE);
-    private static final Clock nightTime = Clock.fixed(Instant.parse("2024-01-01T00:01:22.000000Z"), TIME_ZONE);
-    private static final Clock nightEndTime = Clock.fixed(Instant.parse("2024-01-01T00:02:01.000000Z"), TIME_ZONE);
-    private static final Clock nextDay = Clock.fixed(Instant.parse("2024-01-01T00:02:02.000000Z"), TIME_ZONE);
+    private static final Clock dayIntroTime = Clock.fixed(Instant.parse("2024-01-01T00:00:00.000000Z"), TIME_ZONE);
+    private static final Clock dayIntroEndTime = Clock.offset(dayIntroTime, Duration.ofSeconds(2));
+    private static final Clock noticeTime = Clock.offset(dayIntroEndTime, Duration.ofSeconds(1));
+    private static final Clock noticeEndTime = Clock.offset(noticeTime, Duration.ofSeconds(2));
+    private static final Clock dayTime = Clock.offset(noticeEndTime, Duration.ofSeconds(1));
+    private static final Clock dayEndTime = Clock.offset(dayTime, Duration.ofSeconds(59));
+    private static final Clock voteTime = Clock.offset(dayEndTime, Duration.ofSeconds(1));
+    private static final Clock voteEndTime = Clock.offset(voteTime, Duration.ofSeconds(9));
+    private static final Clock voteResultTime = Clock.offset(voteEndTime, Duration.ofSeconds(1));
+    private static final Clock voteResultEndTime = Clock.offset(voteResultTime, Duration.ofSeconds(2));
+    private static final Clock nightIntroTime = Clock.offset(voteResultEndTime, Duration.ofSeconds(1));
+    private static final Clock nightIntroEndTime = Clock.offset(nightIntroTime, Duration.ofSeconds(2));
+    private static final Clock nightTime = Clock.offset(nightIntroEndTime, Duration.ofSeconds(1));
+    private static final Clock nightEndTime = Clock.offset(nightTime, Duration.ofSeconds(39));
+    private static final Clock nextDay = Clock.offset(nightEndTime, Duration.ofSeconds(1));
 
     private Room room;
 
     @BeforeEach
     void setRoom() {
-        room = Room.create(new RoomInfo(3, 1, 0, 1), roomCreatedTime);
+        room = Room.create(new RoomInfo(3, 1, 0, 1), dayIntroTime);
         Player a = Player.create("A");
         Player b = Player.create("B");
         Player c = Player.create("C");
@@ -49,7 +50,7 @@ class StatusTest {
     @Test
     void 게임이_진행되며_상태가_바뀐다() {
         // given
-        room.modifyStatus(StatusType.DAY, roomCreatedTime);
+        room.modifyStatus(StatusType.DAY, dayIntroTime);
 
         // when & then
         assertSoftly(
@@ -77,7 +78,7 @@ class StatusTest {
         // given
         final Clock endTime = Clock.fixed(Instant.parse("2024-01-01T00:01:19.000000Z"), TIME_ZONE);
 
-        room.modifyStatus(StatusType.DAY, roomCreatedTime);
+        room.modifyStatus(StatusType.DAY, dayIntroTime);
         room.getStatusType(noticeTime);
         room.getStatusType(dayTime);
         room.getStatusType(voteTime);
@@ -92,9 +93,9 @@ class StatusTest {
     @Test
     void 밤_이후_게임종료_조건달성시_게임이_종료된다() {
         // given
-        final Clock endTime = Clock.fixed(Instant.parse("2024-01-01T00:02:02.000000Z"), TIME_ZONE);
+        final Clock endTime = Clock.offset(nightEndTime, Duration.ofSeconds(1));
 
-        room.modifyStatus(StatusType.DAY, roomCreatedTime);
+        room.modifyStatus(StatusType.DAY, dayIntroTime);
         room.getStatusType(noticeTime);
         room.getStatusType(dayTime);
         room.getStatusType(voteTime);
@@ -111,11 +112,11 @@ class StatusTest {
     @Test
     void 종료상태_일정_시간_이후_대기상태가_된다() {
         // given
-        final Clock endTime = Clock.fixed(Instant.parse("2024-01-01T00:01:19.000000Z"), TIME_ZONE);
-        final Clock endEndTime = Clock.fixed(Instant.parse("2024-01-01T00:02:18.000000Z"), TIME_ZONE);
-        final Clock waitTime = Clock.fixed(Instant.parse("2024-01-01T00:02:19.000000Z"), TIME_ZONE);
+        final Clock endTime = Clock.offset(nightEndTime, Duration.ofSeconds(1));
+        final Clock endEndTime = Clock.offset(endTime, Duration.ofSeconds(59));
+        final Clock waitTime = Clock.offset(endEndTime, Duration.ofSeconds(1));
 
-        room.modifyStatus(StatusType.DAY, roomCreatedTime);
+        room.modifyStatus(StatusType.DAY, dayIntroTime);
         room.getStatusType(noticeTime);
         room.getStatusType(dayTime);
         room.getStatusType(voteTime);

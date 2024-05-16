@@ -1,23 +1,21 @@
 package mafia.mafiatogether.domain.status;
 
-import java.sql.Timestamp;
 import java.time.Clock;
-import java.time.LocalDateTime;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.domain.Room;
 
 public class WaitStatus extends Status {
 
-    private static final Long UNIT = 2999999L;
+    private static final Long THIRTY_MINUTE = 300_000L;
 
-    public WaitStatus(final Timestamp startTime, final Timestamp endTime) {
-        super(startTime, endTime);
+    private WaitStatus(final Long start, final Long end) {
+        super(start, end);
     }
 
     public static WaitStatus create(final Clock clock) {
-        final Timestamp startTime = Timestamp.valueOf(LocalDateTime.now(clock));
-        final Timestamp endTime = new Timestamp(startTime.getTime() + UNIT);
+        final Long startTime = clock.millis();
+        final long endTime = clock.millis() + THIRTY_MINUTE;
         return new WaitStatus(startTime, endTime);
     }
 
