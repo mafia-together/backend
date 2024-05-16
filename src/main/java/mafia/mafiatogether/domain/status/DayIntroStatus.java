@@ -1,21 +1,19 @@
 package mafia.mafiatogether.domain.status;
 
-import java.sql.Timestamp;
 import java.time.Clock;
-import java.time.LocalDateTime;
 import mafia.mafiatogether.domain.Room;
 
 public class DayIntroStatus extends Status {
 
-    private static final Long UNIT = 2999L;
+    private static final Long THREE_SECOND = 3_000L;
 
-    private DayIntroStatus(Timestamp startTime, Timestamp endTime) {
-        super(startTime, endTime);
+    private DayIntroStatus(final Long start, final Long end) {
+        super(start, end);
     }
 
     protected static DayIntroStatus create(final Clock clock) {
-        final Timestamp startTime = Timestamp.valueOf(LocalDateTime.now(clock));
-        final Timestamp endTime = new Timestamp(startTime.getTime() + UNIT);
+        final Long startTime = clock.millis();
+        final long endTime = clock.millis() + THREE_SECOND;
         return new DayIntroStatus(startTime, endTime);
     }
 
