@@ -329,7 +329,7 @@ class RoomControllerTest {
         room.joinPlayer("p3");
         room.joinPlayer("p4");
         room.joinPlayer("p5");
-        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone());
+        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
         final Player mafia = findPlayer(room, JobType.MAFIA);
         final String mafiaBasic = Base64.getEncoder().encodeToString((code + ":" + mafia.getName()).getBytes());
         final Player doctor = findPlayer(room, JobType.DOCTOR);
