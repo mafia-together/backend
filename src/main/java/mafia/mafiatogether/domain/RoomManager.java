@@ -23,7 +23,8 @@ public class RoomManager {
         while (rooms.containsKey(code)) {
             code = CodeGenerator.generate();
         }
-        rooms.put(code, Room.create(roomInfo, Clock.systemDefaultZone()));
+        final Long now = Clock.systemUTC().millis();
+        rooms.put(code, Room.create(roomInfo, now));
         return code;
     }
 

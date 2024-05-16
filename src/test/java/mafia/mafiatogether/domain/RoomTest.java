@@ -17,7 +17,7 @@ class RoomTest {
     @Test
     void 직업을_배정할_수_있다() {
         //given
-        Room room = Room.create(new RoomInfo(5, 2, 0, 1), Clock.systemDefaultZone());
+        Room room = Room.create(new RoomInfo(5, 2, 0, 1), Clock.systemDefaultZone().millis());
 
         room.joinPlayer("A");
         room.joinPlayer("B");
@@ -32,7 +32,7 @@ class RoomTest {
         Player e = room.getPlayer("E");
 
         //when
-        room.modifyStatus(StatusType.NIGHT, Clock.systemDefaultZone());
+        room.modifyStatus(StatusType.NIGHT, Clock.systemDefaultZone().millis());
 
         //then
 
@@ -61,7 +61,7 @@ class RoomTest {
     @Test
     void 투표를_할_수_있다() {
         // given
-        final Room room = Room.create(new RoomInfo(5, 3, 0, 1), Clock.systemDefaultZone());
+        final Room room = Room.create(new RoomInfo(5, 3, 0, 1), Clock.systemDefaultZone().millis());
         room.joinPlayer("A");
         room.joinPlayer("B");
         room.joinPlayer("C");
@@ -73,7 +73,7 @@ class RoomTest {
         Player c = room.getPlayer("C");
         Player d = room.getPlayer("D");
 
-        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone());
+        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
 
         // when
         room.votePlayer(a.getName(), b.getName());
@@ -88,7 +88,7 @@ class RoomTest {
     @Test
     void 동표일떄_투표가_무효가_된다() {
         // given
-        final Room room = Room.create(new RoomInfo(5, 3, 0, 1), Clock.systemDefaultZone());
+        final Room room = Room.create(new RoomInfo(5, 3, 0, 1), Clock.systemDefaultZone().millis());
         room.joinPlayer("A");
         room.joinPlayer("B");
         room.joinPlayer("C");
@@ -101,7 +101,7 @@ class RoomTest {
         Player d = room.getPlayer("D");
         Player e = room.getPlayer("E");
 
-        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone());
+        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
 
         // when
         room.votePlayer(a.getName(), c.getName());

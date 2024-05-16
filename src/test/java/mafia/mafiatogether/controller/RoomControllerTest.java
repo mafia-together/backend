@@ -143,7 +143,7 @@ class RoomControllerTest {
                 .statusCode(HttpStatus.OK.value());
 
         //then
-        StatusType actual = room.getStatusType(Clock.systemDefaultZone());
+        StatusType actual = room.getStatusType(Clock.systemDefaultZone().millis());
         Assertions.assertThat(actual).isEqualTo(StatusType.DAY_INTRO);
     }
 

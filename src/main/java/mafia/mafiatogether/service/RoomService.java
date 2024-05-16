@@ -31,12 +31,14 @@ public class RoomService {
 
     public RoomStatusResponse findStatus(final String code) {
         final Room room = roomManager.findByCode(code);
-        return new RoomStatusResponse(room.getStatusType(Clock.systemDefaultZone()));
+        final Long now = Clock.systemDefaultZone().millis();
+        return new RoomStatusResponse(room.getStatusType(now));
     }
 
     public void modifyStatus(final String code, final RoomModifyRequest request) {
         final Room room = roomManager.findByCode(code);
-        room.modifyStatus(request.statusType(), Clock.systemDefaultZone());
+        final Long now = Clock.systemDefaultZone().millis();
+        room.modifyStatus(request.statusType(), now);
     }
 
     public RoomInfoResponse findRoomInfo(final String code, final String name) {
