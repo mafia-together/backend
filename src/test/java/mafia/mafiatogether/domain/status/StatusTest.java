@@ -3,7 +3,6 @@ package mafia.mafiatogether.domain.status;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.Clock;
-import java.time.ZoneId;
 import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
@@ -14,7 +13,6 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("NonAsciiCharacters")
 class StatusTest {
 
-    private static final ZoneId TIME_ZONE = ZoneId.of("UTC");
     private static final Long dayIntroTime = Clock.systemDefaultZone().millis();
     private static final Long dayIntroEndTime = dayIntroTime + 2_000L;
     private static final Long noticeTime = dayIntroEndTime + 1_000L;
