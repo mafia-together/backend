@@ -2,13 +2,17 @@ package mafia.mafiatogether.service;
 
 import java.time.Clock;
 import lombok.RequiredArgsConstructor;
+import mafia.mafiatogether.config.exception.ExceptionCode;
+import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomManager;
+import mafia.mafiatogether.domain.status.EndStatus;
 import mafia.mafiatogether.service.dto.RoomCodeResponse;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
 import mafia.mafiatogether.service.dto.RoomInfoResponse;
 import mafia.mafiatogether.service.dto.RoomModifyRequest;
+import mafia.mafiatogether.service.dto.RoomResultResponse;
 import mafia.mafiatogether.service.dto.RoomStatusResponse;
 import mafia.mafiatogether.service.dto.RoomValidateResponse;
 import org.springframework.stereotype.Service;
@@ -49,5 +53,13 @@ public class RoomService {
 
     public RoomValidateResponse validateCode(final String code) {
         return new RoomValidateResponse(roomManager.validateCode(code));
+    }
+
+    public RoomResultResponse findResult(final String code) {
+        final Room room = roomManager.findByCode(code);
+        if(!room.isEnd()){
+            throw new RoomException(ExceptionCode.GAME_IS_NOT_FINISHED);
+        }
+        return RoomResultResponse.of((EndStatus) room.getStatus());
     }
 }

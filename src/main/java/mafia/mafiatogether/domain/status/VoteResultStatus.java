@@ -1,5 +1,7 @@
 package mafia.mafiatogether.domain.status;
 
+import java.util.List;
+import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 
 public class VoteResultStatus extends Status {
@@ -17,7 +19,11 @@ public class VoteResultStatus extends Status {
     @Override
     public Status getNextStatus(final Room room, final Long now) {
         if (room.isEnd()) {
-            return EndStatus.create(now);
+            final List<Player> players = room.getPlayers()
+                    .values()
+                    .stream()
+                    .toList();
+            return EndStatus.create(players, now);
         }
         return NightIntroStatus.create(now);
     }
