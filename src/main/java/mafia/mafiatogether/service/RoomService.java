@@ -1,6 +1,9 @@
 package mafia.mafiatogether.service;
 
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tag;
 import java.time.Clock;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
@@ -21,6 +24,8 @@ public class RoomService {
 
     public RoomCodeResponse create(final RoomCreateRequest request) {
         final String code = roomManager.create(request.toDomain());
+        final Tag tag = Tag.of("room_size", roomManager.getTotalRoomCount().toString());
+        Metrics.counter("room_size", List.of(tag)).increment();
         return new RoomCodeResponse(code);
     }
 
