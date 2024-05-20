@@ -99,8 +99,8 @@ public class Room {
     }
 
     public void votePlayer(final String name, final String targetName) {
-        final Player player = players.get(name);
-        final Player target = players.get(targetName);
+        final Player player = getPlayer(name);
+        final Player target = targetName.isBlank() ? Player.NONE : getPlayer(targetName);
         vote.choose(player, target);
     }
 
@@ -119,14 +119,14 @@ public class Room {
         return getAliveCitizen() / 2 < aliveMafia || aliveMafia == 0;
     }
 
-    public long getAliveMafia(){
+    public long getAliveMafia() {
         return players.values().stream()
                 .filter(player -> player.getJobType().equals(JobType.MAFIA))
                 .filter(player -> player.isAlive() == true)
                 .count();
     }
 
-    public long getAliveCitizen(){
+    public long getAliveCitizen() {
         return players.values().stream()
                 .filter(player -> !player.getJobType().equals(JobType.MAFIA))
                 .filter(player -> player.isAlive() == true)
