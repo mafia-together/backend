@@ -17,6 +17,7 @@ public enum ExceptionCode {
     INVALID_CONTENT(106, "내용이 누락 되었습니다."),
     NOT_ALIVE_PLAYER(107, "이미 사망한 사람입니다."),
     INVALID_PLAYER(108, "존재 하지 않는 사람입니다."),
+    GAME_IS_NOT_FINISHED(108, "현재 게임이 진행 중입니다."),
 
     NOT_PARTICIPATING_GAME(200, "게임에 참가해 주십시오."),
     INVALID_JOB(201, "마피아만 지목 대상을 볼 수 있습니다."),

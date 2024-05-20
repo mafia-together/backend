@@ -47,6 +47,7 @@ public class Room {
         return status.getType();
     }
 
+    // statusType 제거
     public void modifyStatus(final StatusType statusType, final Long now) {
         this.status = status.getNextStatus(this, now);
     }
@@ -114,11 +115,22 @@ public class Room {
     }
 
     public boolean isEnd() {
-        final long playerCount = getPlayerCount();
-        final long mafia = players.values().stream()
+        long aliveMafia = getAliveMafia();
+        return getAliveCitizen() / 2 < aliveMafia || aliveMafia == 0;
+    }
+
+    public long getAliveMafia(){
+        return players.values().stream()
                 .filter(player -> player.getJobType().equals(JobType.MAFIA))
+                .filter(player -> player.isAlive() == true)
                 .count();
-        return playerCount / 2 < mafia || mafia == 0;
+    }
+
+    public long getAliveCitizen(){
+        return players.values().stream()
+                .filter(player -> !player.getJobType().equals(JobType.MAFIA))
+                .filter(player -> player.isAlive() == true)
+                .count();
     }
 
     public void executeVote() {
