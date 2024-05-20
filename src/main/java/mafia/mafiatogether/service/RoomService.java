@@ -1,9 +1,8 @@
 package mafia.mafiatogether.service;
 
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.time.Clock;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
@@ -25,11 +24,11 @@ import org.springframework.stereotype.Service;
 public class RoomService {
 
     private final RoomManager roomManager;
+    private final MeterRegistry meterRegistry;
 
     public RoomCodeResponse create(final RoomCreateRequest request) {
         final String code = roomManager.create(request.toDomain());
-        final Tag tag = Tag.of("room_size", roomManager.getTotalRoomCount().toString());
-        Metrics.counter("room_size", List.of(tag)).increment();
+        Gauge.builder("room", roomManager, RoomManager::getTotalRoomCount).tag("info", "size").register(meterRegistry);
         return new RoomCodeResponse(code);
     }
 
