@@ -8,6 +8,7 @@ import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.RoomManager;
+import mafia.mafiatogether.domain.Vote;
 import mafia.mafiatogether.service.dto.VoteResultResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -64,6 +65,25 @@ class VoteControllerTest {
                 .when().post("/vote")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void 투표에_기권_할_수_있다() {
+        // given
+        final String basic = Base64.getEncoder().encodeToString((code + ":" + player1.getName()).getBytes());
+
+        // when & then
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Basic " + basic)
+                .body(Map.of("target", ""))
+                .when().post("/vote")
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+
+        final Vote vote = room.getVote();
+        vote.executeVote();
+        Assertions.assertThat(vote.getVoteResult()).isNull();
     }
 
     @Test
