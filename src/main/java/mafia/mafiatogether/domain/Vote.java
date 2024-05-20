@@ -4,15 +4,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class Vote {
 
     private final Map<Player, Player> playerVote;
+    private Player votedPlayer;
 
     protected static Vote create() {
-        return new Vote(new ConcurrentHashMap<>());
+        return new Vote(new ConcurrentHashMap<>(), Player.NONE);
     }
 
     public void choose(final Player player, final Player target) {
@@ -20,7 +21,7 @@ public class Vote {
     }
 
     public String getVoteResult() {
-        return countVotes().getName();
+        return votedPlayer.getName();
     }
 
     private Player countVotes() {
@@ -34,7 +35,7 @@ public class Vote {
     private Player findMaxVotedPlayer(final Map<Player, Integer> voteCounts) {
         int maxCount = 0;
         int count = 0;
-        Player votedPlayer = Player.NONE;
+        Player maxVotedPlayer = Player.NONE;
         for (Entry<Player, Integer> voteCount : voteCounts.entrySet()) {
             if (maxCount == voteCount.getValue()) {
                 count++;
@@ -42,18 +43,22 @@ public class Vote {
             if (maxCount < voteCount.getValue()) {
                 maxCount = voteCount.getValue();
                 count = 1;
-                votedPlayer = voteCount.getKey();
+                maxVotedPlayer = voteCount.getKey();
             }
         }
         if (count > 1) {
             return Player.NONE;
         }
-        return votedPlayer;
+        return maxVotedPlayer;
     }
 
     public void executeVote() {
-        final Player player = countVotes();
-        player.kill();
+        votedPlayer = countVotes();
+        votedPlayer.kill();
+    }
+
+    public void clear() {
+        votedPlayer = Player.NONE;
         playerVote.clear();
     }
 }

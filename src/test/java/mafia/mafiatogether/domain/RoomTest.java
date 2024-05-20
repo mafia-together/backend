@@ -80,6 +80,7 @@ class RoomTest {
         room.votePlayer(a.getName(), b.getName());
         room.votePlayer(b.getName(), d.getName());
         room.votePlayer(c.getName(), d.getName());
+        room.executeVote();
 
         // then
         assertEquals(room.getVoteResult(), d.getName());
