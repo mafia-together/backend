@@ -18,6 +18,7 @@ public class VoteResultStatus extends Status {
 
     @Override
     public Status getNextStatus(final Room room, final Long now) {
+        room.clearVote();
         if (room.isEnd()) {
             final List<Player> players = room.getPlayers()
                     .values()

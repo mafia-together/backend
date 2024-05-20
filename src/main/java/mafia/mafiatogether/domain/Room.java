@@ -152,4 +152,8 @@ public class Room {
     public boolean validateStartStatus() {
         return roomInfo.getTotal() == players.size();
     }
+
+    public void clearVote() {
+        this.vote.clear();
+    }
 }

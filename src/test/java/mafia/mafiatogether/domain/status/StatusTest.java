@@ -132,4 +132,35 @@ class StatusTest {
                 }
         );
     }
+
+    @Test
+    void 투표상태_종료_이후_투표결과가_집계된다() {
+        // given
+        room.modifyStatus(StatusType.DAY, dayIntroTime);
+        room.getStatusType(noticeTime);
+        room.getStatusType(dayTime);
+        room.getStatusType(voteTime);
+        room.votePlayer(PLAYER1, PLAYER3);
+        room.votePlayer(PLAYER2, PLAYER3);
+        room.getStatusType(voteResultTime);
+
+        // then
+        Assertions.assertThat(room.getVoteResult()).isEqualTo(PLAYER3);
+    }
+
+    @Test
+    void 투표결과상태_종료_이후_투표결과가_초기화된다() {
+        // given
+        room.modifyStatus(StatusType.DAY, dayIntroTime);
+        room.getStatusType(noticeTime);
+        room.getStatusType(dayTime);
+        room.getStatusType(voteTime);
+        room.votePlayer(PLAYER1, PLAYER3);
+        room.votePlayer(PLAYER2, PLAYER3);
+        room.getStatusType(voteResultTime);
+        room.getStatusType(nightIntroTime);
+
+        // when & then
+        Assertions.assertThat(room.getVoteResult()).isNull();
+    }
 }

@@ -57,7 +57,7 @@ class VoteControllerTest {
         // given
         final String basic = Base64.getEncoder().encodeToString((code + ":" + player1.getName()).getBytes());
 
-        // when & then
+        // when
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
@@ -65,6 +65,10 @@ class VoteControllerTest {
                 .when().post("/vote")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
+
+        Vote vote = room.getVote();
+        vote.executeVote();
+        Assertions.assertThat(vote.getVoteResult()).isEqualTo(player2.getName());
     }
 
     @Test
@@ -93,6 +97,7 @@ class VoteControllerTest {
         room.votePlayer(player1.getName(), player2.getName());
         room.votePlayer(player2.getName(), player2.getName());
         room.votePlayer(player3.getName(), player1.getName());
+        room.executeVote();
 
         // when & then
         final VoteResultResponse voteResultResponse = RestAssured.given().log().all()
