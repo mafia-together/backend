@@ -9,6 +9,7 @@ import mafia.mafiatogether.service.dto.RoomCodeResponse;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
 import mafia.mafiatogether.service.dto.RoomInfoResponse;
 import mafia.mafiatogether.service.dto.RoomModifyRequest;
+import mafia.mafiatogether.service.dto.RoomResultResponse;
 import mafia.mafiatogether.service.dto.RoomStatusResponse;
 import mafia.mafiatogether.service.dto.RoomValidateResponse;
 import org.springframework.http.ResponseEntity;
@@ -78,5 +79,12 @@ public class RoomController {
             @PlayerInfo PlayerInfoDto playerInfoDto
     ) {
         return ResponseEntity.ok(roomService.findRoomInfo(playerInfoDto.code(), playerInfoDto.name()));
+    }
+
+    @GetMapping("/result")
+    public ResponseEntity<RoomResultResponse> findResult(
+            @PlayerInfo final PlayerInfoDto playerInfoDto
+    ) {
+        return ResponseEntity.ok(roomService.findResult(playerInfoDto.code()));
     }
 }
