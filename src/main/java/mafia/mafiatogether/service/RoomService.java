@@ -1,5 +1,7 @@
 package mafia.mafiatogether.service;
 
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
 import java.time.Clock;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.exception.ExceptionCode;
@@ -22,9 +24,11 @@ import org.springframework.stereotype.Service;
 public class RoomService {
 
     private final RoomManager roomManager;
+    private final MeterRegistry meterRegistry;
 
     public RoomCodeResponse create(final RoomCreateRequest request) {
         final String code = roomManager.create(request.toDomain());
+        Gauge.builder("room", roomManager, RoomManager::getTotalRoomCount).tag("info", "size").register(meterRegistry);
         return new RoomCodeResponse(code);
     }
 
@@ -57,7 +61,7 @@ public class RoomService {
 
     public RoomResultResponse findResult(final String code) {
         final Room room = roomManager.findByCode(code);
-        if(!room.isEnd()){
+        if (!room.isEnd()) {
             throw new RoomException(ExceptionCode.GAME_IS_NOT_FINISHED);
         }
         return RoomResultResponse.of((EndStatus) room.getStatus());
