@@ -23,7 +23,7 @@ public class EndStatus extends Status {
     }
 
     public JobType getWinnerJob() {
-        if(getAliveMafia()==0){
+        if (getAliveMafia() == 0) {
             return JobType.CITIZEN;
         }
         return JobType.MAFIA;
@@ -53,7 +53,7 @@ public class EndStatus extends Status {
         return players.get(Boolean.FALSE);
     }
 
-    private long getAliveMafia(){
+    private long getAliveMafia() {
         return players.stream()
                 .filter(player -> player.getJobType().equals(JobType.MAFIA))
                 .filter(player -> player.isAlive() == true)
@@ -62,6 +62,7 @@ public class EndStatus extends Status {
 
     @Override
     public Status getNextStatus(final Room room, final Long now) {
+        room.reset();
         return WaitStatus.create(now);
     }
 

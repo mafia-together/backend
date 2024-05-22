@@ -156,4 +156,11 @@ public class Room {
     public void clearVote() {
         this.vote.clear();
     }
+
+    public void reset() {
+        for (final Player player : players.values()) {
+            player.reset();
+        }
+        vote.clear();
+    }
 }

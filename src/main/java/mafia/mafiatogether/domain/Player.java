@@ -39,4 +39,9 @@ public class Player {
     public boolean isMafia() {
         return getJobType().equals(JobType.MAFIA);
     }
+
+    public void reset() {
+        this.alive = true;
+        this.job = new Citizen();
+    }
 }
