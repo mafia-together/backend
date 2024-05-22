@@ -6,6 +6,7 @@ import java.time.Clock;
 import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
+import mafia.mafiatogether.domain.job.JobType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -109,7 +110,7 @@ class StatusTest {
     }
 
     @Test
-    void 종료상태_일정_시간_이후_대기상태가_된다() {
+    void 종료상태_일정_시간_이후_대기상태가_된며_방이_초기화된다() {
         // given
         final Long endTime = nightEndTime + 1_000L;
         final Long endEndTime = endTime + 59_000L;
@@ -129,6 +130,12 @@ class StatusTest {
                 softly -> {
                     softly.assertThat(room.getStatusType(endEndTime)).isEqualTo(StatusType.END);
                     softly.assertThat(room.getStatusType(waitTime)).isEqualTo(StatusType.WAIT);
+                    softly.assertThat(room.getPlayer(PLAYER1).isAlive()).isTrue();
+                    softly.assertThat(room.getPlayer(PLAYER1).getJobType()).isEqualTo(JobType.CITIZEN);
+                    softly.assertThat(room.getPlayer(PLAYER2).isAlive()).isTrue();
+                    softly.assertThat(room.getPlayer(PLAYER2).getJobType()).isEqualTo(JobType.CITIZEN);
+                    softly.assertThat(room.getPlayer(PLAYER3).isAlive()).isTrue();
+                    softly.assertThat(room.getPlayer(PLAYER3).getJobType()).isEqualTo(JobType.CITIZEN);
                 }
         );
     }
