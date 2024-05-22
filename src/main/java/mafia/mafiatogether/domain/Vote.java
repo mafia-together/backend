@@ -61,4 +61,8 @@ public class Vote {
         votedPlayer = Player.NONE;
         playerVote.clear();
     }
+
+    public boolean isAllParticipatedVote(final int total) {
+        return this.playerVote.keySet().size() == total;
+    }
 }
