@@ -2,6 +2,7 @@ package mafia.mafiatogether.controller;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import java.time.Clock;
 import java.util.Base64;
 import java.util.Map;
 import mafia.mafiatogether.domain.Player;
@@ -94,9 +95,9 @@ class VoteControllerTest {
     void 투표_결과를_조회한다() {
         // given
         final String basic = Base64.getEncoder().encodeToString((code + ":" + player1.getName()).getBytes());
-        room.votePlayer(player1.getName(), player2.getName());
-        room.votePlayer(player2.getName(), player2.getName());
-        room.votePlayer(player3.getName(), player1.getName());
+        room.votePlayer(player1.getName(), player2.getName(), Clock.systemDefaultZone().millis());
+        room.votePlayer(player2.getName(), player2.getName(), Clock.systemDefaultZone().millis());
+        room.votePlayer(player3.getName(), player1.getName(), Clock.systemDefaultZone().millis());
         room.executeVote();
 
         // when & then

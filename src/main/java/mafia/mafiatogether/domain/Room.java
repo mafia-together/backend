@@ -98,10 +98,13 @@ public class Room {
         return jobTarget.getTarget(jobType).getName();
     }
 
-    public void votePlayer(final String name, final String targetName) {
+    public void votePlayer(final String name, final String targetName, final Long now) {
         final Player player = getPlayer(name);
         final Player target = targetName.isBlank() ? Player.NONE : getPlayer(targetName);
         vote.choose(player, target);
+        if (vote.isAllParticipatedVote(roomInfo.getTotal())) {
+            this.status = status.getNextStatus(this, now);
+        }
     }
 
     public String getVoteResult() {
