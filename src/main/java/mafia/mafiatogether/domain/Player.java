@@ -3,6 +3,7 @@ package mafia.mafiatogether.domain;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 import mafia.mafiatogether.domain.job.Citizen;
 import mafia.mafiatogether.domain.job.Job;
 import mafia.mafiatogether.domain.job.JobType;
