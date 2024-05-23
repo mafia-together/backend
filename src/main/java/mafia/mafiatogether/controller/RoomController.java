@@ -9,6 +9,7 @@ import mafia.mafiatogether.service.dto.RoomCodeResponse;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
 import mafia.mafiatogether.service.dto.RoomInfoResponse;
 import mafia.mafiatogether.service.dto.RoomModifyRequest;
+import mafia.mafiatogether.service.dto.RoomNightResultResponse;
 import mafia.mafiatogether.service.dto.RoomResultResponse;
 import mafia.mafiatogether.service.dto.RoomStatusResponse;
 import mafia.mafiatogether.service.dto.RoomValidateResponse;
@@ -86,5 +87,12 @@ public class RoomController {
             @PlayerInfo final PlayerInfoDto playerInfoDto
     ) {
         return ResponseEntity.ok(roomService.findResult(playerInfoDto.code()));
+    }
+
+    @GetMapping("/night/result")
+    public ResponseEntity<RoomNightResultResponse> findNightResult(
+            @PlayerInfo final PlayerInfoDto playerInfoDto
+    ) {
+        return ResponseEntity.ok(roomService.findNightResult(playerInfoDto.code()));
     }
 }

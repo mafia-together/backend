@@ -6,8 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import mafia.mafiatogether.config.exception.CitizenException;
 import mafia.mafiatogether.config.exception.ExceptionCode;
+import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.domain.job.Job;
 import mafia.mafiatogether.domain.job.JobTarget;
@@ -87,7 +87,7 @@ public class Room {
         final Player player = getPlayer(name);
         final Player target = getPlayer(targetName);
         if (!target.isAlive()) {
-            throw new CitizenException(ExceptionCode.NOT_ALIVE_PLAYER);
+            throw new PlayerException(ExceptionCode.NOT_ALIVE_PLAYER);
         }
         return player.getJob().applySkill(target, jobTarget);
     }
@@ -122,14 +122,14 @@ public class Room {
     public long getAliveMafia() {
         return players.values().stream()
                 .filter(player -> player.getJobType().equals(JobType.MAFIA))
-                .filter(player -> player.isAlive() == true)
+                .filter(Player::isAlive)
                 .count();
     }
 
     public long getAliveCitizen() {
         return players.values().stream()
                 .filter(player -> !player.getJobType().equals(JobType.MAFIA))
-                .filter(player -> player.isAlive() == true)
+                .filter(Player::isAlive)
                 .count();
     }
 
@@ -162,5 +162,17 @@ public class Room {
             player.reset();
         }
         vote.clear();
+    }
+
+    public String getNightResult() {
+        if (status.getType() != StatusType.DAY_INTRO) {
+            throw new RoomException(ExceptionCode.IS_NOT_DAY_INTRO);
+        }
+        Player target = jobTarget.getTarget(JobType.MAFIA);
+        jobTarget.targetClear();
+        if (target.isAlive()) {
+            return null;
+        }
+        return target.getName();
     }
 }

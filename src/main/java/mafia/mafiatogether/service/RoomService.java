@@ -14,6 +14,7 @@ import mafia.mafiatogether.service.dto.RoomCodeResponse;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
 import mafia.mafiatogether.service.dto.RoomInfoResponse;
 import mafia.mafiatogether.service.dto.RoomModifyRequest;
+import mafia.mafiatogether.service.dto.RoomNightResultResponse;
 import mafia.mafiatogether.service.dto.RoomResultResponse;
 import mafia.mafiatogether.service.dto.RoomStatusResponse;
 import mafia.mafiatogether.service.dto.RoomValidateResponse;
@@ -65,5 +66,13 @@ public class RoomService {
             throw new RoomException(ExceptionCode.GAME_IS_NOT_FINISHED);
         }
         return RoomResultResponse.of((EndStatus) room.getStatus());
+    }
+
+    public RoomNightResultResponse findNightResult(final String code) {
+        final Room room = roomManager.findByCode(code);
+        if (!room.isEnd()) {
+            throw new RoomException(ExceptionCode.GAME_IS_NOT_FINISHED);
+        }
+        return new RoomNightResultResponse(room.getNightResult());
     }
 }

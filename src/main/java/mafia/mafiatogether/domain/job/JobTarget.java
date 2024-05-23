@@ -30,6 +30,9 @@ public class JobTarget {
     public void execute(){
         Mafia.executeSkill(targets);
         Doctor.executeSkill(targets);
+    }
+
+    public void targetClear(){
         targets.clear();
     }
 }
