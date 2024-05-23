@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.config.exception.RoomException;
@@ -98,10 +99,13 @@ public class Room {
         return jobTarget.getTarget(jobType).getName();
     }
 
-    public void votePlayer(final String name, final String targetName) {
+    public void votePlayer(final String name, final String targetName, final Long now) {
         final Player player = getPlayer(name);
         final Player target = targetName.isBlank() ? Player.NONE : getPlayer(targetName);
         vote.choose(player, target);
+        if (vote.isAllParticipatedVote(roomInfo.getTotal())) {
+            this.status = status.getNextStatus(this, now);
+        }
     }
 
     public String getVoteResult() {

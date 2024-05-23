@@ -147,8 +147,8 @@ class StatusTest {
         room.getStatusType(noticeTime);
         room.getStatusType(dayTime);
         room.getStatusType(voteTime);
-        room.votePlayer(PLAYER1, PLAYER3);
-        room.votePlayer(PLAYER2, PLAYER3);
+        room.votePlayer(PLAYER1, PLAYER3, voteTime);
+        room.votePlayer(PLAYER2, PLAYER3, voteTime);
         room.getStatusType(voteResultTime);
 
         // then
@@ -162,12 +162,26 @@ class StatusTest {
         room.getStatusType(noticeTime);
         room.getStatusType(dayTime);
         room.getStatusType(voteTime);
-        room.votePlayer(PLAYER1, PLAYER3);
-        room.votePlayer(PLAYER2, PLAYER3);
+        room.votePlayer(PLAYER1, PLAYER3, voteTime);
+        room.votePlayer(PLAYER2, PLAYER3, voteTime);
         room.getStatusType(voteResultTime);
         room.getStatusType(nightIntroTime);
 
         // when & then
         Assertions.assertThat(room.getVoteResult()).isNull();
+    }
+
+    @Test
+    void 모든_사람이_투표시_상태가_변경된다() {
+        // given
+        room.modifyStatus(StatusType.DAY, dayIntroTime);
+        room.getStatusType(noticeTime);
+        room.getStatusType(dayTime);
+        room.votePlayer(PLAYER1, PLAYER3, dayTime);
+        room.votePlayer(PLAYER2, PLAYER3, dayTime);
+        room.votePlayer(PLAYER3, PLAYER3, dayTime);
+
+        // then
+        Assertions.assertThat(room.getStatusType(dayTime)).isEqualTo(StatusType.VOTE);
     }
 }

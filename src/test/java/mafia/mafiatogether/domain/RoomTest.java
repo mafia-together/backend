@@ -76,10 +76,10 @@ class RoomTest {
         room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
 
         // when
-        room.votePlayer(a.getName(), b.getName());
-        room.votePlayer(a.getName(), b.getName());
-        room.votePlayer(b.getName(), d.getName());
-        room.votePlayer(c.getName(), d.getName());
+        room.votePlayer(a.getName(), b.getName(), Clock.systemDefaultZone().millis());
+        room.votePlayer(a.getName(), b.getName(), Clock.systemDefaultZone().millis());
+        room.votePlayer(b.getName(), d.getName(), Clock.systemDefaultZone().millis());
+        room.votePlayer(c.getName(), d.getName(), Clock.systemDefaultZone().millis());
         room.executeVote();
 
         // then
@@ -105,10 +105,10 @@ class RoomTest {
         room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
 
         // when
-        room.votePlayer(a.getName(), c.getName());
-        room.votePlayer(b.getName(), c.getName());
-        room.votePlayer(c.getName(), e.getName());
-        room.votePlayer(d.getName(), e.getName());
+        room.votePlayer(a.getName(), c.getName(), Clock.systemDefaultZone().millis());
+        room.votePlayer(b.getName(), c.getName(), Clock.systemDefaultZone().millis());
+        room.votePlayer(c.getName(), e.getName(), Clock.systemDefaultZone().millis());
+        room.votePlayer(d.getName(), e.getName(), Clock.systemDefaultZone().millis());
 
         // then
         assertNull(room.getVoteResult());
