@@ -20,8 +20,9 @@ public class ChatService {
     public List<ChatResponse> findAllChat(final String code, final String name) {
         final Room room = roomManager.findByCode(code);
         final Chat chat = room.getChat();
+        final Player player = room.getPlayer(name);
         return chat.getMessages().stream()
-                .map(message -> ChatResponse.of(message, name))
+                .map(message -> ChatResponse.of(message, name, player.isMafia()))
                 .toList();
     }
 
