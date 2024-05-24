@@ -6,8 +6,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.config.exception.ExceptionCode;
+import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.domain.job.Job;
 import mafia.mafiatogether.domain.job.JobTarget;
@@ -165,5 +165,16 @@ public class Room {
             player.reset();
         }
         vote.clear();
+    }
+
+    public String getNightResult() {
+        if (status.getType() != StatusType.DAY_INTRO) {
+            throw new RoomException(ExceptionCode.IS_NOT_DAY_INTRO);
+        }
+        Player target = jobTarget.getResult();
+        if (target.isAlive()) {
+            return null;
+        }
+        return target.getName();
     }
 }

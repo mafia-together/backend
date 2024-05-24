@@ -37,4 +37,18 @@ class JobTargetTest {
         // then
         Assertions.assertThat(player1.isAlive()).isTrue();
     }
+
+    @Test
+    void 투표_결과를_반환받을_수_있다() {
+        // given
+        final JobTarget jobTarget = new JobTarget();
+        jobTarget.addTarget(JobType.MAFIA, player1);
+        jobTarget.addTarget(JobType.DOCTOR, player1);
+
+        // when
+        jobTarget.execute();
+
+        // then
+        Assertions.assertThat(jobTarget.getResult()).isEqualTo(player1);
+    }
 }

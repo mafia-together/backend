@@ -19,6 +19,8 @@ public enum ExceptionCode {
     INVALID_PLAYER(108, "존재 하지 않는 사람입니다."),
     GAME_IS_NOT_FINISHED(109, "현재 게임이 진행 중입니다."),
     POLICE_DUPLICATE_SKILL(110, "이미 스킬을 사용했습니다."),
+    IS_NOT_DAY_INTRO(111, "방이 DAY_INTRO 상태가 아닙니다."),
+
 
     NOT_PARTICIPATING_GAME(200, "게임에 참가해 주십시오."),
     INVALID_JOB(201, "마피아만 지목 대상을 볼 수 있습니다."),
