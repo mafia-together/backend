@@ -6,7 +6,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.config.exception.RoomException;
@@ -172,8 +171,7 @@ public class Room {
         if (status.getType() != StatusType.DAY_INTRO) {
             throw new RoomException(ExceptionCode.IS_NOT_DAY_INTRO);
         }
-        Player target = jobTarget.getTarget(JobType.MAFIA);
-        jobTarget.targetClear();
+        Player target = jobTarget.getResult();
         if (target.isAlive()) {
             return null;
         }
