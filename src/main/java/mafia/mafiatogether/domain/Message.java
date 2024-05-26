@@ -26,11 +26,10 @@ public class Message {
         return player.getName().equals(name);
     }
 
-    public JobType getJobTypeForMafia() {
-        return player.getJobType() == JobType.MAFIA ? JobType.MAFIA : null;
-    }
-
-    public JobType getJobTypeForCitizen(final String name) {
+    public JobType getJob(final Boolean isMafia, final String name) {
+        if (isMafia) {
+            return player.isMafia() ? JobType.MAFIA : null;
+        }
         return isOwner(name) ? player.getJobType() : null;
     }
 }

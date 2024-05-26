@@ -18,7 +18,7 @@ public record ChatResponse(
                 message.getContents(),
                 message.getTimestamp(),
                 message.isOwner(name),
-                isMafia ? message.getJobTypeForMafia() : message.getJobTypeForCitizen(name)
+                message.getJob(isMafia, name)
         );
     }
 }
