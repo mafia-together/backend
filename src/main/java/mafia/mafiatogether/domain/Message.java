@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import mafia.mafiatogether.domain.job.JobType;
 
 @Getter
 @RequiredArgsConstructor
@@ -23,5 +24,12 @@ public class Message {
 
     public boolean isOwner(final String name) {
         return player.getName().equals(name);
+    }
+
+    public JobType getJob(final Boolean isMafia, final String name) {
+        if (isMafia) {
+            return player.isMafia() ? JobType.MAFIA : null;
+        }
+        return isOwner(name) ? player.getJobType() : null;
     }
 }
