@@ -77,7 +77,7 @@ public class Room {
     }
 
     public Player getPlayer(final String name) {
-        if (name.isBlank()){
+        if (name.isBlank()) {
             return Player.NONE;
         }
         if (!players.containsKey(name)) {
@@ -105,7 +105,7 @@ public class Room {
         final Player player = getPlayer(name);
         final Player target = targetName.isBlank() ? Player.NONE : getPlayer(targetName);
         vote.choose(player, target);
-        if (vote.isAllParticipatedVote(roomInfo.getTotal())) {
+        if (vote.isAllParticipatedVote(getPlayerCount())) {
             this.status = status.getNextStatus(this, now);
         }
     }

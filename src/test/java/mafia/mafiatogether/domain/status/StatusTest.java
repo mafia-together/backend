@@ -3,7 +3,6 @@ package mafia.mafiatogether.domain.status;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.Clock;
-import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.job.JobType;
@@ -38,13 +37,9 @@ class StatusTest {
     @BeforeEach
     void setRoom() {
         room = Room.create(new RoomInfo(3, 1, 0, 1), dayIntroTime);
-        Player a = Player.create(PLAYER1);
-        Player b = Player.create(PLAYER2);
-        Player c = Player.create(PLAYER3);
-
-        room.joinPlayer(a.getName());
-        room.joinPlayer(b.getName());
-        room.joinPlayer(c.getName());
+        room.joinPlayer(PLAYER1);
+        room.joinPlayer(PLAYER2);
+        room.joinPlayer(PLAYER3);
     }
 
     @Test
@@ -172,14 +167,14 @@ class StatusTest {
     }
 
     @Test
-    void 모든_사람이_투표시_상태가_변경된다() {
+    void 살아있는_모든_사람이_투표시_상태가_변경된다() {
         // given
         room.modifyStatus(StatusType.DAY, dayIntroTime);
         room.getStatusType(noticeTime);
         room.getStatusType(dayTime);
+        room.getPlayer(PLAYER3).kill();
         room.votePlayer(PLAYER1, PLAYER3, dayTime);
         room.votePlayer(PLAYER2, PLAYER3, dayTime);
-        room.votePlayer(PLAYER3, PLAYER3, dayTime);
 
         // then
         Assertions.assertThat(room.getStatusType(dayTime)).isEqualTo(StatusType.VOTE);
