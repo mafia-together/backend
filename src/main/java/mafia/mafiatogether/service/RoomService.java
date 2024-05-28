@@ -70,9 +70,6 @@ public class RoomService {
 
     public RoomNightResultResponse findNightResult(final String code) {
         final Room room = roomManager.findByCode(code);
-        if (!room.isEnd()) {
-            throw new RoomException(ExceptionCode.GAME_IS_NOT_FINISHED);
-        }
         return new RoomNightResultResponse(room.getNightResult());
     }
 }
