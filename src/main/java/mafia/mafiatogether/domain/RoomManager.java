@@ -36,7 +36,7 @@ public class RoomManager {
     }
 
     public boolean validateCode(final String code) {
-        return !rooms.containsKey(code);
+        return rooms.containsKey(code);
     }
 
     public Integer getTotalRoomCount() {

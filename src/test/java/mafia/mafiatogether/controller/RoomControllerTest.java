@@ -256,7 +256,7 @@ class RoomControllerTest {
                 .when().get("/rooms/code/exist?code=" + code)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("exist", Matchers.equalTo(false));
+                .body("exist", Matchers.equalTo(true));
     }
 
     @Test
