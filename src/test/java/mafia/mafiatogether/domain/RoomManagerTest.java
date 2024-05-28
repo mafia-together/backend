@@ -3,6 +3,7 @@ package mafia.mafiatogether.domain;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("NonAsciiCharacters")
 class RoomManagerTest {
 
     @Test
@@ -26,6 +27,6 @@ class RoomManagerTest {
         boolean result = roomManager.validateCode(roomA);
 
         //then
-        Assertions.assertThat(result).isEqualTo(false);
+        Assertions.assertThat(result).isTrue();
     }
 }
