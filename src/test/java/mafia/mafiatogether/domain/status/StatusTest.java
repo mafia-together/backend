@@ -28,7 +28,7 @@ class StatusTest {
     private static final Long nightIntroEndTime = nightIntroTime + 2_000L;
     private static final Long nightTime = nightIntroEndTime + 1_000L;
     private static final Long nightEndTime = nightTime + 39_000L;
-    private static final Long nextDay = nightEndTime + 2_000L;
+    private static final Long nextDay = nightEndTime + 1_000L;
     private static final String PLAYER1 = "A";
     private static final String PLAYER2 = "B";
     private static final String PLAYER3 = "C";
@@ -183,5 +183,32 @@ class StatusTest {
 
         // then
         Assertions.assertThat(room.getStatusType(dayTime)).isEqualTo(StatusType.VOTE);
+    }
+
+    @Test
+    void NOTICE_상태가_아닐경우_밤결과_조회에_실패한다() {
+        room.modifyStatus(StatusType.DAY, dayIntroTime);
+        room.getStatusType(dayIntroEndTime);
+        room.getStatusType(noticeTime);
+        room.getStatusType(noticeEndTime);
+        room.getStatusType(dayTime);
+        room.getStatusType(dayEndTime);
+        room.getStatusType(voteTime);
+        room.getStatusType(voteEndTime);
+        room.getStatusType(voteResultTime);
+        room.getStatusType(voteResultEndTime);
+        room.getStatusType(nightIntroTime);
+        room.getStatusType(nightIntroEndTime);
+        room.getStatusType(nightTime);
+        room.getStatusType(nightEndTime);
+        room.getStatusType(nextDay);
+        assertSoftly(
+                softly -> {
+                    softly.assertThat(room.getStatusType(nextDay + 3000L)).isEqualTo(StatusType.NOTICE);
+                    softly.assertThatCode(() -> room.getNightResult()).doesNotThrowAnyException();
+                    room.getStatusType(nextDay + 6000L);
+                    softly.assertThatThrownBy(() -> room.getNightResult());
+                }
+        );
     }
 }

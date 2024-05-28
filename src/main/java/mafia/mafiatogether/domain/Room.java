@@ -168,8 +168,8 @@ public class Room {
     }
 
     public String getNightResult() {
-        if (status.getType() != StatusType.DAY_INTRO) {
-            throw new RoomException(ExceptionCode.IS_NOT_DAY_INTRO);
+        if (status.getType() != StatusType.NOTICE) {
+            throw new RoomException(ExceptionCode.IS_NOT_NOTICE);
         }
         Player target = jobTarget.getResult();
         if (target.isAlive()) {

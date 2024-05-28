@@ -20,6 +20,7 @@ public enum ExceptionCode {
     GAME_IS_NOT_FINISHED(109, "현재 게임이 진행 중입니다."),
     POLICE_DUPLICATE_SKILL(110, "이미 스킬을 사용했습니다."),
     IS_NOT_DAY_INTRO(111, "방이 DAY_INTRO 상태가 아닙니다."),
+    IS_NOT_NOTICE(112, "방이 NOTICE 상태가 아닙니다."),
 
 
     NOT_PARTICIPATING_GAME(200, "게임에 참가해 주십시오."),
