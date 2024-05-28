@@ -3,7 +3,6 @@ package mafia.mafiatogether.domain;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 import mafia.mafiatogether.domain.job.Citizen;
 import mafia.mafiatogether.domain.job.Job;
 import mafia.mafiatogether.domain.job.JobType;
@@ -12,7 +11,7 @@ import mafia.mafiatogether.domain.job.JobType;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Player {
 
-    public static final Player NONE = new Player(null, false, null);
+    public static final Player NONE = new Player(null, true, null);
     private final String name;
     private boolean alive;
     private Job job;

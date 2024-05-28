@@ -68,6 +68,34 @@ class PlayerControllerTest {
     }
 
     @Test
+    void 마피아가_빈문자열을_보낼시_아무도_죽지않는다(){
+        // given
+        String code = roomManager.create(new RoomInfo(3, 1, 0, 0));
+        Room room = roomManager.findByCode(code);
+        room.joinPlayer("t1");
+        room.joinPlayer("t2");
+        room.joinPlayer("t3");
+
+        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
+
+        Player mafia = room.getPlayers().values().stream()
+                .filter(player -> player.getJobType().equals(JobType.MAFIA))
+                .findFirst()
+                .get();
+        String basic = Base64.getEncoder().encodeToString((code + ":" + mafia.getName()).getBytes());
+
+        // when & then
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(Map.of("target", ""))
+                .header("Authorization", "Basic " + basic)
+                .when().post("/players/skill")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+        Assertions.assertThat(room.getJobsTarget(mafia.getName())).isNull();
+    }
+
+    @Test
     void 이미_죽은사람에게_직업_기술_사용시_실패한다() {
         // given
         String code = roomManager.create(new RoomInfo(3, 1, 0, 0));

@@ -77,6 +77,9 @@ public class Room {
     }
 
     public Player getPlayer(final String name) {
+        if (name.isBlank()){
+            return Player.NONE;
+        }
         if (!players.containsKey(name)) {
             throw new RoomException(ExceptionCode.INVALID_PLAYER);
         }
