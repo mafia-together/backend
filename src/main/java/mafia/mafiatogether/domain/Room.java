@@ -168,6 +168,7 @@ public class Room {
             player.reset();
         }
         vote.clear();
+        chat.clear();
     }
 
     public String getNightResult() {

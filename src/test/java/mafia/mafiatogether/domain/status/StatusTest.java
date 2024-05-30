@@ -3,6 +3,8 @@ package mafia.mafiatogether.domain.status;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.Clock;
+import mafia.mafiatogether.domain.Chat;
+import mafia.mafiatogether.domain.Message;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.job.JobType;
@@ -89,7 +91,6 @@ class StatusTest {
     void 밤_이후_게임종료_조건달성시_게임이_종료된다() {
         // given
         final Long endTime = nightEndTime + 1_000L;
-
         room.modifyStatus(StatusType.DAY, dayIntroTime);
         room.getStatusType(noticeTime);
         room.getStatusType(dayTime);
@@ -102,11 +103,13 @@ class StatusTest {
 
         // when & then
         Assertions.assertThat(room.getStatusType(endTime)).isEqualTo(StatusType.END);
+
     }
 
     @Test
     void 종료상태_일정_시간_이후_대기상태가_된며_방이_초기화된다() {
         // given
+        final Chat chat = room.getChat();
         final Long endTime = nightEndTime + 1_000L;
         final Long endEndTime = endTime + 59_000L;
         final Long waitTime = endEndTime + 1_000L;
@@ -115,6 +118,7 @@ class StatusTest {
         room.getStatusType(noticeTime);
         room.getStatusType(dayTime);
         room.getStatusType(voteTime);
+        chat.save(Message.of(room.getPlayer(PLAYER1), "contents"));
         room.getPlayer(PLAYER1).kill();
         room.getPlayer(PLAYER2).kill();
         room.getStatusType(voteResultTime);
@@ -131,6 +135,7 @@ class StatusTest {
                     softly.assertThat(room.getPlayer(PLAYER2).getJobType()).isEqualTo(JobType.CITIZEN);
                     softly.assertThat(room.getPlayer(PLAYER3).isAlive()).isTrue();
                     softly.assertThat(room.getPlayer(PLAYER3).getJobType()).isEqualTo(JobType.CITIZEN);
+                    softly.assertThat(chat.getMessages()).hasSize(0);
                 }
         );
     }
@@ -151,7 +156,7 @@ class StatusTest {
     }
 
     @Test
-    void 투표결과상태_종료_이후_투표결과가_초기화된다() {
+    void 투표결과상태_종료_이후_투표결과_및_채팅이_초기화된다() {
         // given
         room.modifyStatus(StatusType.DAY, dayIntroTime);
         room.getStatusType(noticeTime);
