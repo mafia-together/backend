@@ -19,4 +19,8 @@ public class Chat {
     public void save(final Message message) {
         messages.add(message);
     }
+
+    public void clear(){
+        messages.clear();
+    }
 }

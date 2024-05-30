@@ -3,7 +3,8 @@ package mafia.mafiatogether.domain.status;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.Clock;
-import mafia.mafiatogether.domain.Player;
+import mafia.mafiatogether.domain.Chat;
+import mafia.mafiatogether.domain.Message;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.job.JobType;
@@ -28,7 +29,7 @@ class StatusTest {
     private static final Long nightIntroEndTime = nightIntroTime + 2_000L;
     private static final Long nightTime = nightIntroEndTime + 1_000L;
     private static final Long nightEndTime = nightTime + 39_000L;
-    private static final Long nextDay = nightEndTime + 2_000L;
+    private static final Long nextDay = nightEndTime + 1_000L;
     private static final String PLAYER1 = "A";
     private static final String PLAYER2 = "B";
     private static final String PLAYER3 = "C";
@@ -38,13 +39,9 @@ class StatusTest {
     @BeforeEach
     void setRoom() {
         room = Room.create(new RoomInfo(3, 1, 0, 1), dayIntroTime);
-        Player a = Player.create(PLAYER1);
-        Player b = Player.create(PLAYER2);
-        Player c = Player.create(PLAYER3);
-
-        room.joinPlayer(a.getName());
-        room.joinPlayer(b.getName());
-        room.joinPlayer(c.getName());
+        room.joinPlayer(PLAYER1);
+        room.joinPlayer(PLAYER2);
+        room.joinPlayer(PLAYER3);
     }
 
     @Test
@@ -94,7 +91,6 @@ class StatusTest {
     void 밤_이후_게임종료_조건달성시_게임이_종료된다() {
         // given
         final Long endTime = nightEndTime + 1_000L;
-
         room.modifyStatus(StatusType.DAY, dayIntroTime);
         room.getStatusType(noticeTime);
         room.getStatusType(dayTime);
@@ -107,11 +103,13 @@ class StatusTest {
 
         // when & then
         Assertions.assertThat(room.getStatusType(endTime)).isEqualTo(StatusType.END);
+
     }
 
     @Test
     void 종료상태_일정_시간_이후_대기상태가_된며_방이_초기화된다() {
         // given
+        final Chat chat = room.getChat();
         final Long endTime = nightEndTime + 1_000L;
         final Long endEndTime = endTime + 59_000L;
         final Long waitTime = endEndTime + 1_000L;
@@ -120,6 +118,7 @@ class StatusTest {
         room.getStatusType(noticeTime);
         room.getStatusType(dayTime);
         room.getStatusType(voteTime);
+        chat.save(Message.of(room.getPlayer(PLAYER1), "contents"));
         room.getPlayer(PLAYER1).kill();
         room.getPlayer(PLAYER2).kill();
         room.getStatusType(voteResultTime);
@@ -136,6 +135,7 @@ class StatusTest {
                     softly.assertThat(room.getPlayer(PLAYER2).getJobType()).isEqualTo(JobType.CITIZEN);
                     softly.assertThat(room.getPlayer(PLAYER3).isAlive()).isTrue();
                     softly.assertThat(room.getPlayer(PLAYER3).getJobType()).isEqualTo(JobType.CITIZEN);
+                    softly.assertThat(chat.getMessages()).hasSize(0);
                 }
         );
     }
@@ -156,7 +156,7 @@ class StatusTest {
     }
 
     @Test
-    void 투표결과상태_종료_이후_투표결과가_초기화된다() {
+    void 투표결과상태_종료_이후_투표결과_및_채팅이_초기화된다() {
         // given
         room.modifyStatus(StatusType.DAY, dayIntroTime);
         room.getStatusType(noticeTime);
@@ -172,16 +172,43 @@ class StatusTest {
     }
 
     @Test
-    void 모든_사람이_투표시_상태가_변경된다() {
+    void 살아있는_모든_사람이_투표시_상태가_변경된다() {
         // given
         room.modifyStatus(StatusType.DAY, dayIntroTime);
         room.getStatusType(noticeTime);
         room.getStatusType(dayTime);
+        room.getPlayer(PLAYER3).kill();
         room.votePlayer(PLAYER1, PLAYER3, dayTime);
         room.votePlayer(PLAYER2, PLAYER3, dayTime);
-        room.votePlayer(PLAYER3, PLAYER3, dayTime);
 
         // then
         Assertions.assertThat(room.getStatusType(dayTime)).isEqualTo(StatusType.VOTE);
+    }
+
+    @Test
+    void NOTICE_상태가_아닐경우_밤결과_조회에_실패한다() {
+        room.modifyStatus(StatusType.DAY, dayIntroTime);
+        room.getStatusType(dayIntroEndTime);
+        room.getStatusType(noticeTime);
+        room.getStatusType(noticeEndTime);
+        room.getStatusType(dayTime);
+        room.getStatusType(dayEndTime);
+        room.getStatusType(voteTime);
+        room.getStatusType(voteEndTime);
+        room.getStatusType(voteResultTime);
+        room.getStatusType(voteResultEndTime);
+        room.getStatusType(nightIntroTime);
+        room.getStatusType(nightIntroEndTime);
+        room.getStatusType(nightTime);
+        room.getStatusType(nightEndTime);
+        room.getStatusType(nextDay);
+        assertSoftly(
+                softly -> {
+                    softly.assertThat(room.getStatusType(nextDay + 3000L)).isEqualTo(StatusType.NOTICE);
+                    softly.assertThatCode(() -> room.getNightResult()).doesNotThrowAnyException();
+                    room.getStatusType(nextDay + 6000L);
+                    softly.assertThatThrownBy(() -> room.getNightResult());
+                }
+        );
     }
 }

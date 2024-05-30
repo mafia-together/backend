@@ -31,7 +31,7 @@ public class JobTarget {
     public void execute() {
         Mafia.executeSkill(targets);
         Doctor.executeSkill(targets);
-        result = targets.get(JobType.MAFIA);
+        result = targets.getOrDefault(JobType.MAFIA, Player.NONE);
         targets.clear();
     }
 }

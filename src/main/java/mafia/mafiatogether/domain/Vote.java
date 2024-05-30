@@ -62,7 +62,7 @@ public class Vote {
         playerVote.clear();
     }
 
-    public boolean isAllParticipatedVote(final int total) {
+    public boolean isAllParticipatedVote(final Long total) {
         return this.playerVote.keySet().size() == total;
     }
 }

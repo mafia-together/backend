@@ -77,6 +77,9 @@ public class Room {
     }
 
     public Player getPlayer(final String name) {
+        if (name.isBlank()) {
+            return Player.NONE;
+        }
         if (!players.containsKey(name)) {
             throw new RoomException(ExceptionCode.INVALID_PLAYER);
         }
@@ -102,7 +105,7 @@ public class Room {
         final Player player = getPlayer(name);
         final Player target = targetName.isBlank() ? Player.NONE : getPlayer(targetName);
         vote.choose(player, target);
-        if (vote.isAllParticipatedVote(roomInfo.getTotal())) {
+        if (vote.isAllParticipatedVote(getPlayerCount())) {
             this.status = status.getNextStatus(this, now);
         }
     }
@@ -165,11 +168,12 @@ public class Room {
             player.reset();
         }
         vote.clear();
+        chat.clear();
     }
 
     public String getNightResult() {
-        if (status.getType() != StatusType.DAY_INTRO) {
-            throw new RoomException(ExceptionCode.IS_NOT_DAY_INTRO);
+        if (status.getType() != StatusType.NOTICE) {
+            throw new RoomException(ExceptionCode.IS_NOT_NOTICE);
         }
         Player target = jobTarget.getResult();
         if (target.isAlive()) {
