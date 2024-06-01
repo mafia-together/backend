@@ -11,7 +11,7 @@ public class EndStatus extends Status {
 
     private final List<Player> players;
 
-    public static final Long ONE_MINUTE = 60_000L;
+    public static final Long THIRTY_SECOND = 30_000L;
 
     private EndStatus(final List<Player> players, final Long start, final Long end) {
         super(start, end);
@@ -19,7 +19,7 @@ public class EndStatus extends Status {
     }
 
     public static EndStatus create(final List<Player> players, final Long now) {
-        return new EndStatus(players, now, now + ONE_MINUTE);
+        return new EndStatus(players, now, now + THIRTY_SECOND);
     }
 
     public JobType getWinnerJob() {
