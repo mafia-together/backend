@@ -20,6 +20,8 @@ import mafia.mafiatogether.domain.status.WaitStatus;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Room {
 
+    private static final String EMPTY = "";
+
     private final Map<String, Player> players;
     private final Vote vote;
     private Status status;
@@ -89,7 +91,10 @@ public class Room {
     public String executeSkill(final String name, final String targetName) {
         final Player player = getPlayer(name);
         final Player target = getPlayer(targetName);
-        if (!target.isAlive() && !target.equals(Player.NONE)) {
+        if (target.equals(Player.NONE)) {
+            return EMPTY;
+        }
+        if (!target.isAlive()) {
             throw new PlayerException(ExceptionCode.NOT_ALIVE_PLAYER);
         }
         return player.getJob().applySkill(target, jobTarget);
