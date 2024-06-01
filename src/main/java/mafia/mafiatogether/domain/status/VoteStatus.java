@@ -1,5 +1,7 @@
 package mafia.mafiatogether.domain.status;
 
+import mafia.mafiatogether.config.exception.ExceptionCode;
+import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.domain.Room;
 
 public class VoteStatus extends Status {
@@ -16,6 +18,9 @@ public class VoteStatus extends Status {
 
     @Override
     public Status getNextStatus(final Room room, final Long now) {
+        if (now < this.endTime) {
+            throw new RoomException(ExceptionCode.VOTE_IS_NOT_END);
+        }
         room.executeVote();
         return VoteResultStatus.create(now);
     }
