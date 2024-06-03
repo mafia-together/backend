@@ -121,20 +121,20 @@ public class Room {
     }
 
     public boolean isEnd() {
-        long aliveMafia = getAliveMafia();
-        return getAliveCitizen() / 2 < aliveMafia || aliveMafia == 0;
+        long aliveMafia = getAliveMafiaCount();
+        long aliveCitizen = getAliveCount();
+        return aliveCitizen / 2 < aliveMafia || aliveMafia == 0;
     }
 
-    public long getAliveMafia() {
+    private long getAliveMafiaCount() {
         return players.values().stream()
                 .filter(player -> player.getJobType().equals(JobType.MAFIA))
                 .filter(Player::isAlive)
                 .count();
     }
 
-    public long getAliveCitizen() {
+    private long getAliveCount() {
         return players.values().stream()
-                .filter(player -> !player.getJobType().equals(JobType.MAFIA))
                 .filter(Player::isAlive)
                 .count();
     }
