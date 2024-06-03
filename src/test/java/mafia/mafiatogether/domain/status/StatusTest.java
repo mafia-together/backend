@@ -111,7 +111,7 @@ class StatusTest {
         // given
         final Chat chat = room.getChat();
         final Long endTime = nightEndTime + 1_000L;
-        final Long endEndTime = endTime + 59_000L;
+        final Long endEndTime = endTime + 29_000L;
         final Long waitTime = endEndTime + 1_000L;
 
         room.modifyStatus(StatusType.DAY, dayIntroTime);
@@ -168,7 +168,7 @@ class StatusTest {
         room.getStatusType(nightIntroTime);
 
         // when & then
-        Assertions.assertThat(room.getVoteResult()).isNull();
+        Assertions.assertThat(room.getVoteResult()).isBlank();
     }
 
     @Test

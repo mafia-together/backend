@@ -92,7 +92,7 @@ class PlayerControllerTest {
                 .when().post("/players/skill")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
-        Assertions.assertThat(room.getJobsTarget(mafia.getName())).isNull();
+        Assertions.assertThat(room.getJobsTarget(mafia.getName())).isBlank();
     }
 
     @Test
