@@ -20,8 +20,6 @@ import mafia.mafiatogether.domain.status.WaitStatus;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Room {
 
-    private static final String EMPTY = "";
-
     private final Map<String, Player> players;
     private final Vote vote;
     private Status status;
