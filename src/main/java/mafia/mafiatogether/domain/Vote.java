@@ -37,6 +37,9 @@ public class Vote {
         int count = 0;
         Player maxVotedPlayer = Player.NONE;
         for (Entry<Player, Integer> voteCount : voteCounts.entrySet()) {
+            if (voteCount.getKey() == Player.NONE) {
+                continue;
+            }
             if (maxCount == voteCount.getValue()) {
                 count++;
             }
