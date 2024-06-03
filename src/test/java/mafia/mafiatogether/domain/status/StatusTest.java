@@ -211,4 +211,30 @@ class StatusTest {
                 }
         );
     }
+
+    @Test
+    void 다섯명_게임에서_기권표_일경우_무효표처리된다(){
+        // given
+        Room room1 = Room.create(new RoomInfo(5,2,0,0), dayIntroTime);
+        room1.joinPlayer("p1");
+        room1.joinPlayer("p2");
+        room1.joinPlayer("p3");
+        room1.joinPlayer("p4");
+        room1.joinPlayer("p5");
+        room1.modifyStatus(StatusType.DAY, dayIntroTime);
+        room1.getStatusType(noticeTime);
+        room1.getStatusType(dayTime);
+
+        // when
+        room1.votePlayer("p1","",dayTime);
+        room1.votePlayer("p2","",dayTime);
+        room1.votePlayer("p3","",dayTime);
+        room1.votePlayer("p4","",dayTime);
+        room1.votePlayer("p5","",dayTime);
+
+        // then
+        room1.getStatusType(dayTime);
+        room1.getStatusType(dayTime+11_000L);
+        Assertions.assertThat(room1.getStatusType(dayTime+14_000L)).isEqualTo(StatusType.NIGHT_INTRO);
+    }
 }
