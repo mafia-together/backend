@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mafia.mafiatogether.domain.job.JobType;
 import mafia.mafiatogether.domain.status.StatusType;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -111,6 +112,6 @@ class RoomTest {
         room.votePlayer(d.getName(), e.getName(), Clock.systemDefaultZone().millis());
 
         // then
-        assertNull(room.getVoteResult());
+        Assertions.assertThat(room.getVoteResult()).isBlank();
     }
 }

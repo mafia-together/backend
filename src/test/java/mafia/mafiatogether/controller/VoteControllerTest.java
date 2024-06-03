@@ -88,7 +88,7 @@ class VoteControllerTest {
 
         final Vote vote = room.getVote();
         vote.executeVote();
-        Assertions.assertThat(vote.getVoteResult()).isNull();
+        Assertions.assertThat(vote.getVoteResult()).isBlank();
     }
 
     @Test
