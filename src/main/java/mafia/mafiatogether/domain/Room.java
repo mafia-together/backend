@@ -91,10 +91,7 @@ public class Room {
     public String executeSkill(final String name, final String targetName) {
         final Player player = getPlayer(name);
         final Player target = getPlayer(targetName);
-        if (target.equals(Player.NONE)) {
-            return EMPTY;
-        }
-        if (!target.isAlive()) {
+        if (!target.isAlive() && !target.equals(Player.NONE)) {
             throw new PlayerException(ExceptionCode.NOT_ALIVE_PLAYER);
         }
         return player.getJob().applySkill(target, jobTarget);
