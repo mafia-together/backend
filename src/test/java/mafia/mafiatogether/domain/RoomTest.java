@@ -1,13 +1,13 @@
 package mafia.mafiatogether.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 import mafia.mafiatogether.domain.job.JobType;
+import mafia.mafiatogether.domain.job.Mafia;
 import mafia.mafiatogether.domain.status.StatusType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -113,5 +113,19 @@ class RoomTest {
 
         // then
         Assertions.assertThat(room.getVoteResult()).isBlank();
+    }
+
+    @Test
+    void 초기_마피아_타겟은_null이다() {
+        // given
+        final Room room = Room.create(new RoomInfo(3, 1, 0, 0), Clock.systemDefaultZone().millis());
+        room.joinPlayer("A");
+        room.joinPlayer("B");
+        room.joinPlayer("C");
+        Player mafia = room.getPlayer("A");
+        mafia.modifyJob(new Mafia());
+
+        // when & then
+        Assertions.assertThat(room.getJobsTarget("A")).isNull();
     }
 }

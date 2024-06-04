@@ -11,7 +11,7 @@ import mafia.mafiatogether.domain.job.JobType;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Player {
 
-    public static final Player NONE = new Player("", true, null);
+    public static final Player NONE = new Player(null, true, null);
     private final String name;
     private boolean alive;
     private Job job;
