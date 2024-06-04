@@ -122,8 +122,8 @@ public class Room {
 
     public boolean isEnd() {
         long aliveMafia = getAliveMafiaCount();
-        long alivePlayer = getAlivePlayerCount();
-        return alivePlayer / 2 < aliveMafia || aliveMafia == 0;
+        long notMafiaCount = getAlivePlayerCount();
+        return notMafiaCount <= aliveMafia || aliveMafia == 0;
     }
 
     private long getAliveMafiaCount() {
@@ -135,7 +135,7 @@ public class Room {
 
     private long getAlivePlayerCount() {
         return players.values().stream()
-                .filter(Player::isAlive)
+                .filter(player -> player.isAlive() && !player.isMafia())
                 .count();
     }
 
