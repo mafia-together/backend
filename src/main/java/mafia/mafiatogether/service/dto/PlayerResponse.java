@@ -17,6 +17,14 @@ public record PlayerResponse(
         );
     }
 
+    public static PlayerResponse forMyJob(final Player player) {
+        return new PlayerResponse(
+                player.getName(),
+                player.isAlive(),
+                player.getJobType()
+        );
+    }
+
     public static PlayerResponse forAlive(final Player player) {
         return new PlayerResponse(
                 player.getName(),
