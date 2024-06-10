@@ -15,6 +15,7 @@ import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.RoomManager;
 import mafia.mafiatogether.domain.job.JobType;
 import mafia.mafiatogether.domain.status.StatusType;
+import mafia.mafiatogether.service.dto.PlayerResponse;
 import mafia.mafiatogether.service.dto.RoomCodeResponse;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
 import mafia.mafiatogether.service.dto.RoomInfoResponse;
@@ -266,6 +267,7 @@ class RoomControllerTest {
         final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
         final Room room = roomManager.findByCode(code);
         room.joinPlayer("power");
+        room.joinPlayer("chunsik");
 
         // when & then
         final RoomInfoResponse response = RestAssured.given().log().all()
@@ -277,6 +279,16 @@ class RoomControllerTest {
                 .extract()
                 .as(RoomInfoResponse.class);
 
+        PlayerResponse power = response.players()
+                .stream().filter(player -> player.name().equals("power"))
+                .findFirst()
+                .get();
+
+        PlayerResponse chunsik = response.players()
+                .stream().filter(player -> player.name().equals("chunsik"))
+                .findFirst()
+                .get();
+
         assertSoftly(
                 softly -> {
                     softly.assertThat(response.startTime()).isNotNull();
@@ -284,7 +296,8 @@ class RoomControllerTest {
                     softly.assertThat(response.myName()).isNotNull();
                     softly.assertThat(response.isAlive()).isTrue();
                     softly.assertThat(response.isMaster()).isTrue();
-                    softly.assertThat(response.players().getFirst().job()).isNull();
+                    softly.assertThat(power.job()).isEqualTo(JobType.CITIZEN);
+                    softly.assertThat(chunsik.job()).isNull();
                 }
         );
     }
