@@ -36,8 +36,8 @@ public record RoomInfoResponse(
     private static List<PlayerResponse> convertFrom(final Player owner, final Map<String, Player> players) {
         PlayerResponse myJob = PlayerResponse.forMyJob(players.get(owner.getName()));
         List<PlayerResponse> responses = players.values().stream()
-                .filter(it -> !it.getName().equals(owner.getName()))
-                .map(it -> playerToResponse(owner, it))
+                .filter(response -> !response.getName().equals(owner.getName()))
+                .map(response -> playerToResponse(owner, response))
                 .collect(Collectors.toList());
         responses.add(myJob);
         return responses;
@@ -51,6 +51,5 @@ public record RoomInfoResponse(
             return PlayerResponse.forMafia(player);
         }
         return PlayerResponse.forAlive(player);
-
     }
 }
