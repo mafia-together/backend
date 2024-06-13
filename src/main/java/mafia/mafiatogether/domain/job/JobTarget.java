@@ -21,11 +21,11 @@ public class JobTarget {
         targets.put(jobType, player);
     }
 
-    public Player getTarget(final JobType jobType) {
+    public String getTargetName(final JobType jobType) {
         if (!targets.containsKey(jobType)) {
-            return Player.NONE;
+            return null;
         }
-        return targets.get(jobType);
+        return targets.get(jobType).getName();
     }
 
     public void execute() {

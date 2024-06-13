@@ -1,5 +1,6 @@
 package mafia.mafiatogether.domain.job;
 
+import java.util.Objects;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.domain.Player;
@@ -8,7 +9,7 @@ public class Police implements Job {
 
     @Override
     public String applySkill(final Player player, final JobTarget jobTarget) {
-        if (jobTarget.getTarget(JobType.POLICE) != Player.NONE) {
+        if (Objects.nonNull(jobTarget.getTargetName(JobType.POLICE))) {
             throw new PlayerException(ExceptionCode.POLICE_DUPLICATE_SKILL);
         }
         jobTarget.addTarget(JobType.POLICE, player);

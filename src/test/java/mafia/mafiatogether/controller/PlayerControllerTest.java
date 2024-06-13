@@ -1,5 +1,6 @@
 package mafia.mafiatogether.controller;
 
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.hamcrest.Matchers.equalTo;
 
 import io.restassured.RestAssured;
@@ -68,7 +69,7 @@ class PlayerControllerTest {
     }
 
     @Test
-    void 마피아가_빈문자열을_보낼시_아무도_죽지않는다(){
+    void 초기_마피아_타겟은_NULL_값이다() {
         // given
         String code = roomManager.create(new RoomInfo(3, 1, 0, 0));
         Room room = roomManager.findByCode(code);
@@ -89,10 +90,66 @@ class PlayerControllerTest {
                 .contentType(ContentType.JSON)
                 .body(Map.of("target", ""))
                 .header("Authorization", "Basic " + basic)
+                .when().get("/players/skill")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+        Assertions.assertThat(room.getJobsTarget(mafia.getName())).isNull();
+    }
+
+    @Test
+    void 마피아가_빈문자열을_보낼시_아무도_죽지않는다() {
+        // given
+        String code = roomManager.create(new RoomInfo(3, 1, 0, 0));
+        Room room = roomManager.findByCode(code);
+        room.joinPlayer("t1");
+        room.joinPlayer("t2");
+        room.joinPlayer("t3");
+
+        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
+
+        Player mafia = room.getPlayers().values().stream()
+                .filter(player -> player.getJobType().equals(JobType.MAFIA))
+                .findFirst()
+                .get();
+        String basic = Base64.getEncoder().encodeToString((code + ":" + mafia.getName()).getBytes());
+
+        // when & then
+        final String initTargetName = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(Map.of("target", ""))
+                .header("Authorization", "Basic " + basic)
+                .when().get("/players/skill")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .body()
+                .jsonPath()
+                .getString("name");
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(Map.of("target", ""))
+                .header("Authorization", "Basic " + basic)
                 .when().post("/players/skill")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
-        Assertions.assertThat(room.getJobsTarget(mafia.getName())).isBlank();
+        final String targetName = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(Map.of("target", ""))
+                .header("Authorization", "Basic " + basic)
+                .when().get("/players/skill")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .body()
+                .jsonPath()
+                .getString("name");
+        assertSoftly(
+                softly -> {
+                    softly.assertThat(initTargetName).isNull();
+                    softly.assertThat(room.getJobsTarget(mafia.getName())).isBlank();
+                    softly.assertThat(targetName).isBlank();
+                }
+        );
     }
 
     @Test

@@ -98,7 +98,7 @@ public class Room {
     public String getJobsTarget(final String name) {
         final Player player = players.get(name);
         final JobType jobType = player.getJobType();
-        return jobTarget.getTarget(jobType).getName();
+        return jobTarget.getTargetName(jobType);
     }
 
     public void votePlayer(final String name, final String targetName, final Long now) {
