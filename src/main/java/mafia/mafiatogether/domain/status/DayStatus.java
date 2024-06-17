@@ -1,7 +1,10 @@
 package mafia.mafiatogether.domain.status;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import mafia.mafiatogether.domain.Room;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class DayStatus extends Status {
 
     private static final Long TWENTY_SECOND = 20_000L;

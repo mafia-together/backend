@@ -1,9 +1,12 @@
 package mafia.mafiatogether.domain.status;
 
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VoteResultStatus extends Status {
 
     public static final Long THREE_SECOND = 3_000L;

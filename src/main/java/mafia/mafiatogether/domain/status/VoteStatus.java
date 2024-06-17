@@ -1,7 +1,10 @@
 package mafia.mafiatogether.domain.status;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import mafia.mafiatogether.domain.Room;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VoteStatus extends Status {
 
     private static final Long TEN_SECOND = 10_000L;

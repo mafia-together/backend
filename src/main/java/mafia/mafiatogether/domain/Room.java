@@ -15,11 +15,16 @@ import mafia.mafiatogether.domain.job.JobType;
 import mafia.mafiatogether.domain.status.Status;
 import mafia.mafiatogether.domain.status.StatusType;
 import mafia.mafiatogether.domain.status.WaitStatus;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
 @Getter
+@RedisHash("room")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Room {
 
+    @Id
+    private String code;
     private final Map<String, Player> players;
     private final Vote vote;
     private Status status;
@@ -28,8 +33,22 @@ public class Room {
     private final JobTarget jobTarget;
     private Player master;
 
+
+    public static Room create(final String code,final RoomInfo roomInfo, final Long now) {
+        return new Room(
+                code,
+                new ConcurrentHashMap<>(),
+                Vote.create(),
+                WaitStatus.create(now),
+                roomInfo,
+                Chat.chat(),
+                new JobTarget(),
+                Player.NONE
+        );
+    }
     public static Room create(final RoomInfo roomInfo, final Long now) {
         return new Room(
+                null,
                 new ConcurrentHashMap<>(),
                 Vote.create(),
                 WaitStatus.create(now),

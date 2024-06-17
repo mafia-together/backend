@@ -1,9 +1,12 @@
 package mafia.mafiatogether.domain.status;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.domain.Room;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class WaitStatus extends Status {
 
     private static final Long THIRTY_MINUTE = 300_000L;

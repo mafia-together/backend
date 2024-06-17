@@ -1,14 +1,17 @@
 package mafia.mafiatogether.domain.status;
 
 import java.sql.Timestamp;
-import lombok.RequiredArgsConstructor;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import mafia.mafiatogether.domain.Room;
 
-@RequiredArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class Status {
 
-    protected final Long startTime;
-    protected final Long endTime;
+    protected Long startTime;
+    protected Long endTime;
 
     public abstract Status getNextStatus(final Room room, final Long now);
 

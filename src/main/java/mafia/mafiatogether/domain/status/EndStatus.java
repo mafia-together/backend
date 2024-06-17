@@ -3,13 +3,16 @@ package mafia.mafiatogether.domain.status;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.job.JobType;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class EndStatus extends Status {
 
-    private final List<Player> players;
+    private List<Player> players;
 
     public static final Long THIRTY_SECOND = 30_000L;
 
@@ -29,34 +32,34 @@ public class EndStatus extends Status {
         return JobType.MAFIA;
     }
 
-    private Map<Boolean, List<Player>> partitionPlayersByRole() {
+    private Map<Boolean, List<Player>> classifyPlayersByJob() {
         return players
                 .stream()
                 .collect(Collectors.partitioningBy(Player::isMafia));
     }
 
     public List<Player> getWinner() {
-        Map<Boolean, List<Player>> players = partitionPlayersByRole();
+        Map<Boolean, List<Player>> classifiedPlayers = classifyPlayersByJob();
 
         if (getAliveMafia() == 0) {
-            return players.get(Boolean.FALSE);
+            return classifiedPlayers.get(Boolean.FALSE);
         }
-        return players.get(Boolean.TRUE);
+        return classifiedPlayers.get(Boolean.TRUE);
     }
 
     public List<Player> getLoser() {
-        Map<Boolean, List<Player>> players = partitionPlayersByRole();
+        Map<Boolean, List<Player>> classifiedPlayers = classifyPlayersByJob();
 
         if (getAliveMafia() == 0) {
-            return players.get(Boolean.TRUE);
+            return classifiedPlayers.get(Boolean.TRUE);
         }
-        return players.get(Boolean.FALSE);
+        return classifiedPlayers.get(Boolean.FALSE);
     }
 
     private long getAliveMafia() {
         return players.stream()
-                .filter(player -> player.getJobType().equals(JobType.MAFIA))
-                .filter(player -> player.isAlive() == true)
+                .filter(Player::isMafia)
+                .filter(Player::isAlive)
                 .count();
     }
 

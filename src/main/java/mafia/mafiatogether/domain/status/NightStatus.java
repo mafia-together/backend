@@ -1,9 +1,12 @@
 package mafia.mafiatogether.domain.status;
 
 import java.util.List;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class NightStatus extends Status {
 
     public static final Long FORTY_SECOND = 40_000L;

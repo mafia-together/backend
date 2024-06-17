@@ -15,6 +15,7 @@ import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.RoomManager;
 import mafia.mafiatogether.domain.job.JobType;
 import mafia.mafiatogether.domain.status.StatusType;
+import mafia.mafiatogether.repository.RoomRepository;
 import mafia.mafiatogether.service.dto.PlayerResponse;
 import mafia.mafiatogether.service.dto.RoomCodeResponse;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
@@ -375,13 +376,22 @@ class RoomControllerTest {
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
                 .when().get("/rooms/info")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
+                .then().log().all().statusCode(HttpStatus.OK.value())
                 .extract()
                 .as(RoomInfoResponse.class);
 
         return roomInfoResponse.players().stream()
                 .filter(response -> response.job() != null && response.job().equals(JobType.MAFIA))
                 .count();
+    }
+
+    @Autowired
+    private RoomRepository repository;
+
+    @Test
+    void redisTest(){
+        // given
+        repository.save(Room.create("test", new RoomInfo(5,1,1,1),Clock.systemDefaultZone().millis()));
+        Assertions.assertThat(repository.findById("test")).isNotNull();
     }
 }
