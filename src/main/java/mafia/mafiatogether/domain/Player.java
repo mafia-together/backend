@@ -2,6 +2,7 @@ package mafia.mafiatogether.domain;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import mafia.mafiatogether.domain.job.Citizen;
 import mafia.mafiatogether.domain.job.Job;
@@ -9,6 +10,7 @@ import mafia.mafiatogether.domain.job.JobType;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@EqualsAndHashCode(of = {"name"})
 public class Player {
 
     public static final Player NONE = new Player(null, true, null);

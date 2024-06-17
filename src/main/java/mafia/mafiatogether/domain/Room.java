@@ -46,6 +46,7 @@ public class Room {
                 Player.NONE
         );
     }
+
     public static Room create(final RoomInfo roomInfo, final Long now) {
         return new Room(
                 null,

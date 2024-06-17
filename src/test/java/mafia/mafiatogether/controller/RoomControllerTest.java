@@ -12,7 +12,6 @@ import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
-import mafia.mafiatogether.domain.RoomManager;
 import mafia.mafiatogether.domain.job.JobType;
 import mafia.mafiatogether.domain.status.StatusType;
 import mafia.mafiatogether.repository.RoomRepository;
@@ -40,7 +39,7 @@ import org.springframework.http.HttpStatus;
 class RoomControllerTest {
 
     @Autowired
-    private RoomManager roomManager;
+    private RoomRepository roomRepository;
 
     @LocalServerPort
     private int port;
@@ -105,7 +104,8 @@ class RoomControllerTest {
     @Test
     void 방을_상태를_확인할_수_있다() {
         //given
-        final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        final String code = "test";
+        roomRepository.save(Room.create(code, new RoomInfo(5, 1, 1, 1), Clock.systemDefaultZone().millis()));
         final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
 
         //when
@@ -125,15 +125,17 @@ class RoomControllerTest {
     @Test
     void 방을_상태를_변경할_수_있다() {
         //given
-        String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        final String code = "test";
+        final Room room = Room.create("test", RoomInfo.of(5, 1, 1, 1), Clock.systemDefaultZone().millis());
         String basic = Base64.getEncoder().encodeToString((code + ":" + "player1").getBytes());
         RoomModifyRequest request = new RoomModifyRequest(StatusType.DAY);
-        Room room = roomManager.findByCode(code);
         room.joinPlayer("player1");
         room.joinPlayer("player2");
         room.joinPlayer("player3");
         room.joinPlayer("player4");
         room.joinPlayer("player5");
+
+        roomRepository.save(room);
 
         //when
         RestAssured.given().log().all()
@@ -145,19 +147,20 @@ class RoomControllerTest {
                 .statusCode(HttpStatus.OK.value());
 
         //then
-        StatusType actual = room.getStatusType(Clock.systemDefaultZone().millis());
+        StatusType actual = roomRepository.findById(code).get().getStatusType(Clock.systemDefaultZone().millis());
         Assertions.assertThat(actual).isEqualTo(StatusType.DAY_INTRO);
     }
 
     @Test
     void 인원부족시_게임을_시작할_수_없다() {
         //given
-        String code = roomManager.create(new RoomInfo(3, 1, 1, 1));
+        final String code = "test";
         String basic = Base64.getEncoder().encodeToString((code + ":" + "player1").getBytes());
         RoomModifyRequest request = new RoomModifyRequest(StatusType.DAY);
-        Room room = roomManager.findByCode(code);
+        Room room = Room.create(code, RoomInfo.of(5, 1, 1, 1), Clock.systemDefaultZone().millis());
         room.joinPlayer("player1");
         room.joinPlayer("player2");
+        roomRepository.save(room);
 
         //when
         final ErrorResponse response = RestAssured.given().log().all()
@@ -177,7 +180,10 @@ class RoomControllerTest {
     @Test
     void 방에_참가할_수_있다() {
         //given
-        final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        final String code = "test";
+        final Room room = Room.create(code, RoomInfo.of(5, 1, 1, 1), Clock.systemDefaultZone().millis());
+        room.joinPlayer("ttt");
+        roomRepository.save(room);
 
         //when
         RestAssured.given().log().all()
@@ -187,19 +193,22 @@ class RoomControllerTest {
                 .statusCode(HttpStatus.OK.value());
 
         //then
-        Room room = roomManager.findByCode(code);
-        Assertions.assertThat(room.getPlayer("power")).isNotNull();
+        Room actual = roomRepository.findById(code).get();
+        Assertions.assertThatCode(() -> actual.getPlayer("power"))
+                .doesNotThrowAnyException();
     }
 
     @Test
     void 방이_꽉_차_있을때_참가에_실패한다() {
         //given
-        final String code = roomManager.create(new RoomInfo(3, 1, 1, 1));
-        final Room room = roomManager.findByCode(code);
+        final String code = "test"; //roomManager.create(new RoomInfo(3, 1, 1, 1));
+        final Room room = Room.create(code, RoomInfo.of(3, 1, 1, 1), Clock.systemDefaultZone().millis());
         room.joinPlayer("A");
         room.joinPlayer("C");
         room.joinPlayer("D");
-        //when
+        roomRepository.save(room);
+
+        // when
         final ErrorResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .when().get("/rooms?code=" + code + "&name=E")
@@ -215,9 +224,12 @@ class RoomControllerTest {
     @Test
     void 방에_이미_존재한느_이름으로_참가할때_참가에_실패한다() {
         //given
-        final String code = roomManager.create(new RoomInfo(3, 1, 1, 1));
-        final Room room = roomManager.findByCode(code);
+        final String code = "test";
+        final Room room = Room.create(code, RoomInfo.of(5, 1, 1, 1),
+                Clock.systemDefaultZone().millis());//roomManager.findByCode(code);
         room.joinPlayer("A");
+        roomRepository.save(room);
+
         //when
         final ErrorResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -234,7 +246,7 @@ class RoomControllerTest {
     @Test
     void 방의_코드를_찾는다() {
         // given
-        final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        final String code = "test";
         final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
 
         // when & then
@@ -250,7 +262,9 @@ class RoomControllerTest {
     @Test
     void 방의_코드를_검증_할_수_있다() {
         // given
-        final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        final String code = "test";
+        final Room room = Room.create(code, RoomInfo.of(5, 1, 1, 1), Clock.systemDefaultZone().millis());
+        roomRepository.save(room);
 
         // when & then
         RestAssured.given().log().all()
@@ -264,11 +278,12 @@ class RoomControllerTest {
     @Test
     void 생존한_사람이_방의_정보를_찾는다() {
         // given
-        final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        final String code = "test";
         final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
-        final Room room = roomManager.findByCode(code);
+        final Room room = Room.create(code, RoomInfo.of(5, 1, 1, 1), Clock.systemDefaultZone().millis());
         room.joinPlayer("power");
         room.joinPlayer("chunsik");
+        roomRepository.save(room);
 
         // when & then
         final RoomInfoResponse response = RestAssured.given().log().all()
@@ -306,11 +321,12 @@ class RoomControllerTest {
     @Test
     void 죽은사람이_방의_정보를_찾는다() {
         // given
-        final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        final String code = "test";
         final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
-        final Room room = roomManager.findByCode(code);
+        final Room room = Room.create(code, RoomInfo.of(5, 1, 1, 1), Clock.systemDefaultZone().millis());
         room.joinPlayer("power");
         room.getPlayer("power").kill();
+        roomRepository.save(room);
 
         // when & then
         final RoomInfoResponse response = RestAssured.given().log().all()
@@ -336,8 +352,8 @@ class RoomControllerTest {
     @Test
     void 마피아가_방의_정보를_찾는다() {
         // given
-        final String code = roomManager.create(new RoomInfo(5, 2, 1, 0));
-        final Room room = roomManager.findByCode(code);
+        final String code = "test";
+        final Room room = Room.create(code, RoomInfo.of(5, 2, 1, 1), Clock.systemDefaultZone().millis());
         room.joinPlayer("p1");
         room.joinPlayer("p2");
         room.joinPlayer("p3");
@@ -350,6 +366,7 @@ class RoomControllerTest {
         final String doctorBasic = Base64.getEncoder().encodeToString((code + ":" + doctor.getName()).getBytes());
         final Player citizen = findPlayer(room, JobType.CITIZEN);
         final String citizenBasic = Base64.getEncoder().encodeToString((code + ":" + citizen.getName()).getBytes());
+        roomRepository.save(room);
 
         // when & then
         final Long mafiaCount = countMafiaResponse(mafiaBasic);
@@ -383,15 +400,5 @@ class RoomControllerTest {
         return roomInfoResponse.players().stream()
                 .filter(response -> response.job() != null && response.job().equals(JobType.MAFIA))
                 .count();
-    }
-
-    @Autowired
-    private RoomRepository repository;
-
-    @Test
-    void redisTest(){
-        // given
-        repository.save(Room.create("test", new RoomInfo(5,1,1,1),Clock.systemDefaultZone().millis()));
-        Assertions.assertThat(repository.findById("test")).isNotNull();
     }
 }
