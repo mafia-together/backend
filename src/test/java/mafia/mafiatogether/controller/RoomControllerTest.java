@@ -14,6 +14,7 @@ import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.job.JobType;
 import mafia.mafiatogether.domain.status.StatusType;
+import mafia.mafiatogether.redis.RedisTestConfig;
 import mafia.mafiatogether.repository.RoomRepository;
 import mafia.mafiatogether.service.dto.PlayerResponse;
 import mafia.mafiatogether.service.dto.RoomCodeResponse;
@@ -32,10 +33,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@Import(RedisTestConfig.class)
 class RoomControllerTest {
 
     @Autowired
@@ -182,7 +185,6 @@ class RoomControllerTest {
         //given
         final String code = "test";
         final Room room = Room.create(code, RoomInfo.of(5, 1, 1, 1), Clock.systemDefaultZone().millis());
-        room.joinPlayer("ttt");
         roomRepository.save(room);
 
         //when

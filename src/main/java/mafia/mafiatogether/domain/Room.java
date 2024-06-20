@@ -19,20 +19,23 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
 @Getter
-@RedisHash("room")
+@RedisHash(value = "room")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Room {
 
     @Id
     private String code;
-    private final Map<String, Player> players;
-    private final Vote vote;
+    private Map<String, Player> players;
+    private Vote vote;
     private Status status;
-    private final RoomInfo roomInfo;
-    private final Chat chat;
-    private final JobTarget jobTarget;
+    private RoomInfo roomInfo;
+    private Chat chat;
+    private JobTarget jobTarget;
     private Player master;
 
+    private Room(){
+        this.players = new ConcurrentHashMap<>();
+    }
 
     public static Room create(final String code,final RoomInfo roomInfo, final Long now) {
         return new Room(
