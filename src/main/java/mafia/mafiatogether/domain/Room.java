@@ -33,11 +33,12 @@ public class Room {
     private JobTarget jobTarget;
     private Player master;
 
-    private Room(){
+    private Room() {
         this.players = new ConcurrentHashMap<>();
+        this.jobTarget = new JobTarget();
     }
 
-    public static Room create(final String code,final RoomInfo roomInfo, final Long now) {
+    public static Room create(final String code, final RoomInfo roomInfo, final Long now) {
         return new Room(
                 code,
                 new ConcurrentHashMap<>(),

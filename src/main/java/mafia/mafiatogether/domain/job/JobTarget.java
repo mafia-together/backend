@@ -3,14 +3,12 @@ package mafia.mafiatogether.domain.job;
 import java.util.EnumMap;
 import java.util.Map;
 import lombok.Getter;
-import lombok.Setter;
 import mafia.mafiatogether.domain.Player;
 
 @Getter
-@Setter
 public class JobTarget {
 
-    private final Map<JobType, Player> targets;
+    private Map<JobType, Player> targets;
     private Player result;
 
     public JobTarget() {

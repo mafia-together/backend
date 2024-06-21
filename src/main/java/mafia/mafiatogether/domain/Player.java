@@ -14,7 +14,7 @@ import mafia.mafiatogether.domain.job.JobType;
 public class Player {
 
     public static final Player NONE = new Player(null, true, null);
-    private final String name;
+    private String name;
     private boolean alive;
     private Job job;
 
