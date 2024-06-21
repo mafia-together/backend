@@ -9,6 +9,7 @@ import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.status.EndStatus;
+import mafia.mafiatogether.domain.status.StatusType;
 import mafia.mafiatogether.repository.RoomRepository;
 import mafia.mafiatogether.service.dto.RoomCodeResponse;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
@@ -48,7 +49,9 @@ public class RoomService {
         final Room room = roomRepository.findById(code)
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         final Long now = Clock.systemDefaultZone().millis();
-        return new RoomStatusResponse(room.getStatusType(now));
+        final StatusType statusType = room.getStatusType(now);
+        roomRepository.save(room);
+        return new RoomStatusResponse(statusType);
     }
 
     public void modifyStatus(final String code, final RoomModifyRequest request) {
