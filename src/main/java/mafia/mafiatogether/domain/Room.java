@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import mafia.mafiatogether.config.SpringContext;
+import mafia.mafiatogether.config.ApplicationPublisherContainer;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.config.exception.RoomException;
@@ -167,12 +167,12 @@ public class Room {
 
     public void executeVote() {
         vote.executeVote();
-        SpringContext.getPublisher().publishEvent(new RoomUpdateEvent(this));
+        ApplicationPublisherContainer.getPublisher().publishEvent(new RoomUpdateEvent(this));
     }
 
     public void executeJobTarget() {
         jobTarget.execute();
-        SpringContext.getPublisher().publishEvent(new RoomUpdateEvent(this));
+        ApplicationPublisherContainer.getPublisher().publishEvent(new RoomUpdateEvent(this));
     }
 
     public Boolean isMaster(final Player player) {
