@@ -9,15 +9,20 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class Vote {
 
-    private final Map<Player, Player> playerVote;
+    private Map<String, Player> playerVote;
     private Player votedPlayer;
+
+    public Vote() {
+        this.playerVote = new ConcurrentHashMap<>();
+        this.votedPlayer = Player.NONE;
+    }
 
     protected static Vote create() {
         return new Vote(new ConcurrentHashMap<>(), Player.NONE);
     }
 
     public void choose(final Player player, final Player target) {
-        playerVote.put(player, target);
+        playerVote.put(player.getName(), target);
     }
 
     public String getVoteResult() {

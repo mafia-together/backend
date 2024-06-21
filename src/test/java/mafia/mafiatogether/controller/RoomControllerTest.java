@@ -36,9 +36,9 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 
+@Import(RedisTestConfig.class)
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@Import(RedisTestConfig.class)
 class RoomControllerTest {
 
     @Autowired
