@@ -3,16 +3,16 @@ package mafia.mafiatogether.domain;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Chat {
 
-    private final List<Message> messages;
+    private List<Message> messages;
 
-    public static Chat chat() {
+    public static Chat create() {
         return new Chat(new ArrayList<>());
     }
 
@@ -20,7 +20,7 @@ public class Chat {
         messages.add(message);
     }
 
-    public void clear(){
+    public void clear() {
         messages.clear();
     }
 }

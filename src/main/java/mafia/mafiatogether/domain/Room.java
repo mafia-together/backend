@@ -36,6 +36,7 @@ public class Room {
     private Room() {
         this.players = new ConcurrentHashMap<>();
         this.jobTarget = new JobTarget();
+        this.chat = Chat.create();
     }
 
     public static Room create(final String code, final RoomInfo roomInfo, final Long now) {
@@ -45,7 +46,7 @@ public class Room {
                 Vote.create(),
                 WaitStatus.create(now),
                 roomInfo,
-                Chat.chat(),
+                Chat.create(),
                 new JobTarget(),
                 Player.NONE
         );
@@ -58,7 +59,7 @@ public class Room {
                 Vote.create(),
                 WaitStatus.create(now),
                 roomInfo,
-                Chat.chat(),
+                Chat.create(),
                 new JobTarget(),
                 Player.NONE
         );
