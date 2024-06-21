@@ -1,6 +1,7 @@
 package mafia.mafiatogether.listener;
 
 import lombok.RequiredArgsConstructor;
+import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomUpdateEvent;
 import mafia.mafiatogether.repository.RoomRepository;
 import org.springframework.context.event.EventListener;
@@ -14,6 +15,7 @@ public class RoomEventListener {
 
     @EventListener
     public void updateRoom(final RoomUpdateEvent roomUpdateEvent){
-        roomRepository.save(roomUpdateEvent.getRoom());
+        final Room room = roomUpdateEvent.getRoom();
+        roomRepository.save(room);
     }
 }

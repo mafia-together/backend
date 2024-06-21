@@ -6,7 +6,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import mafia.mafiatogether.config.ApplicationPublisherContainer;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.config.exception.RoomException;
@@ -17,12 +16,13 @@ import mafia.mafiatogether.domain.status.Status;
 import mafia.mafiatogether.domain.status.StatusType;
 import mafia.mafiatogether.domain.status.WaitStatus;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.redis.core.RedisHash;
 
 @Getter
 @RedisHash(value = "room")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class Room {
+public class Room extends AbstractAggregateRoot<Room> {
 
     @Id
     private String code;
@@ -167,12 +167,12 @@ public class Room {
 
     public void executeVote() {
         vote.executeVote();
-        ApplicationPublisherContainer.getPublisher().publishEvent(new RoomUpdateEvent(this));
+        registerEvent(new RoomUpdateEvent(this));
     }
 
     public void executeJobTarget() {
         jobTarget.execute();
-        ApplicationPublisherContainer.getPublisher().publishEvent(new RoomUpdateEvent(this));
+        registerEvent(new RoomUpdateEvent(this));
     }
 
     public Boolean isMaster(final Player player) {

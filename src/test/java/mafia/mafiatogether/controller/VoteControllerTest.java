@@ -61,7 +61,7 @@ class VoteControllerTest extends ControllerTest {
         room.votePlayer(player1.getName(), player2.getName(), Clock.systemDefaultZone().millis());
         room.votePlayer(player2.getName(), player2.getName(), Clock.systemDefaultZone().millis());
         room.votePlayer(player3.getName(), player1.getName(), Clock.systemDefaultZone().millis());
-        room.executeVote();
+        room.getVote().executeVote();
         roomRepository.save(room);
 
         // when & then
