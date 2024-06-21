@@ -5,58 +5,19 @@ import static org.hamcrest.Matchers.equalTo;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import java.time.Clock;
 import java.util.Base64;
 import java.util.Map;
 import mafia.mafiatogether.config.exception.ErrorResponse;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.domain.Player;
 import mafia.mafiatogether.domain.Room;
-import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.job.JobType;
-import mafia.mafiatogether.domain.status.StatusType;
-import mafia.mafiatogether.redis.RedisTestConfig;
-import mafia.mafiatogether.repository.RoomRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 
-@Import(RedisTestConfig.class)
 @SuppressWarnings("NonAsciiCharacters")
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class PlayerControllerTest {
-
-    @Autowired
-    private RoomRepository roomRepository;
-
-    @LocalServerPort
-    private int port;
-
-    @BeforeEach
-    void setUp() {
-        RestAssured.port = port;
-    }
-
-    private static final String CODE = "code";
-
-    @BeforeEach
-    void setRoom() {
-        Room room = Room.create(CODE, RoomInfo.of(4, 1, 1, 1), Clock.systemDefaultZone().millis());
-        room.joinPlayer("t1");
-        room.joinPlayer("t2");
-        room.joinPlayer("t3");
-        room.joinPlayer("t4");
-
-        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
-
-        roomRepository.save(room);
-    }
+class PlayerControllerTest extends ControllerTest {
 
     @Test
     void 직업_기술을_사용한다() {
@@ -204,7 +165,7 @@ class PlayerControllerTest {
         // when & then
         final ErrorResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(Map.of("target", "t5"))
+                .body(Map.of("target", "null"))
                 .header("Authorization", "Basic " + basic)
                 .when().post("/players/skill")
                 .then().log().all()

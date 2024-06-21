@@ -14,8 +14,6 @@ import mafia.mafiatogether.domain.Room;
 import mafia.mafiatogether.domain.RoomInfo;
 import mafia.mafiatogether.domain.job.JobType;
 import mafia.mafiatogether.domain.status.StatusType;
-import mafia.mafiatogether.redis.RedisTestConfig;
-import mafia.mafiatogether.repository.RoomRepository;
 import mafia.mafiatogether.service.dto.PlayerResponse;
 import mafia.mafiatogether.service.dto.RoomCodeResponse;
 import mafia.mafiatogether.service.dto.RoomCreateRequest;
@@ -24,34 +22,14 @@ import mafia.mafiatogether.service.dto.RoomModifyRequest;
 import mafia.mafiatogether.service.dto.RoomStatusResponse;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 
-@Import(RedisTestConfig.class)
 @SuppressWarnings("NonAsciiCharacters")
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class RoomControllerTest {
-
-    @Autowired
-    private RoomRepository roomRepository;
-
-    @LocalServerPort
-    private int port;
-
-    @BeforeEach
-    void setUp() {
-        RestAssured.port = port;
-    }
-
+class RoomControllerTest extends ControllerTest {
 
     @Test
     void 방을_생성할_수_있다() {
@@ -202,18 +180,10 @@ class RoomControllerTest {
 
     @Test
     void 방이_꽉_차_있을때_참가에_실패한다() {
-        //given
-        final String code = "test"; //roomManager.create(new RoomInfo(3, 1, 1, 1));
-        final Room room = Room.create(code, RoomInfo.of(3, 1, 1, 1), Clock.systemDefaultZone().millis());
-        room.joinPlayer("A");
-        room.joinPlayer("C");
-        room.joinPlayer("D");
-        roomRepository.save(room);
-
         // when
         final ErrorResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/rooms?code=" + code + "&name=E")
+                .when().get("/rooms?code=" + CODE + "&name=E")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .extract()
@@ -225,17 +195,10 @@ class RoomControllerTest {
 
     @Test
     void 방에_이미_존재한느_이름으로_참가할때_참가에_실패한다() {
-        //given
-        final String code = "test";
-        final Room room = Room.create(code, RoomInfo.of(5, 1, 1, 1),
-                Clock.systemDefaultZone().millis());//roomManager.findByCode(code);
-        room.joinPlayer("A");
-        roomRepository.save(room);
-
         //when
         final ErrorResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/rooms?code=" + code + "&name=A")
+                .when().get("/rooms?code=" + CODE + "&name=t1")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .extract()

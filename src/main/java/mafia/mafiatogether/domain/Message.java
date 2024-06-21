@@ -1,7 +1,6 @@
 package mafia.mafiatogether.domain;
 
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.Clock;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.domain.job.JobType;
@@ -12,10 +11,10 @@ public class Message {
 
     private final Player player;
     private final String contents;
-    private final Timestamp timestamp;
+    private final Long timestamp;
 
     public static Message of(final Player player, final String contents) {
-        return new Message(player, contents, Timestamp.valueOf(LocalDateTime.now()));
+        return new Message(player, contents, Clock.systemDefaultZone().millis());
     }
 
     public String getName() {

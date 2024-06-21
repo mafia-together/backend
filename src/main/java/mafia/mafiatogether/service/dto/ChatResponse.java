@@ -16,7 +16,7 @@ public record ChatResponse(
         return new ChatResponse(
                 message.getName(),
                 message.getContents(),
-                message.getTimestamp(),
+                new Timestamp(message.getTimestamp()),
                 message.isOwner(name),
                 message.getJob(isMafia, name)
         );
