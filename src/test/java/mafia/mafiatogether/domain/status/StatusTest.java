@@ -3,11 +3,12 @@ package mafia.mafiatogether.domain.status;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.Clock;
-import mafia.mafiatogether.domain.Chat;
-import mafia.mafiatogether.domain.Message;
-import mafia.mafiatogether.domain.Room;
-import mafia.mafiatogether.domain.RoomInfo;
-import mafia.mafiatogether.domain.job.JobType;
+import mafia.mafiatogether.chat.domain.Chat;
+import mafia.mafiatogether.chat.domain.Message;
+import mafia.mafiatogether.room.domain.Room;
+import mafia.mafiatogether.room.domain.RoomInfo;
+import mafia.mafiatogether.job.domain.JobType;
+import mafia.mafiatogether.room.domain.status.StatusType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
