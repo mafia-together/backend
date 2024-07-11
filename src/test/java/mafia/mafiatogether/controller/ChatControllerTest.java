@@ -9,17 +9,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
-import mafia.mafiatogether.domain.Message;
-import mafia.mafiatogether.domain.Player;
-import mafia.mafiatogether.domain.Room;
-import mafia.mafiatogether.domain.RoomInfo;
-import mafia.mafiatogether.domain.RoomManager;
-import mafia.mafiatogether.domain.job.Citizen;
-import mafia.mafiatogether.domain.job.Doctor;
-import mafia.mafiatogether.domain.job.JobType;
-import mafia.mafiatogether.domain.job.Mafia;
-import mafia.mafiatogether.domain.job.Police;
-import mafia.mafiatogether.service.dto.ChatResponse;
+import mafia.mafiatogether.chat.domain.Message;
+import mafia.mafiatogether.job.domain.Player;
+import mafia.mafiatogether.room.domain.Room;
+import mafia.mafiatogether.room.domain.RoomInfo;
+import mafia.mafiatogether.room.repository.RoomManager;
+import mafia.mafiatogether.job.domain.Citizen;
+import mafia.mafiatogether.job.domain.Doctor;
+import mafia.mafiatogether.job.domain.JobType;
+import mafia.mafiatogether.job.domain.Mafia;
+import mafia.mafiatogether.job.domain.Police;
+import mafia.mafiatogether.chat.dto.response.ChatResponse;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -105,7 +105,7 @@ public class ChatControllerTest {
                 .jsonPath().getList(".", ChatResponse.class);
 
         JobType playerJob = responses.stream()
-                .filter(response -> response.isOwner())
+                .filter(ChatResponse::isOwner)
                 .findFirst()
                 .get()
                 .job();
@@ -145,7 +145,7 @@ public class ChatControllerTest {
                 .jsonPath().getList(".", ChatResponse.class);
 
         JobType playerJob = responses.stream()
-                .filter(response -> response.isOwner())
+                .filter(ChatResponse::isOwner)
                 .findFirst()
                 .get()
                 .job();

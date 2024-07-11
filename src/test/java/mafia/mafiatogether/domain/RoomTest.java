@@ -6,9 +6,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
-import mafia.mafiatogether.domain.job.JobType;
-import mafia.mafiatogether.domain.job.Mafia;
-import mafia.mafiatogether.domain.status.StatusType;
+import mafia.mafiatogether.job.domain.JobType;
+import mafia.mafiatogether.job.domain.Mafia;
+import mafia.mafiatogether.room.domain.status.StatusType;
+import mafia.mafiatogether.job.domain.Player;
+import mafia.mafiatogether.room.domain.Room;
+import mafia.mafiatogether.room.domain.RoomInfo;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

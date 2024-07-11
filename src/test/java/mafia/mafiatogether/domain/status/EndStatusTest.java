@@ -2,12 +2,14 @@ package mafia.mafiatogether.domain.status;
 
 import java.time.Clock;
 import java.util.List;
-import mafia.mafiatogether.domain.Player;
-import mafia.mafiatogether.domain.job.JobType;
-import mafia.mafiatogether.domain.job.Mafia;
+import mafia.mafiatogether.job.domain.Player;
+import mafia.mafiatogether.job.domain.JobType;
+import mafia.mafiatogether.job.domain.Mafia;
+import mafia.mafiatogether.room.domain.status.EndStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+@SuppressWarnings("NonAsciiCharacters")
 class EndStatusTest {
 
     @Test
