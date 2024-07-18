@@ -1,14 +1,27 @@
 package mafia.mafiatogether.room.domain.status;
 
+import static mafia.mafiatogether.global.Fixture.dayEndTime;
+import static mafia.mafiatogether.global.Fixture.dayIntroEndTime;
+import static mafia.mafiatogether.global.Fixture.dayIntroTime;
+import static mafia.mafiatogether.global.Fixture.dayTime;
+import static mafia.mafiatogether.global.Fixture.nextDay;
+import static mafia.mafiatogether.global.Fixture.nightEndTime;
+import static mafia.mafiatogether.global.Fixture.nightIntroEndTime;
+import static mafia.mafiatogether.global.Fixture.nightIntroTime;
+import static mafia.mafiatogether.global.Fixture.nightTime;
+import static mafia.mafiatogether.global.Fixture.noticeEndTime;
+import static mafia.mafiatogether.global.Fixture.noticeTime;
+import static mafia.mafiatogether.global.Fixture.voteEndTime;
+import static mafia.mafiatogether.global.Fixture.voteResultEndTime;
+import static mafia.mafiatogether.global.Fixture.voteResultTime;
+import static mafia.mafiatogether.global.Fixture.voteTime;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import java.time.Clock;
 import mafia.mafiatogether.chat.domain.Chat;
 import mafia.mafiatogether.chat.domain.Message;
+import mafia.mafiatogether.job.domain.JobType;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
-import mafia.mafiatogether.job.domain.JobType;
-import mafia.mafiatogether.room.domain.status.StatusType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,21 +29,6 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("NonAsciiCharacters")
 class StatusTest {
 
-    private static final Long dayIntroTime = Clock.systemDefaultZone().millis();
-    private static final Long dayIntroEndTime = dayIntroTime + 2_000L;
-    private static final Long noticeTime = dayIntroEndTime + 1_000L;
-    private static final Long noticeEndTime = noticeTime + 2_000L;
-    private static final Long dayTime = noticeEndTime + 1_000L;
-    private static final Long dayEndTime = dayTime + 59_000L;
-    private static final Long voteTime = dayEndTime + 1_000L;
-    private static final Long voteEndTime = voteTime + 9_000L;
-    private static final Long voteResultTime = voteEndTime + 1_000L;
-    private static final Long voteResultEndTime = voteResultTime + 2_000L;
-    private static final Long nightIntroTime = voteResultEndTime + 1_000L;
-    private static final Long nightIntroEndTime = nightIntroTime + 2_000L;
-    private static final Long nightTime = nightIntroEndTime + 1_000L;
-    private static final Long nightEndTime = nightTime + 39_000L;
-    private static final Long nextDay = nightEndTime + 1_000L;
     private static final String PLAYER1 = "A";
     private static final String PLAYER2 = "B";
     private static final String PLAYER3 = "C";
@@ -214,9 +212,9 @@ class StatusTest {
     }
 
     @Test
-    void 다섯명_게임에서_기권표_일경우_무효표처리된다(){
+    void 다섯명_게임에서_기권표_일경우_무효표처리된다() {
         // given
-        Room room1 = Room.create(new RoomInfo(5,2,0,0), dayIntroTime);
+        Room room1 = Room.create(new RoomInfo(5, 2, 0, 0), dayIntroTime);
         room1.joinPlayer("p1");
         room1.joinPlayer("p2");
         room1.joinPlayer("p3");
@@ -227,15 +225,15 @@ class StatusTest {
         room1.getStatusType(dayTime);
 
         // when
-        room1.votePlayer("p1","",dayTime);
-        room1.votePlayer("p2","",dayTime);
-        room1.votePlayer("p3","",dayTime);
-        room1.votePlayer("p4","",dayTime);
-        room1.votePlayer("p5","",dayTime);
+        room1.votePlayer("p1", "", dayTime);
+        room1.votePlayer("p2", "", dayTime);
+        room1.votePlayer("p3", "", dayTime);
+        room1.votePlayer("p4", "", dayTime);
+        room1.votePlayer("p5", "", dayTime);
 
         // then
         room1.getStatusType(dayTime);
-        room1.getStatusType(dayTime+11_000L);
-        Assertions.assertThat(room1.getStatusType(dayTime+14_000L)).isEqualTo(StatusType.NIGHT_INTRO);
+        room1.getStatusType(dayTime + 11_000L);
+        Assertions.assertThat(room1.getStatusType(dayTime + 14_000L)).isEqualTo(StatusType.NIGHT_INTRO);
     }
 }

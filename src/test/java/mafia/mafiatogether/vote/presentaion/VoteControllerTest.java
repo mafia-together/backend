@@ -5,6 +5,7 @@ import io.restassured.http.ContentType;
 import java.time.Clock;
 import java.util.Base64;
 import java.util.Map;
+import mafia.mafiatogether.global.ControllerTest;
 import mafia.mafiatogether.job.domain.Player;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
@@ -15,31 +16,19 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 
 @SuppressWarnings("NonAsciiCharacters")
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class VoteControllerTest {
+class VoteControllerTest extends ControllerTest {
 
     @Autowired
     private RoomManager roomManager;
-
-    @LocalServerPort
-    private int port;
 
     private static String code;
     private Room room;
     private Player player1;
     private Player player2;
     private Player player3;
-
-    @BeforeEach
-    void setUp() {
-        RestAssured.port = port;
-    }
 
     @BeforeEach
     void setRoom() {

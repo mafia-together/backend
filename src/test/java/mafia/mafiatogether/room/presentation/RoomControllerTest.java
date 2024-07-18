@@ -9,46 +9,33 @@ import java.util.Base64;
 import java.util.stream.Stream;
 import mafia.mafiatogether.config.exception.ErrorResponse;
 import mafia.mafiatogether.config.exception.ExceptionCode;
+import mafia.mafiatogether.global.ControllerTest;
+import mafia.mafiatogether.job.domain.JobType;
 import mafia.mafiatogether.job.domain.Player;
+import mafia.mafiatogether.job.dto.response.PlayerResponse;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
-import mafia.mafiatogether.room.repository.RoomManager;
-import mafia.mafiatogether.job.domain.JobType;
 import mafia.mafiatogether.room.domain.status.StatusType;
-import mafia.mafiatogether.job.dto.response.PlayerResponse;
-import mafia.mafiatogether.room.dto.response.RoomCodeResponse;
 import mafia.mafiatogether.room.dto.request.RoomCreateRequest;
-import mafia.mafiatogether.room.dto.response.RoomInfoResponse;
 import mafia.mafiatogether.room.dto.request.RoomModifyRequest;
+import mafia.mafiatogether.room.dto.response.RoomCodeResponse;
+import mafia.mafiatogether.room.dto.response.RoomInfoResponse;
 import mafia.mafiatogether.room.dto.response.RoomStatusResponse;
+import mafia.mafiatogether.room.repository.RoomManager;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 
 @SuppressWarnings("NonAsciiCharacters")
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class RoomControllerTest {
+class RoomControllerTest extends ControllerTest {
 
     @Autowired
     private RoomManager roomManager;
-
-    @LocalServerPort
-    private int port;
-
-    @BeforeEach
-    void setUp() {
-        RestAssured.port = port;
-    }
-
 
     @Test
     void 방을_생성할_수_있다() {
