@@ -1,4 +1,4 @@
-package mafia.mafiatogether.controller;
+package mafia.mafiatogether.chat.presentation;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;

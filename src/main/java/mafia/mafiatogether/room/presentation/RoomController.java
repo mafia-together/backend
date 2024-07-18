@@ -1,4 +1,4 @@
-package mafia.mafiatogether.room.controller;
+package mafia.mafiatogether.room.presentation;
 
 import java.util.Base64;
 import lombok.RequiredArgsConstructor;

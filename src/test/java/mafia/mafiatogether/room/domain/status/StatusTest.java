@@ -1,4 +1,4 @@
-package mafia.mafiatogether.domain.status;
+package mafia.mafiatogether.room.domain.status;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 

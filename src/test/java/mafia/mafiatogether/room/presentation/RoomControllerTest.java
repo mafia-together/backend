@@ -1,4 +1,4 @@
-package mafia.mafiatogether.controller;
+package mafia.mafiatogether.room.presentation;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 

@@ -1,8 +1,5 @@
-package mafia.mafiatogether.domain.job;
+package mafia.mafiatogether.job.domain;
 
-import mafia.mafiatogether.job.domain.JobTarget;
-import mafia.mafiatogether.job.domain.JobType;
-import mafia.mafiatogether.job.domain.Player;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

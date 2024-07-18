@@ -1,6 +1,5 @@
-package mafia.mafiatogether.domain;
+package mafia.mafiatogether.room.util;
 
-import mafia.mafiatogether.room.util.CodeGenerator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
