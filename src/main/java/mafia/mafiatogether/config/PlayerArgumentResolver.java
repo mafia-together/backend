@@ -4,7 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import mafia.mafiatogether.config.exception.AuthException;
 import mafia.mafiatogether.config.exception.ExceptionCode;
-import mafia.mafiatogether.job.dto.PlayerInfoDto;
+import mafia.mafiatogether.job.application.dto.PlayerInfoDto;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

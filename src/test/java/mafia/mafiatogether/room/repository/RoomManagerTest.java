@@ -1,6 +1,7 @@
 package mafia.mafiatogether.room.repository;
 
 import mafia.mafiatogether.room.domain.RoomInfo;
+import mafia.mafiatogether.room.domain.RoomManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
