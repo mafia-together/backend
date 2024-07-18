@@ -10,16 +10,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 import mafia.mafiatogether.chat.domain.Message;
-import mafia.mafiatogether.job.domain.Player;
-import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.room.domain.RoomInfo;
-import mafia.mafiatogether.room.repository.RoomManager;
+import mafia.mafiatogether.chat.dto.response.ChatResponse;
+import mafia.mafiatogether.global.ControllerTest;
 import mafia.mafiatogether.job.domain.Citizen;
 import mafia.mafiatogether.job.domain.Doctor;
 import mafia.mafiatogether.job.domain.JobType;
 import mafia.mafiatogether.job.domain.Mafia;
+import mafia.mafiatogether.job.domain.Player;
 import mafia.mafiatogether.job.domain.Police;
-import mafia.mafiatogether.chat.dto.response.ChatResponse;
+import mafia.mafiatogether.room.domain.Room;
+import mafia.mafiatogether.room.domain.RoomInfo;
+import mafia.mafiatogether.room.repository.RoomManager;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,14 +29,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 
 @SuppressWarnings("NonAsciiCharacters")
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class ChatControllerTest {
+public class ChatControllerTest extends ControllerTest {
 
     @Autowired
     private RoomManager roomManager;
@@ -47,14 +44,6 @@ public class ChatControllerTest {
     private Player player3;
     private Player player4;
     private Player player5;
-
-    @LocalServerPort
-    private int port;
-
-    @BeforeEach
-    void setUp() {
-        RestAssured.port = port;
-    }
 
     @BeforeEach
     void setRoom() {

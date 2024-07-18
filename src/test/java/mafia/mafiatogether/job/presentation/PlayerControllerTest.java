@@ -10,35 +10,23 @@ import java.util.Base64;
 import java.util.Map;
 import mafia.mafiatogether.config.exception.ErrorResponse;
 import mafia.mafiatogether.config.exception.ExceptionCode;
+import mafia.mafiatogether.global.ControllerTest;
+import mafia.mafiatogether.job.domain.JobType;
 import mafia.mafiatogether.job.domain.Player;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
-import mafia.mafiatogether.room.repository.RoomManager;
-import mafia.mafiatogether.job.domain.JobType;
 import mafia.mafiatogether.room.domain.status.StatusType;
+import mafia.mafiatogether.room.repository.RoomManager;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 
 @SuppressWarnings("NonAsciiCharacters")
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class PlayerControllerTest {
+class PlayerControllerTest extends ControllerTest {
 
     @Autowired
     private RoomManager roomManager;
-
-    @LocalServerPort
-    private int port;
-
-    @BeforeEach
-    void setUp() {
-        RestAssured.port = port;
-    }
 
     @Test
     void 직업_기술을_사용한다() {
