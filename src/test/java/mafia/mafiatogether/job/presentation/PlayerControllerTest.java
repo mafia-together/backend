@@ -1,4 +1,4 @@
-package mafia.mafiatogether.controller;
+package mafia.mafiatogether.job.presentation;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.hamcrest.Matchers.equalTo;

@@ -1,4 +1,4 @@
-package mafia.mafiatogether.domain.status;
+package mafia.mafiatogether.room.domain.status;
 
 import java.time.Clock;
 import java.util.List;

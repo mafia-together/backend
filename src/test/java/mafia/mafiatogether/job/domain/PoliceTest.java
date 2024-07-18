@@ -1,13 +1,8 @@
-package mafia.mafiatogether.domain.job;
+package mafia.mafiatogether.job.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import mafia.mafiatogether.config.exception.PlayerException;
-import mafia.mafiatogether.job.domain.Doctor;
-import mafia.mafiatogether.job.domain.JobTarget;
-import mafia.mafiatogether.job.domain.Mafia;
-import mafia.mafiatogether.job.domain.Police;
-import mafia.mafiatogether.job.domain.Player;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

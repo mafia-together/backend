@@ -1,4 +1,4 @@
-package mafia.mafiatogether.domain;
+package mafia.mafiatogether.room.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -10,8 +10,6 @@ import mafia.mafiatogether.job.domain.JobType;
 import mafia.mafiatogether.job.domain.Mafia;
 import mafia.mafiatogether.room.domain.status.StatusType;
 import mafia.mafiatogether.job.domain.Player;
-import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.room.domain.RoomInfo;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
