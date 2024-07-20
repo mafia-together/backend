@@ -1,20 +1,20 @@
 package mafia.mafiatogether.room.domain.status;
 
-import static mafia.mafiatogether.global.Fixture.dayEndTime;
-import static mafia.mafiatogether.global.Fixture.dayIntroEndTime;
-import static mafia.mafiatogether.global.Fixture.dayIntroTime;
-import static mafia.mafiatogether.global.Fixture.dayTime;
-import static mafia.mafiatogether.global.Fixture.nextDay;
-import static mafia.mafiatogether.global.Fixture.nightEndTime;
-import static mafia.mafiatogether.global.Fixture.nightIntroEndTime;
-import static mafia.mafiatogether.global.Fixture.nightIntroTime;
-import static mafia.mafiatogether.global.Fixture.nightTime;
-import static mafia.mafiatogether.global.Fixture.noticeEndTime;
-import static mafia.mafiatogether.global.Fixture.noticeTime;
-import static mafia.mafiatogether.global.Fixture.voteEndTime;
-import static mafia.mafiatogether.global.Fixture.voteResultEndTime;
-import static mafia.mafiatogether.global.Fixture.voteResultTime;
-import static mafia.mafiatogether.global.Fixture.voteTime;
+import static mafia.mafiatogether.global.Fixture.DAY_END_TIME;
+import static mafia.mafiatogether.global.Fixture.DAY_INTRO_END_TIME;
+import static mafia.mafiatogether.global.Fixture.DAY_INTRO_TIME;
+import static mafia.mafiatogether.global.Fixture.DAY_TIME;
+import static mafia.mafiatogether.global.Fixture.NEXT_DAY;
+import static mafia.mafiatogether.global.Fixture.NIGHT_END_TIME;
+import static mafia.mafiatogether.global.Fixture.NIGHT_INTRO_END_TIME;
+import static mafia.mafiatogether.global.Fixture.NIGHT_INTRO_TIME;
+import static mafia.mafiatogether.global.Fixture.NIGHT_TIME;
+import static mafia.mafiatogether.global.Fixture.NOTICE_END_TIME;
+import static mafia.mafiatogether.global.Fixture.NOTICE_TIME;
+import static mafia.mafiatogether.global.Fixture.VOTE_END_TIME;
+import static mafia.mafiatogether.global.Fixture.VOTE_RESULT_END_TIME;
+import static mafia.mafiatogether.global.Fixture.VOTE_RESULT_TIME;
+import static mafia.mafiatogether.global.Fixture.VOTE_TIME;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import mafia.mafiatogether.chat.domain.Chat;
@@ -37,7 +37,7 @@ class StatusTest {
 
     @BeforeEach
     void setRoom() {
-        room = Room.create(new RoomInfo(3, 1, 0, 1), dayIntroTime);
+        room = Room.create(new RoomInfo(3, 1, 0, 1), DAY_INTRO_TIME);
         room.joinPlayer(PLAYER1);
         room.joinPlayer(PLAYER2);
         room.joinPlayer(PLAYER3);
@@ -46,25 +46,25 @@ class StatusTest {
     @Test
     void 게임이_진행되며_상태가_바뀐다() {
         // given
-        room.modifyStatus(StatusType.DAY, dayIntroTime);
+        room.modifyStatus(StatusType.DAY, DAY_INTRO_TIME);
 
         // when & then
         assertSoftly(
                 softly -> {
-                    softly.assertThat(room.getStatusType(dayIntroEndTime)).isEqualTo(StatusType.DAY_INTRO);
-                    softly.assertThat(room.getStatusType(noticeTime)).isEqualTo(StatusType.NOTICE);
-                    softly.assertThat(room.getStatusType(noticeEndTime)).isEqualTo(StatusType.NOTICE);
-                    softly.assertThat(room.getStatusType(dayTime)).isEqualTo(StatusType.DAY);
-                    softly.assertThat(room.getStatusType(dayEndTime)).isEqualTo(StatusType.DAY);
-                    softly.assertThat(room.getStatusType(voteTime)).isEqualTo(StatusType.VOTE);
-                    softly.assertThat(room.getStatusType(voteEndTime)).isEqualTo(StatusType.VOTE);
-                    softly.assertThat(room.getStatusType(voteResultTime)).isEqualTo(StatusType.VOTE_RESULT);
-                    softly.assertThat(room.getStatusType(voteResultEndTime)).isEqualTo(StatusType.VOTE_RESULT);
-                    softly.assertThat(room.getStatusType(nightIntroTime)).isEqualTo(StatusType.NIGHT_INTRO);
-                    softly.assertThat(room.getStatusType(nightIntroEndTime)).isEqualTo(StatusType.NIGHT_INTRO);
-                    softly.assertThat(room.getStatusType(nightTime)).isEqualTo(StatusType.NIGHT);
-                    softly.assertThat(room.getStatusType(nightEndTime)).isEqualTo(StatusType.NIGHT);
-                    softly.assertThat(room.getStatusType(nextDay)).isEqualTo(StatusType.DAY_INTRO);
+                    softly.assertThat(room.getStatusType(DAY_INTRO_END_TIME)).isEqualTo(StatusType.DAY_INTRO);
+                    softly.assertThat(room.getStatusType(NOTICE_TIME)).isEqualTo(StatusType.NOTICE);
+                    softly.assertThat(room.getStatusType(NOTICE_END_TIME)).isEqualTo(StatusType.NOTICE);
+                    softly.assertThat(room.getStatusType(DAY_TIME)).isEqualTo(StatusType.DAY);
+                    softly.assertThat(room.getStatusType(DAY_END_TIME)).isEqualTo(StatusType.DAY);
+                    softly.assertThat(room.getStatusType(VOTE_TIME)).isEqualTo(StatusType.VOTE);
+                    softly.assertThat(room.getStatusType(VOTE_END_TIME)).isEqualTo(StatusType.VOTE);
+                    softly.assertThat(room.getStatusType(VOTE_RESULT_TIME)).isEqualTo(StatusType.VOTE_RESULT);
+                    softly.assertThat(room.getStatusType(VOTE_RESULT_END_TIME)).isEqualTo(StatusType.VOTE_RESULT);
+                    softly.assertThat(room.getStatusType(NIGHT_INTRO_TIME)).isEqualTo(StatusType.NIGHT_INTRO);
+                    softly.assertThat(room.getStatusType(NIGHT_INTRO_END_TIME)).isEqualTo(StatusType.NIGHT_INTRO);
+                    softly.assertThat(room.getStatusType(NIGHT_TIME)).isEqualTo(StatusType.NIGHT);
+                    softly.assertThat(room.getStatusType(NIGHT_END_TIME)).isEqualTo(StatusType.NIGHT);
+                    softly.assertThat(room.getStatusType(NEXT_DAY)).isEqualTo(StatusType.DAY_INTRO);
                 }
         );
     }
@@ -72,15 +72,15 @@ class StatusTest {
     @Test
     void 투표결과_게임종료_조건달성시_게임이_종료된다() {
         // given
-        final Long endTime = voteResultEndTime + 2_000L;
+        final Long endTime = VOTE_RESULT_END_TIME + 2_000L;
 
-        room.modifyStatus(StatusType.DAY, dayIntroTime);
-        room.getStatusType(noticeTime);
-        room.getStatusType(dayTime);
-        room.getStatusType(voteTime);
+        room.modifyStatus(StatusType.DAY, DAY_INTRO_TIME);
+        room.getStatusType(NOTICE_TIME);
+        room.getStatusType(DAY_TIME);
+        room.getStatusType(VOTE_TIME);
         room.getPlayer(PLAYER1).kill();
         room.getPlayer(PLAYER2).kill();
-        room.getStatusType(voteResultTime);
+        room.getStatusType(VOTE_RESULT_TIME);
 
         // when & then
         Assertions.assertThat(room.getStatusType(endTime)).isEqualTo(StatusType.END);
@@ -89,14 +89,14 @@ class StatusTest {
     @Test
     void 밤_이후_게임종료_조건달성시_게임이_종료된다() {
         // given
-        final Long endTime = nightEndTime + 1_000L;
-        room.modifyStatus(StatusType.DAY, dayIntroTime);
-        room.getStatusType(noticeTime);
-        room.getStatusType(dayTime);
-        room.getStatusType(voteTime);
-        room.getStatusType(voteResultTime);
-        room.getStatusType(nightIntroTime);
-        room.getStatusType(nightTime);
+        final Long endTime = NIGHT_END_TIME + 1_000L;
+        room.modifyStatus(StatusType.DAY, DAY_INTRO_TIME);
+        room.getStatusType(NOTICE_TIME);
+        room.getStatusType(DAY_TIME);
+        room.getStatusType(VOTE_TIME);
+        room.getStatusType(VOTE_RESULT_TIME);
+        room.getStatusType(NIGHT_INTRO_TIME);
+        room.getStatusType(NIGHT_TIME);
         room.getPlayer(PLAYER1).kill();
         room.getPlayer(PLAYER2).kill();
 
@@ -109,18 +109,18 @@ class StatusTest {
     void 종료상태_일정_시간_이후_대기상태가_된며_방이_초기화된다() {
         // given
         final Chat chat = room.getChat();
-        final Long endTime = nightEndTime + 1_000L;
+        final Long endTime = NIGHT_END_TIME + 1_000L;
         final Long endEndTime = endTime + 29_000L;
         final Long waitTime = endEndTime + 1_000L;
 
-        room.modifyStatus(StatusType.DAY, dayIntroTime);
-        room.getStatusType(noticeTime);
-        room.getStatusType(dayTime);
-        room.getStatusType(voteTime);
+        room.modifyStatus(StatusType.DAY, DAY_INTRO_TIME);
+        room.getStatusType(NOTICE_TIME);
+        room.getStatusType(DAY_TIME);
+        room.getStatusType(VOTE_TIME);
         chat.save(Message.of(room.getPlayer(PLAYER1), "contents"));
         room.getPlayer(PLAYER1).kill();
         room.getPlayer(PLAYER2).kill();
-        room.getStatusType(voteResultTime);
+        room.getStatusType(VOTE_RESULT_TIME);
         room.getStatusType(endTime);
 
         // when & then
@@ -142,13 +142,13 @@ class StatusTest {
     @Test
     void 투표상태_종료_이후_투표결과가_집계된다() {
         // given
-        room.modifyStatus(StatusType.DAY, dayIntroTime);
-        room.getStatusType(noticeTime);
-        room.getStatusType(dayTime);
-        room.getStatusType(voteTime);
-        room.votePlayer(PLAYER1, PLAYER3, voteTime);
-        room.votePlayer(PLAYER2, PLAYER3, voteTime);
-        room.getStatusType(voteResultTime);
+        room.modifyStatus(StatusType.DAY, DAY_INTRO_TIME);
+        room.getStatusType(NOTICE_TIME);
+        room.getStatusType(DAY_TIME);
+        room.getStatusType(VOTE_TIME);
+        room.votePlayer(PLAYER1, PLAYER3, VOTE_TIME);
+        room.votePlayer(PLAYER2, PLAYER3, VOTE_TIME);
+        room.getStatusType(VOTE_RESULT_TIME);
 
         // then
         Assertions.assertThat(room.getVoteResult()).isEqualTo(PLAYER3);
@@ -157,14 +157,14 @@ class StatusTest {
     @Test
     void 투표결과상태_종료_이후_투표결과_및_채팅이_초기화된다() {
         // given
-        room.modifyStatus(StatusType.DAY, dayIntroTime);
-        room.getStatusType(noticeTime);
-        room.getStatusType(dayTime);
-        room.getStatusType(voteTime);
-        room.votePlayer(PLAYER1, PLAYER3, voteTime);
-        room.votePlayer(PLAYER2, PLAYER3, voteTime);
-        room.getStatusType(voteResultTime);
-        room.getStatusType(nightIntroTime);
+        room.modifyStatus(StatusType.DAY, DAY_INTRO_TIME);
+        room.getStatusType(NOTICE_TIME);
+        room.getStatusType(DAY_TIME);
+        room.getStatusType(VOTE_TIME);
+        room.votePlayer(PLAYER1, PLAYER3, VOTE_TIME);
+        room.votePlayer(PLAYER2, PLAYER3, VOTE_TIME);
+        room.getStatusType(VOTE_RESULT_TIME);
+        room.getStatusType(NIGHT_INTRO_TIME);
 
         // when & then
         Assertions.assertThat(room.getVoteResult()).isBlank();
@@ -173,39 +173,39 @@ class StatusTest {
     @Test
     void 살아있는_모든_사람이_투표시_상태가_변경된다() {
         // given
-        room.modifyStatus(StatusType.DAY, dayIntroTime);
-        room.getStatusType(noticeTime);
-        room.getStatusType(dayTime);
+        room.modifyStatus(StatusType.DAY, DAY_INTRO_TIME);
+        room.getStatusType(NOTICE_TIME);
+        room.getStatusType(DAY_TIME);
         room.getPlayer(PLAYER3).kill();
-        room.votePlayer(PLAYER1, PLAYER3, dayTime);
-        room.votePlayer(PLAYER2, PLAYER3, dayTime);
+        room.votePlayer(PLAYER1, PLAYER3, DAY_TIME);
+        room.votePlayer(PLAYER2, PLAYER3, DAY_TIME);
 
         // then
-        Assertions.assertThat(room.getStatusType(dayTime)).isEqualTo(StatusType.VOTE);
+        Assertions.assertThat(room.getStatusType(DAY_TIME)).isEqualTo(StatusType.VOTE);
     }
 
     @Test
     void NOTICE_상태가_아닐경우_밤결과_조회에_실패한다() {
-        room.modifyStatus(StatusType.DAY, dayIntroTime);
-        room.getStatusType(dayIntroEndTime);
-        room.getStatusType(noticeTime);
-        room.getStatusType(noticeEndTime);
-        room.getStatusType(dayTime);
-        room.getStatusType(dayEndTime);
-        room.getStatusType(voteTime);
-        room.getStatusType(voteEndTime);
-        room.getStatusType(voteResultTime);
-        room.getStatusType(voteResultEndTime);
-        room.getStatusType(nightIntroTime);
-        room.getStatusType(nightIntroEndTime);
-        room.getStatusType(nightTime);
-        room.getStatusType(nightEndTime);
-        room.getStatusType(nextDay);
+        room.modifyStatus(StatusType.DAY, DAY_INTRO_TIME);
+        room.getStatusType(DAY_INTRO_END_TIME);
+        room.getStatusType(NOTICE_TIME);
+        room.getStatusType(NOTICE_END_TIME);
+        room.getStatusType(DAY_TIME);
+        room.getStatusType(DAY_END_TIME);
+        room.getStatusType(VOTE_TIME);
+        room.getStatusType(VOTE_END_TIME);
+        room.getStatusType(VOTE_RESULT_TIME);
+        room.getStatusType(VOTE_RESULT_END_TIME);
+        room.getStatusType(NIGHT_INTRO_TIME);
+        room.getStatusType(NIGHT_INTRO_END_TIME);
+        room.getStatusType(NIGHT_TIME);
+        room.getStatusType(NIGHT_END_TIME);
+        room.getStatusType(NEXT_DAY);
         assertSoftly(
                 softly -> {
-                    softly.assertThat(room.getStatusType(nextDay + 3000L)).isEqualTo(StatusType.NOTICE);
+                    softly.assertThat(room.getStatusType(NEXT_DAY + 3000L)).isEqualTo(StatusType.NOTICE);
                     softly.assertThatCode(() -> room.getNightResult()).doesNotThrowAnyException();
-                    room.getStatusType(nextDay + 6000L);
+                    room.getStatusType(NEXT_DAY + 6000L);
                     softly.assertThatThrownBy(() -> room.getNightResult());
                 }
         );
@@ -214,26 +214,26 @@ class StatusTest {
     @Test
     void 다섯명_게임에서_기권표_일경우_무효표처리된다() {
         // given
-        Room room1 = Room.create(new RoomInfo(5, 2, 0, 0), dayIntroTime);
+        Room room1 = Room.create(new RoomInfo(5, 2, 0, 0), DAY_INTRO_TIME);
         room1.joinPlayer("p1");
         room1.joinPlayer("p2");
         room1.joinPlayer("p3");
         room1.joinPlayer("p4");
         room1.joinPlayer("p5");
-        room1.modifyStatus(StatusType.DAY, dayIntroTime);
-        room1.getStatusType(noticeTime);
-        room1.getStatusType(dayTime);
+        room1.modifyStatus(StatusType.DAY, DAY_INTRO_TIME);
+        room1.getStatusType(NOTICE_TIME);
+        room1.getStatusType(DAY_TIME);
 
         // when
-        room1.votePlayer("p1", "", dayTime);
-        room1.votePlayer("p2", "", dayTime);
-        room1.votePlayer("p3", "", dayTime);
-        room1.votePlayer("p4", "", dayTime);
-        room1.votePlayer("p5", "", dayTime);
+        room1.votePlayer("p1", "", DAY_TIME);
+        room1.votePlayer("p2", "", DAY_TIME);
+        room1.votePlayer("p3", "", DAY_TIME);
+        room1.votePlayer("p4", "", DAY_TIME);
+        room1.votePlayer("p5", "", DAY_TIME);
 
         // then
-        room1.getStatusType(dayTime);
-        room1.getStatusType(dayTime + 11_000L);
-        Assertions.assertThat(room1.getStatusType(dayTime + 14_000L)).isEqualTo(StatusType.NIGHT_INTRO);
+        room1.getStatusType(DAY_TIME);
+        room1.getStatusType(DAY_TIME + 11_000L);
+        Assertions.assertThat(room1.getStatusType(DAY_TIME + 14_000L)).isEqualTo(StatusType.NIGHT_INTRO);
     }
 }
