@@ -1,4 +1,4 @@
-package mafia.mafiatogether.config;
+package mafia.mafiatogether.global.config;
 
 import java.util.List;
 import org.springframework.context.annotation.Configuration;

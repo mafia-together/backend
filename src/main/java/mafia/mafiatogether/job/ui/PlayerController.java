@@ -1,7 +1,7 @@
 package mafia.mafiatogether.job.ui;
 
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.config.PlayerInfo;
+import mafia.mafiatogether.global.config.PlayerInfo;
 import mafia.mafiatogether.job.application.PlayerService;
 import mafia.mafiatogether.job.application.dto.response.MafiaTargetResponse;
 import mafia.mafiatogether.job.application.dto.request.PlayerExecuteAbilityRequest;

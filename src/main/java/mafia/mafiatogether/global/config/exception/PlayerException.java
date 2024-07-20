@@ -1,4 +1,4 @@
-package mafia.mafiatogether.config.exception;
+package mafia.mafiatogether.global.config.exception;
 
 public class PlayerException extends GlobalException{
     public PlayerException(final ExceptionCode code) {

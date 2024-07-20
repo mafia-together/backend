@@ -1,7 +1,7 @@
 package mafia.mafiatogether.vote.ui;
 
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.config.PlayerInfo;
+import mafia.mafiatogether.global.config.PlayerInfo;
 import mafia.mafiatogether.vote.application.VoteService;
 import mafia.mafiatogether.job.application.dto.PlayerInfoDto;
 import mafia.mafiatogether.vote.application.dto.request.VoteRequest;

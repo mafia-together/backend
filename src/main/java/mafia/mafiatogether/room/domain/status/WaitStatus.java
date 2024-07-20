@@ -1,7 +1,7 @@
 package mafia.mafiatogether.room.domain.status;
 
-import mafia.mafiatogether.config.exception.ExceptionCode;
-import mafia.mafiatogether.config.exception.RoomException;
+import mafia.mafiatogether.global.config.exception.ExceptionCode;
+import mafia.mafiatogether.global.config.exception.RoomException;
 import mafia.mafiatogether.room.domain.Room;
 
 public class WaitStatus extends Status {

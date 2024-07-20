@@ -1,4 +1,4 @@
-package mafia.mafiatogether.config;
+package mafia.mafiatogether.global.config;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 

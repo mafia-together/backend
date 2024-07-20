@@ -3,8 +3,8 @@ package mafia.mafiatogether.room.domain;
 import java.time.Clock;
 import java.util.HashMap;
 import java.util.Map;
-import mafia.mafiatogether.config.exception.ExceptionCode;
-import mafia.mafiatogether.config.exception.RoomException;
+import mafia.mafiatogether.global.config.exception.ExceptionCode;
+import mafia.mafiatogether.global.config.exception.RoomException;
 import org.springframework.stereotype.Component;
 
 @Component

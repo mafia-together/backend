@@ -1,4 +1,4 @@
-package mafia.mafiatogether.config.exception;
+package mafia.mafiatogether.global.config.exception;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

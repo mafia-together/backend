@@ -3,7 +3,7 @@ package mafia.mafiatogether.chat.ui;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.config.PlayerInfo;
+import mafia.mafiatogether.global.config.PlayerInfo;
 import mafia.mafiatogether.chat.application.ChatService;
 import mafia.mafiatogether.chat.application.dto.request.ChatRequest;
 import mafia.mafiatogether.chat.application.dto.response.ChatResponse;

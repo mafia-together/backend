@@ -1,9 +1,9 @@
-package mafia.mafiatogether.config.exception;
+package mafia.mafiatogether.global.config.exception;
 
 import java.util.ArrayList;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
-import mafia.mafiatogether.config.exception.ErrorResponse.FieldErrorResponse;
+import mafia.mafiatogether.global.config.exception.ErrorResponse.FieldErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
