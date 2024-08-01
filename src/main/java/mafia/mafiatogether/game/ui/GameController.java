@@ -2,8 +2,8 @@ package mafia.mafiatogether.game.ui;
 
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.PlayerInfo;
+import mafia.mafiatogether.game.application.GameService;
 import mafia.mafiatogether.job.application.dto.PlayerInfoDto;
-import mafia.mafiatogether.room.application.RoomService;
 import mafia.mafiatogether.room.application.dto.request.RoomModifyRequest;
 import mafia.mafiatogether.room.application.dto.response.RoomInfoResponse;
 import mafia.mafiatogether.room.application.dto.response.RoomResultResponse;
@@ -18,13 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class GameController {
 
-    private final RoomService roomService;
+    private final GameService gameService;
 
     @GetMapping("/rooms/status")
     public ResponseEntity<RoomStatusResponse> findStatus(
             @PlayerInfo final PlayerInfoDto playerInfoDto
     ) {
-        return ResponseEntity.ok(roomService.findStatus(playerInfoDto.code()));
+        return ResponseEntity.ok(gameService.findStatus(playerInfoDto.code()));
     }
 
     @PatchMapping("/rooms/status")
@@ -32,7 +32,7 @@ public class GameController {
             @PlayerInfo final PlayerInfoDto playerInfoDto,
             @RequestBody final RoomModifyRequest request
     ) {
-        roomService.modifyStatus(playerInfoDto.code(), request);
+        gameService.modifyStatus(playerInfoDto.code(), request);
         return ResponseEntity.ok().build();
     }
 
@@ -41,13 +41,13 @@ public class GameController {
     public ResponseEntity<RoomResultResponse> findResult(
             @PlayerInfo final PlayerInfoDto playerInfoDto
     ) {
-        return ResponseEntity.ok(roomService.findResult(playerInfoDto.code()));
+        return ResponseEntity.ok(gameService.findResult(playerInfoDto.code()));
     }
 
     @GetMapping("/rooms/info")
     public ResponseEntity<RoomInfoResponse> findRoomInfo(
             @PlayerInfo PlayerInfoDto playerInfoDto
     ) {
-        return ResponseEntity.ok(roomService.findRoomInfo(playerInfoDto.code(), playerInfoDto.name()));
+        return ResponseEntity.ok(gameService.findRoomInfo(playerInfoDto.code(), playerInfoDto.name()));
     }
 }
