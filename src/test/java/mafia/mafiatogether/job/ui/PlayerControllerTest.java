@@ -1,227 +1,158 @@
 package mafia.mafiatogether.job.ui;
 
+import static org.hamcrest.Matchers.equalTo;
+
+import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
+import java.util.Base64;
+import java.util.Map;
+import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.global.ControllerTest;
+import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobTargetRepository;
-import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.room.domain.RoomInfo;
-import mafia.mafiatogether.room.domain.RoomRepository;
+import mafia.mafiatogether.job.domain.PlayerJob;
+import mafia.mafiatogether.job.domain.PlayerJobRepository;
+import mafia.mafiatogether.job.domain.jobtype.Citizen;
+import mafia.mafiatogether.job.domain.jobtype.Doctor;
+import mafia.mafiatogether.job.domain.jobtype.JobType;
+import mafia.mafiatogether.job.domain.jobtype.Mafia;
+import mafia.mafiatogether.job.domain.jobtype.Police;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 @SuppressWarnings("NonAsciiCharacters")
 class PlayerControllerTest extends ControllerTest {
-//
-//    @Autowired
-//    private RoomRepository roomRepository;
-//
-//    @Autowired
-//    private JobTargetRepository jobTargetRepository;
-//
-//
-//    @Test
-//    void 직업_기술을_사용한다() {
-//        // given
-//        String code = roomRepository.create(new RoomInfo(3, 1, 0, 0));
-//        Room room = roomRepository.findByCode(code);
-//        room.joinPlayer("t1");
-//        room.joinPlayer("t2");
-//        room.joinPlayer("t3");
-//
-//        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
-//
-//        Player mafia = room.getPlayers().values().stream()
-//                .filter(player -> player.getJobType().equals(JobType.MAFIA))
-//                .findFirst()
-//                .get();
-//        String basic = Base64.getEncoder().encodeToString((code + ":" + mafia.getName()).getBytes());
-//
-//        // when & then
-//        RestAssured.given().log().all()
-//                .contentType(ContentType.JSON)
-//                .body(Map.of("target", "t2"))
-//                .header("Authorization", "Basic " + basic)
-//                .when().post("/players/skill")
-//                .then().log().all()
-//                .statusCode(HttpStatus.OK.value());
-//        Assertions.assertThat(room.getJobsTarget(mafia.getName())).isEqualTo("t2");
-//    }
-//
-//    @Test
-//    void 초기_마피아_타겟은_NULL_값이다() {
-//        // given
-//        String code = roomRepository.create(new RoomInfo(3, 1, 0, 0));
-//        Room room = roomRepository.findByCode(code);
-//        room.joinPlayer("t1");
-//        room.joinPlayer("t2");
-//        room.joinPlayer("t3");
-//
-//        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
-//
-//        Player mafia = room.getPlayers().values().stream()
-//                .filter(player -> player.getJobType().equals(JobType.MAFIA))
-//                .findFirst()
-//                .get();
-//        String basic = Base64.getEncoder().encodeToString((code + ":" + mafia.getName()).getBytes());
-//
-//        // when & then
-//        RestAssured.given().log().all()
-//                .contentType(ContentType.JSON)
-//                .body(Map.of("target", ""))
-//                .header("Authorization", "Basic " + basic)
-//                .when().get("/players/skill")
-//                .then().log().all()
-//                .statusCode(HttpStatus.OK.value());
-//        Assertions.assertThat(room.getJobsTarget(mafia.getName())).isNull();
-//    }
-//
-//    @Test
-//    void 마피아가_빈문자열을_보낼시_아무도_죽지않는다() {
-//        // given
-//        String code = roomRepository.create(new RoomInfo(3, 1, 0, 0));
-//        Room room = roomRepository.findByCode(code);
-//        room.joinPlayer("t1");
-//        room.joinPlayer("t2");
-//        room.joinPlayer("t3");
-//
-//        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
-//
-//        Player mafia = room.getPlayers().values().stream()
-//                .filter(player -> player.getJobType().equals(JobType.MAFIA))
-//                .findFirst()
-//                .get();
-//        String basic = Base64.getEncoder().encodeToString((code + ":" + mafia.getName()).getBytes());
-//
-//        // when & then
-//        final String initTargetName = RestAssured.given().log().all()
-//                .contentType(ContentType.JSON)
-//                .body(Map.of("target", ""))
-//                .header("Authorization", "Basic " + basic)
-//                .when().get("/players/skill")
-//                .then().log().all()
-//                .statusCode(HttpStatus.OK.value())
-//                .extract()
-//                .body()
-//                .jsonPath()
-//                .getString("name");
-//        RestAssured.given().log().all()
-//                .contentType(ContentType.JSON)
-//                .body(Map.of("target", ""))
-//                .header("Authorization", "Basic " + basic)
-//                .when().post("/players/skill")
-//                .then().log().all()
-//                .statusCode(HttpStatus.OK.value());
-//        final String targetName = RestAssured.given().log().all()
-//                .contentType(ContentType.JSON)
-//                .body(Map.of("target", ""))
-//                .header("Authorization", "Basic " + basic)
-//                .when().get("/players/skill")
-//                .then().log().all()
-//                .statusCode(HttpStatus.OK.value())
-//                .extract()
-//                .body()
-//                .jsonPath()
-//                .getString("name");
-//        assertSoftly(
-//                softly -> {
-//                    softly.assertThat(initTargetName).isNull();
-//                    softly.assertThat(room.getJobsTarget(mafia.getName())).isBlank();
-//                    softly.assertThat(targetName).isBlank();
-//                }
-//        );
-//    }
-//
-//    @Test
-//    void 이미_죽은사람에게_직업_기술_사용시_실패한다() {
-//        // given
-//        String code = roomRepository.create(new RoomInfo(3, 1, 0, 0));
-//        Room room = roomRepository.findByCode(code);
-//        room.joinPlayer("t1");
-//        room.joinPlayer("t2");
-//        room.joinPlayer("t3");
-//
-//        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
-//
-//        Player mafia = room.getPlayers().values().stream()
-//                .filter(player -> player.getJobType().equals(JobType.MAFIA))
-//                .findFirst()
-//                .get();
-//        Player dead = room.getPlayers().values().stream()
-//                .filter(player -> !player.equals(mafia))
-//                .findFirst()
-//                .get();
-//        dead.kill();
-//
-//        String basic = Base64.getEncoder().encodeToString((code + ":" + mafia.getName()).getBytes());
-//
-//        // when & then
-//        final ErrorResponse response = RestAssured.given().log().all()
-//                .contentType(ContentType.JSON)
-//                .body(Map.of("target", dead.getName()))
-//                .header("Authorization", "Basic " + basic)
-//                .when().post("/players/skill")
-//                .then().log().all()
-//                .statusCode(HttpStatus.BAD_REQUEST.value())
-//                .extract()
-//                .as(ErrorResponse.class);
-//
-//        Assertions.assertThat(response.errorCode()).isEqualTo(ExceptionCode.NOT_ALIVE_PLAYER.getCode());
-//    }
-//
-//    @Test
-//    void 방에_없는_사람에게_직업_기술_사용시_실패한다() {
-//        // given
-//        String code = roomRepository.create(new RoomInfo(3, 1, 0, 0));
-//        Room room = roomRepository.findByCode(code);
-//        room.joinPlayer("t1");
-//        room.joinPlayer("t2");
-//        room.joinPlayer("t3");
-//
-//        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
-//
-//        Player mafia = room.getPlayers().values().stream()
-//                .filter(player -> player.getJobType().equals(JobType.MAFIA))
-//                .findFirst()
-//                .get();
-//
-//        String basic = Base64.getEncoder().encodeToString((code + ":" + mafia.getName()).getBytes());
-//
-//        // when & then
-//        final ErrorResponse response = RestAssured.given().log().all()
-//                .contentType(ContentType.JSON)
-//                .body(Map.of("target", "t4"))
-//                .header("Authorization", "Basic " + basic)
-//                .when().post("/players/skill")
-//                .then().log().all()
-//                .statusCode(HttpStatus.BAD_REQUEST.value())
-//                .extract()
-//                .as(ErrorResponse.class);
-//
-//        Assertions.assertThat(response.errorCode()).isEqualTo(ExceptionCode.INVALID_PLAYER.getCode());
-//    }
-//
-//    @Test
-//    void 직업을_조회한다() {
-//        //given
-//        String code = roomRepository.create(new RoomInfo(3, 1, 0, 0));
-//        Room room = roomRepository.findByCode(code);
-//        room.joinPlayer("t1");
-//        room.joinPlayer("t2");
-//        room.joinPlayer("t3");
-//
-//        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
-//        final Player citizen = room.getPlayers().values().stream()
-//                .filter(player -> player.getJobType().equals(JobType.CITIZEN))
-//                .findFirst()
-//                .get();
-//        String basic = Base64.getEncoder().encodeToString((code + ":" + citizen.getName()).getBytes());
-//
-//        // when & then
-//        RestAssured.given().log().all()
-//                .contentType(ContentType.JSON)
-//                .header("Authorization", "Basic " + basic)
-//                .when().get("/players/my/job")
-//                .then().log().all()
-//                .statusCode(HttpStatus.OK.value())
-//                .body("job", equalTo("CITIZEN"));
-//    }
+
+    @Autowired
+    private JobTargetRepository jobTargetRepository;
+
+    @Autowired
+    private PlayerJobRepository playerJobRepository;
+
+    private static final String code = "1234567890";
+    private static final String MAFIA1 = "mafia1";
+    private static final String MAFIA2 = "mafia2";
+    private static final String DOCTOR = "doctor";
+    private static final String POLICE = "police";
+    private static final String CITIZEN = "citizen";
+
+    @BeforeEach
+    void setTest() {
+        final PlayerJob mafia1 = new PlayerJob(code, MAFIA1, new Mafia());
+        final PlayerJob mafia2 = new PlayerJob(code, MAFIA2, new Mafia());
+        final PlayerJob doctor = new PlayerJob(code, DOCTOR, new Doctor());
+        final PlayerJob police = new PlayerJob(code, POLICE, new Police());
+        final PlayerJob citizen = new PlayerJob(code, CITIZEN, new Citizen());
+        playerJobRepository.save(mafia1);
+        playerJobRepository.save(mafia2);
+        playerJobRepository.save(doctor);
+        playerJobRepository.save(police);
+        playerJobRepository.save(citizen);
+    }
+
+    @AfterEach
+    void clearTest() {
+        jobTargetRepository.deleteAllByCode(code);
+        playerJobRepository.deleteAllByCode(code);
+    }
+
+    @Test
+    void 직업_기술을_사용한다() {
+        // given
+        String basic = Base64.getEncoder().encodeToString((code + ":" + MAFIA1).getBytes());
+
+        // when & then
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(Map.of("target", CITIZEN))
+                .header("Authorization", "Basic " + basic)
+                .when().post("/players/skill")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        final JobTarget actual = jobTargetRepository.findByCodeAndJobType(code, JobType.MAFIA).get();
+        Assertions.assertThat(actual.getTarget()).isEqualTo(CITIZEN);
+    }
+
+    @Test
+    void 초기_마피아_타겟은_NULL_값이다() {
+        // given
+        String basic = Base64.getEncoder().encodeToString((code + ":" + MAFIA1).getBytes());
+
+        // when & then
+        final String actual = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Basic " + basic)
+                .when().get("/players/skill")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .body().jsonPath().getString("target");
+
+        Assertions.assertThat(actual).isNull();
+    }
+
+    @Test
+    void 마피아가_빈문자열을_보낼시_아무도_죽지않는다() {
+        // given
+        executeSkill(MAFIA1, CITIZEN);
+
+        // when
+        executeSkill(MAFIA1, "");
+
+        // then
+        final String actual = jobTargetRepository.findByCodeAndJobType(code, JobType.MAFIA)
+                .get()
+                .getTarget();
+        Assertions.assertThat(actual).isBlank();
+
+    }
+
+    private void executeSkill(final String name, final String target) {
+        String basic = Base64.getEncoder().encodeToString((code + ":" + name).getBytes());
+
+        // when & then
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(Map.of("target", target))
+                .header("Authorization", "Basic " + basic)
+                .when().post("/players/skill")
+                .then().log().all();
+    }
+
+    @Test
+    void 방에_없는_사람에게_직업_기술_사용시_실패한다() {
+        // given
+        final String target = "not in room";
+        String basic = Base64.getEncoder().encodeToString((code + ":" + MAFIA1).getBytes());
+
+        // when
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(Map.of("target", target))
+                .header("Authorization", "Basic " + basic)
+                .when().post("/players/skill")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("errorCode", equalTo(ExceptionCode.INVALID_PLAYER.getCode()));
+    }
+
+    @Test
+    void 직업을_조회한다() {
+        //given
+        String basic = Base64.getEncoder().encodeToString((code + ":" + CITIZEN).getBytes());
+
+        // when & then
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Basic " + basic)
+                .when().get("/players/my/job")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("job", equalTo("CITIZEN"));
+    }
 }

@@ -3,7 +3,6 @@ package mafia.mafiatogether.room.application;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.room.application.dto.request.RoomCreateRequest;
 import mafia.mafiatogether.room.application.dto.response.RoomCodeResponse;
-import mafia.mafiatogether.room.application.dto.response.RoomNightResultResponse;
 import mafia.mafiatogether.room.application.dto.response.RoomValidateResponse;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomRepository;
@@ -27,10 +26,5 @@ public class RoomService {
 
     public RoomValidateResponse validateCode(final String code) {
         return new RoomValidateResponse(roomRepository.validateCode(code));
-    }
-
-    public RoomNightResultResponse findNightResult(final String code) {
-        final Room room = roomRepository.findByCode(code);
-        return new RoomNightResultResponse(room.getNightResult());
     }
 }

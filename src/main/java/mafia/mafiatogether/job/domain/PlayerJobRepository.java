@@ -8,4 +8,8 @@ public interface PlayerJobRepository {
     Optional<PlayerJob> findByCodeAndName(String code, String name);
 
     List<PlayerJob> findByCode(String code);
+
+    PlayerJob save(PlayerJob playerJob);
+
+    void deleteAllByCode(String code);
 }

@@ -7,10 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import mafia.mafiatogether.chat.domain.Chat;
 import mafia.mafiatogether.config.exception.ExceptionCode;
-import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.game.domain.Player;
-import mafia.mafiatogether.job.domain.JobTargetLegacy;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
 
 @Getter
@@ -21,7 +19,6 @@ public class Room {
     private final Map<String, Player> players;
     private final RoomInfo roomInfo;
     private final Chat chat;
-    private final JobTargetLegacy jobTargetLegacy;
     private Player master;
 
     public static Room create(final String code, final RoomInfo roomInfo) {
@@ -30,7 +27,6 @@ public class Room {
                 new ConcurrentHashMap<>(),
                 roomInfo,
                 Chat.chat(),
-                new JobTargetLegacy(),
                 Player.NONE
         );
     }
@@ -41,7 +37,6 @@ public class Room {
                 new ConcurrentHashMap<>(),
                 roomInfo,
                 Chat.chat(),
-                new JobTargetLegacy(),
                 Player.NONE
         );
     }
@@ -70,21 +65,6 @@ public class Room {
         return players.get(name);
     }
 
-    public String executeSkill(final String name, final String targetName) {
-        final Player player = getPlayer(name);
-        final Player target = getPlayer(targetName);
-        if (!target.isAlive() && !target.equals(Player.NONE)) {
-            throw new PlayerException(ExceptionCode.NOT_ALIVE_PLAYER);
-        }
-        return player.getJob().applySkill(target, jobTargetLegacy);
-    }
-
-    public String getJobsTarget(final String name) {
-        final Player player = players.get(name);
-        final JobType jobType = player.getJobType();
-        return jobTargetLegacy.getTargetName(jobType);
-    }
-
     public boolean isEnd() {
         long aliveMafia = getAliveMafiaCount();
         long notMafiaCount = getAlivePlayerCount();
@@ -102,40 +82,6 @@ public class Room {
         return players.values().stream()
                 .filter(player -> player.isAlive() && !player.isMafia())
                 .count();
-    }
-
-    public void executeJobTarget() {
-        jobTargetLegacy.execute();
-    }
-
-    public Boolean isMaster(final Player player) {
-        return this.master.equals(player);
-    }
-
-    public Integer getTotalPlayers() {
-        return roomInfo.getTotal();
-    }
-
-    public boolean validateStartStatus() {
-        return roomInfo.getTotal() == players.size();
-    }
-
-    public void reset() {
-        for (final Player player : players.values()) {
-            player.reset();
-        }
-        chat.clear();
-    }
-
-    public String getNightResult() {
-//        if (status.getType() != StatusType.NOTICE) {
-//            throw new RoomException(ExceptionCode.IS_NOT_NOTICE);
-//        }
-        Player target = jobTargetLegacy.getResult();
-        if (target.isAlive()) {
-            return null;
-        }
-        return target.getName();
     }
 
     public void validateToStart() {
