@@ -1,5 +1,6 @@
-package mafia.mafiatogether.room.domain.status;
+package mafia.mafiatogether.game.domain.status;
 
+import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.room.domain.Room;
 
 public class NightIntroStatus extends Status {
@@ -15,7 +16,7 @@ public class NightIntroStatus extends Status {
     }
 
     @Override
-    public Status getNextStatus(final Room room, final Long now) {
+    public Status getNextStatus(final Game game, final Long now) {
         return NightStatus.create(now);
     }
 

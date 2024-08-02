@@ -4,6 +4,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
+import mafia.mafiatogether.game.domain.Player;
 
 @Getter
 @Setter

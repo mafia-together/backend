@@ -2,7 +2,7 @@ package mafia.mafiatogether.room.application.dto.response;
 
 import java.sql.Timestamp;
 import java.util.List;
-import mafia.mafiatogether.room.domain.status.EndStatus;
+import mafia.mafiatogether.game.domain.status.EndStatus;
 
 public record RoomResultResponse(
     String winnerJob,

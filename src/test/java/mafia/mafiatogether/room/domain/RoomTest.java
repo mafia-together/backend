@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import mafia.mafiatogether.job.domain.JobType;
 import mafia.mafiatogether.job.domain.Mafia;
-import mafia.mafiatogether.room.domain.status.StatusType;
-import mafia.mafiatogether.job.domain.Player;
+import mafia.mafiatogether.game.domain.status.StatusType;
+import mafia.mafiatogether.game.domain.Player;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

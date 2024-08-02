@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.chat.domain.Chat;
 import mafia.mafiatogether.chat.domain.Message;
-import mafia.mafiatogether.job.domain.Player;
+import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomRepository;
 import mafia.mafiatogether.chat.application.dto.request.ChatRequest;

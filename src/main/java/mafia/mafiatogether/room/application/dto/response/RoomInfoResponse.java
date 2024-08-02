@@ -4,7 +4,9 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import mafia.mafiatogether.job.domain.Player;
+import mafia.mafiatogether.game.domain.Game;
+import mafia.mafiatogether.game.domain.Player;
+import mafia.mafiatogether.game.domain.PlayerCollection;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.job.application.dto.response.PlayerResponse;
 
@@ -19,24 +21,24 @@ public record RoomInfoResponse(
 ) {
 
     public static RoomInfoResponse of(
-            final Room room,
+            final Game game,
             final Player player,
             final Boolean isMaster
     ) {
         return new RoomInfoResponse(
-                room.getStatus().getStartTime(),
-                room.getStatus().getEndTime(),
+                game.getStatus().getStartTime(),
+                game.getStatus().getEndTime(),
                 player.isAlive(),
-                room.getTotalPlayers(),
+                game.getTotalPlayers(),
                 isMaster,
                 player.getName(),
-                convertFrom(player, room.getPlayers())
+                convertFrom(player, game.getPlayers())
         );
     }
 
-    private static List<PlayerResponse> convertFrom(final Player owner, final Map<String, Player> players) {
-        PlayerResponse myJob = PlayerResponse.forMyJob(players.get(owner.getName()));
-        List<PlayerResponse> responses = players.values().stream()
+    private static List<PlayerResponse> convertFrom(final Player owner, final PlayerCollection players) {
+        PlayerResponse myJob = PlayerResponse.forMyJob(players.findByName(owner.getName()));
+        List<PlayerResponse> responses = players.getPlayers().stream()
                 .filter(response -> !response.getName().equals(owner.getName()))
                 .map(response -> playerToResponse(owner, response))
                 .collect(Collectors.toList());

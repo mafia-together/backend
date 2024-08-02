@@ -2,6 +2,7 @@ package mafia.mafiatogether.job.domain;
 
 import java.util.Map;
 import lombok.Getter;
+import mafia.mafiatogether.game.domain.Player;
 
 @Getter
 public class Mafia implements Job {

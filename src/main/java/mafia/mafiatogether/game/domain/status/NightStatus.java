@@ -1,7 +1,8 @@
-package mafia.mafiatogether.room.domain.status;
+package mafia.mafiatogether.game.domain.status;
 
 import java.util.List;
-import mafia.mafiatogether.job.domain.Player;
+import mafia.mafiatogether.game.domain.Game;
+import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.room.domain.Room;
 
 public class NightStatus extends Status {
@@ -17,14 +18,9 @@ public class NightStatus extends Status {
     }
 
     @Override
-    public Status getNextStatus(final Room room, final Long now) {
-        room.executeJobTarget();
-        final List<Player> players = room.getPlayers()
-                .values()
-                .stream()
-                .toList();
-        if (room.isEnd()) {
-            return EndStatus.create(players, now);
+    public Status getNextStatus(final Game game, final Long now) {
+        if (game.isEnd()) {
+            return EndStatus.create(game.getPlayers().getPlayers(), now);
         }
         return DayIntroStatus.create(now);
     }

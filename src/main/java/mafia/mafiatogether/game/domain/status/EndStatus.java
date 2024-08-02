@@ -1,9 +1,10 @@
-package mafia.mafiatogether.room.domain.status;
+package mafia.mafiatogether.game.domain.status;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import mafia.mafiatogether.job.domain.Player;
+import mafia.mafiatogether.game.domain.Game;
+import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.job.domain.JobType;
 
@@ -61,9 +62,9 @@ public class EndStatus extends Status {
     }
 
     @Override
-    public Status getNextStatus(final Room room, final Long now) {
-        room.reset();
-        return WaitStatus.create(now);
+    public Status getNextStatus(final Game game, final Long now) {
+        // todo : game 삭제 이벤트 날리기
+        return null;
     }
 
     @Override

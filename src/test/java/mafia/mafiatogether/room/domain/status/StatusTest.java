@@ -19,6 +19,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import mafia.mafiatogether.chat.domain.Chat;
 import mafia.mafiatogether.chat.domain.Message;
+import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.job.domain.JobType;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;

@@ -16,7 +16,7 @@ import mafia.mafiatogether.job.domain.Citizen;
 import mafia.mafiatogether.job.domain.Doctor;
 import mafia.mafiatogether.job.domain.JobType;
 import mafia.mafiatogether.job.domain.Mafia;
-import mafia.mafiatogether.job.domain.Player;
+import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.job.domain.Police;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;

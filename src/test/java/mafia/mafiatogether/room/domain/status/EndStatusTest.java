@@ -2,10 +2,10 @@ package mafia.mafiatogether.room.domain.status;
 
 import java.time.Clock;
 import java.util.List;
-import mafia.mafiatogether.job.domain.Player;
+import mafia.mafiatogether.game.domain.Player;
+import mafia.mafiatogether.game.domain.status.EndStatus;
 import mafia.mafiatogether.job.domain.JobType;
 import mafia.mafiatogether.job.domain.Mafia;
-import mafia.mafiatogether.room.domain.status.EndStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

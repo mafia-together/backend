@@ -1,5 +1,6 @@
-package mafia.mafiatogether.room.domain.status;
+package mafia.mafiatogether.game.domain.status;
 
+import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.room.domain.Room;
 
 public class NoticeStatus extends Status {
@@ -15,8 +16,8 @@ public class NoticeStatus extends Status {
     }
 
     @Override
-    public Status getNextStatus(final Room room, final Long now) {
-        return DayStatus.create(room.getPlayerCount(), now);
+    public Status getNextStatus(final Game game, final Long now) {
+        return DayStatus.create(game.getAlivePlayerCount(), now);
     }
 
     @Override

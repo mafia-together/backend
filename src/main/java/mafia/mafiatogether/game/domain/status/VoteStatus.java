@@ -1,5 +1,6 @@
-package mafia.mafiatogether.room.domain.status;
+package mafia.mafiatogether.game.domain.status;
 
+import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.room.domain.Room;
 
 public class VoteStatus extends Status {
@@ -15,11 +16,11 @@ public class VoteStatus extends Status {
     }
 
     @Override
-    public Status getNextStatus(final Room room, final Long now) {
+    public Status getNextStatus(final Game game, final Long now) {
         if (now < this.endTime) {
             return this;
         }
-        room.executeVote();
+        // vote event 날리기
         return VoteResultStatus.create(now);
     }
 

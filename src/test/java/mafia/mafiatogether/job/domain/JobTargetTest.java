@@ -1,5 +1,6 @@
 package mafia.mafiatogether.job.domain;
 
+import mafia.mafiatogether.game.domain.Player;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -1,7 +1,7 @@
 package mafia.mafiatogether.job.application;
 
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.job.domain.Player;
+import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomRepository;
 import mafia.mafiatogether.job.application.dto.response.JobResponse;

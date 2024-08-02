@@ -1,6 +1,6 @@
 package mafia.mafiatogether.room.application.dto.request;
 
-import mafia.mafiatogether.room.domain.status.StatusType;
+import mafia.mafiatogether.game.domain.status.StatusType;
 
 public record RoomModifyRequest(
         StatusType statusType

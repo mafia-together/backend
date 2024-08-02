@@ -1,8 +1,11 @@
-package mafia.mafiatogether.job.domain;
+package mafia.mafiatogether.game.domain;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import mafia.mafiatogether.job.domain.Citizen;
+import mafia.mafiatogether.job.domain.Job;
+import mafia.mafiatogether.job.domain.JobType;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

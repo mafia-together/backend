@@ -3,6 +3,7 @@ package mafia.mafiatogether.job.domain;
 import java.util.Objects;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.PlayerException;
+import mafia.mafiatogether.game.domain.Player;
 
 public class Police implements Job {
 

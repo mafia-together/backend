@@ -1,4 +1,4 @@
-package mafia.mafiatogether.room.domain.status;
+package mafia.mafiatogether.game.domain.status;
 
 public enum StatusType {
 

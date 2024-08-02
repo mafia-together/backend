@@ -2,6 +2,7 @@ package mafia.mafiatogether.job.domain;
 
 import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.config.exception.ExceptionCode;
+import mafia.mafiatogether.game.domain.Player;
 
 public class Citizen implements Job {
 

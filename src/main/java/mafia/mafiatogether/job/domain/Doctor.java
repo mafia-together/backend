@@ -1,6 +1,7 @@
 package mafia.mafiatogether.job.domain;
 
 import java.util.Map;
+import mafia.mafiatogether.game.domain.Player;
 
 public class Doctor implements Job {
 

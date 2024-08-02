@@ -6,7 +6,7 @@ import java.time.Clock;
 import java.util.Base64;
 import java.util.Map;
 import mafia.mafiatogether.global.ControllerTest;
-import mafia.mafiatogether.job.domain.Player;
+import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
 import mafia.mafiatogether.room.domain.RoomRepository;

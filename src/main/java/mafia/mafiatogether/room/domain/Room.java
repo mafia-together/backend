@@ -10,19 +10,19 @@ import mafia.mafiatogether.chat.domain.Chat;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.config.exception.RoomException;
-import mafia.mafiatogether.job.domain.Player;
+import mafia.mafiatogether.game.domain.Player;
+import mafia.mafiatogether.game.domain.status.Status;
+import mafia.mafiatogether.game.domain.status.StatusType;
+import mafia.mafiatogether.game.domain.status.WaitStatus;
 import mafia.mafiatogether.vote.domain.Vote;
 import mafia.mafiatogether.job.domain.Job;
 import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobType;
-import mafia.mafiatogether.room.domain.status.Status;
-import mafia.mafiatogether.room.domain.status.StatusType;
-import mafia.mafiatogether.room.domain.status.WaitStatus;
-
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Room {
 
+    private String code;
     private final Map<String, Player> players;
     private final Vote vote;
     private Status status;
@@ -31,8 +31,22 @@ public class Room {
     private final JobTarget jobTarget;
     private Player master;
 
+    public static Room create(final String code, final RoomInfo roomInfo, final Long now) {
+        return new Room(
+                code,
+                new ConcurrentHashMap<>(),
+                Vote.create(),
+                WaitStatus.create(now),
+                roomInfo,
+                Chat.chat(),
+                new JobTarget(),
+                Player.NONE
+        );
+    }
+
     public static Room create(final RoomInfo roomInfo, final Long now) {
         return new Room(
+                null,
                 new ConcurrentHashMap<>(),
                 Vote.create(),
                 WaitStatus.create(now),
@@ -44,15 +58,15 @@ public class Room {
     }
 
     public StatusType getStatusType(final Long now) {
-        if (status.isTimeOver(now)) {
-            status = status.getNextStatus(this, now);
-        }
+//        if (status.isTimeOver(now)) {
+//            status = status.getNextStatus(this, now);
+//        }
         return status.getType();
     }
 
     // statusType 제거
     public void modifyStatus(final StatusType statusType, final Long now) {
-        this.status = status.getNextStatus(this, now);
+        this.status = status.getNextStatus(null, now);
     }
 
     public void joinPlayer(final String name) {
@@ -108,9 +122,10 @@ public class Room {
         final Player player = getPlayer(name);
         final Player target = targetName.isBlank() ? Player.NONE : getPlayer(targetName);
         vote.choose(player, target);
-        if (vote.isAllParticipatedVote(getPlayerCount())) {
-            this.status = status.getNextStatus(this, now);
-        }
+        // todo : vote에서 해결
+//        if (vote.isAllParticipatedVote(getPlayerCount())) {
+//            this.status = status.getNextStatus(null, now);
+//        }
     }
 
     public String getVoteResult() {

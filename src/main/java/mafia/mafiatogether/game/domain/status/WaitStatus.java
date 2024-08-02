@@ -1,7 +1,8 @@
-package mafia.mafiatogether.room.domain.status;
+package mafia.mafiatogether.game.domain.status;
 
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
+import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.room.domain.Room;
 
 public class WaitStatus extends Status {
@@ -17,11 +18,11 @@ public class WaitStatus extends Status {
     }
 
     @Override
-    public Status getNextStatus(final Room room, final Long now) {
-        if (!room.validateStartStatus()) {
-            throw new RoomException(ExceptionCode.NOT_ENOUGH_PLAYER);
-        }
-        room.distributeRole();
+    public Status getNextStatus(final Game game, final Long now) {
+//        if (!room.validateStartStatus()) {
+//            throw new RoomException(ExceptionCode.NOT_ENOUGH_PLAYER);
+//        }
+        game.distributeRole();
         return DayIntroStatus.create(now);
     }
 

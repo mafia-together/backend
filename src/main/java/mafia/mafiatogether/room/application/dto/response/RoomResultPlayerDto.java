@@ -1,6 +1,6 @@
 package mafia.mafiatogether.room.application.dto.response;
 
-import mafia.mafiatogether.job.domain.Player;
+import mafia.mafiatogether.game.domain.Player;
 
 public record RoomResultPlayerDto(
         String name,
