@@ -14,10 +14,11 @@ import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.game.domain.status.Status;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.game.domain.status.WaitStatus;
-import mafia.mafiatogether.vote.domain.Vote;
 import mafia.mafiatogether.job.domain.Job;
 import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobType;
+import mafia.mafiatogether.vote.domain.Vote;
+
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Room {
@@ -198,5 +199,11 @@ public class Room {
             return null;
         }
         return target.getName();
+    }
+
+    public void validateToStart() {
+        if (roomInfo.getTotal() != players.size()) {
+            throw new RoomException(ExceptionCode.NOT_ENOUGH_PLAYER);
+        }
     }
 }

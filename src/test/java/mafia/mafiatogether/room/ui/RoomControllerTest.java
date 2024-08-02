@@ -1,27 +1,17 @@
 package mafia.mafiatogether.room.ui;
 
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import java.time.Clock;
 import java.util.Base64;
 import java.util.stream.Stream;
 import mafia.mafiatogether.config.exception.ErrorResponse;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.global.ControllerTest;
-import mafia.mafiatogether.job.domain.JobType;
-import mafia.mafiatogether.game.domain.Player;
-import mafia.mafiatogether.job.application.dto.response.PlayerResponse;
+import mafia.mafiatogether.room.application.dto.request.RoomCreateRequest;
+import mafia.mafiatogether.room.application.dto.response.RoomCodeResponse;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
 import mafia.mafiatogether.room.domain.RoomRepository;
-import mafia.mafiatogether.game.domain.status.StatusType;
-import mafia.mafiatogether.room.application.dto.request.RoomCreateRequest;
-import mafia.mafiatogether.room.application.dto.request.RoomModifyRequest;
-import mafia.mafiatogether.room.application.dto.response.RoomCodeResponse;
-import mafia.mafiatogether.room.application.dto.response.RoomInfoResponse;
-import mafia.mafiatogether.room.application.dto.response.RoomStatusResponse;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -86,78 +76,6 @@ class RoomControllerTest extends ControllerTest {
                 Arguments.of("총인원수가 3 미만일때", 2, 1),
                 Arguments.of("마피아 수가 0일때", 3, 0)
         );
-    }
-
-    @Test
-    void 방을_상태를_확인할_수_있다() {
-        //given
-        final String code = roomRepository.create(new RoomInfo(5, 1, 1, 1));
-        final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
-
-        //when
-        final RoomStatusResponse response = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Basic " + basic)
-                .when().get("/rooms/status")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .as(RoomStatusResponse.class);
-
-        //then
-        Assertions.assertThat(response.statusType()).isEqualTo(StatusType.WAIT);
-    }
-
-    @Test
-    void 방을_상태를_변경할_수_있다() {
-        //given
-        String code = roomRepository.create(new RoomInfo(5, 1, 1, 1));
-        String basic = Base64.getEncoder().encodeToString((code + ":" + "player1").getBytes());
-        RoomModifyRequest request = new RoomModifyRequest(StatusType.DAY);
-        Room room = roomRepository.findByCode(code);
-        room.joinPlayer("player1");
-        room.joinPlayer("player2");
-        room.joinPlayer("player3");
-        room.joinPlayer("player4");
-        room.joinPlayer("player5");
-
-        //when
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(request)
-                .header("Authorization", "Basic " + basic)
-                .when().patch("/rooms/status")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value());
-
-        //then
-        StatusType actual = room.getStatusType(Clock.systemDefaultZone().millis());
-        Assertions.assertThat(actual).isEqualTo(StatusType.DAY_INTRO);
-    }
-
-    @Test
-    void 인원부족시_게임을_시작할_수_없다() {
-        //given
-        String code = roomRepository.create(new RoomInfo(3, 1, 1, 1));
-        String basic = Base64.getEncoder().encodeToString((code + ":" + "player1").getBytes());
-        RoomModifyRequest request = new RoomModifyRequest(StatusType.DAY);
-        Room room = roomRepository.findByCode(code);
-        room.joinPlayer("player1");
-        room.joinPlayer("player2");
-
-        //when
-        final ErrorResponse response = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(request)
-                .header("Authorization", "Basic " + basic)
-                .when().patch("/rooms/status")
-                .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .extract()
-                .as(ErrorResponse.class);
-
-        // then
-        Assertions.assertThat(response.errorCode()).isEqualTo(ExceptionCode.NOT_ENOUGH_PLAYER.getCode());
     }
 
     @Test
@@ -247,128 +165,5 @@ class RoomControllerTest extends ControllerTest {
                 .body("exist", Matchers.equalTo(true));
     }
 
-    @Test
-    void 생존한_사람이_방의_정보를_찾는다() {
-        // given
-        final String code = roomRepository.create(new RoomInfo(5, 1, 1, 1));
-        final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
-        final Room room = roomRepository.findByCode(code);
-        room.joinPlayer("power");
-        room.joinPlayer("chunsik");
 
-        // when & then
-        final RoomInfoResponse response = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Basic " + basic)
-                .when().get("/rooms/info")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .as(RoomInfoResponse.class);
-
-        PlayerResponse power = response.players()
-                .stream().filter(player -> player.name().equals("power"))
-                .findFirst()
-                .get();
-
-        PlayerResponse chunsik = response.players()
-                .stream().filter(player -> player.name().equals("chunsik"))
-                .findFirst()
-                .get();
-
-        assertSoftly(
-                softly -> {
-                    softly.assertThat(response.startTime()).isNotNull();
-                    softly.assertThat(response.endTime()).isNotNull();
-                    softly.assertThat(response.myName()).isNotNull();
-                    softly.assertThat(response.isAlive()).isTrue();
-                    softly.assertThat(response.isMaster()).isTrue();
-                    softly.assertThat(power.job()).isEqualTo(JobType.CITIZEN);
-                    softly.assertThat(chunsik.job()).isNull();
-                }
-        );
-    }
-
-    @Test
-    void 죽은사람이_방의_정보를_찾는다() {
-        // given
-        final String code = roomRepository.create(new RoomInfo(5, 1, 1, 1));
-        final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
-        final Room room = roomRepository.findByCode(code);
-        room.joinPlayer("power");
-        room.getPlayer("power").kill();
-
-        // when & then
-        final RoomInfoResponse response = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Basic " + basic)
-                .when().get("/rooms/info")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .as(RoomInfoResponse.class);
-
-        assertSoftly(
-                softly -> {
-                    softly.assertThat(response.startTime()).isNotNull();
-                    softly.assertThat(response.endTime()).isNotNull();
-                    softly.assertThat(response.isAlive()).isFalse();
-                    softly.assertThat(response.isMaster()).isTrue();
-                    softly.assertThat(response.players().getFirst().job()).isNotNull();
-                }
-        );
-    }
-
-    @Test
-    void 마피아가_방의_정보를_찾는다() {
-        // given
-        final String code = roomRepository.create(new RoomInfo(5, 2, 1, 0));
-        final Room room = roomRepository.findByCode(code);
-        room.joinPlayer("p1");
-        room.joinPlayer("p2");
-        room.joinPlayer("p3");
-        room.joinPlayer("p4");
-        room.joinPlayer("p5");
-        room.modifyStatus(StatusType.DAY, Clock.systemDefaultZone().millis());
-        final Player mafia = findPlayer(room, JobType.MAFIA);
-        final String mafiaBasic = Base64.getEncoder().encodeToString((code + ":" + mafia.getName()).getBytes());
-        final Player doctor = findPlayer(room, JobType.DOCTOR);
-        final String doctorBasic = Base64.getEncoder().encodeToString((code + ":" + doctor.getName()).getBytes());
-        final Player citizen = findPlayer(room, JobType.CITIZEN);
-        final String citizenBasic = Base64.getEncoder().encodeToString((code + ":" + citizen.getName()).getBytes());
-
-        // when & then
-        final Long mafiaCount = countMafiaResponse(mafiaBasic);
-        final Long doctorCount = countMafiaResponse(doctorBasic);
-        final Long citizenCount = countMafiaResponse(citizenBasic);
-        assertSoftly(
-                softly -> {
-                    softly.assertThat(mafiaCount).isEqualTo(2);
-                    softly.assertThat(doctorCount).isEqualTo(0);
-                    softly.assertThat(citizenCount).isEqualTo(0);
-                }
-        );
-    }
-
-    private Player findPlayer(Room room, JobType jobType) {
-        return room.getPlayers().values().stream()
-                .filter(player -> player.getJobType().equals(jobType))
-                .findFirst()
-                .get();
-    }
-
-    private long countMafiaResponse(final String basic) {
-        final RoomInfoResponse roomInfoResponse = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Basic " + basic)
-                .when().get("/rooms/info")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .as(RoomInfoResponse.class);
-
-        return roomInfoResponse.players().stream()
-                .filter(response -> response.job() != null && response.job().equals(JobType.MAFIA))
-                .count();
-    }
 }

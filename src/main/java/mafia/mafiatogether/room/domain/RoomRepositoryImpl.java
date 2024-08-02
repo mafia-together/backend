@@ -46,4 +46,15 @@ public class RoomRepositoryImpl implements RoomRepository {
     public Integer getTotalRoomCount() {
         return rooms.size();
     }
+
+    @Override
+    public Room save(Room room) {
+        rooms.put(room.getCode(), room);
+        return room;
+    }
+
+    @Override
+    public void deleteById(String code) {
+        rooms.remove(code);
+    }
 }

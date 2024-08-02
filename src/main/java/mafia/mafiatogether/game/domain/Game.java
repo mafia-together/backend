@@ -23,6 +23,7 @@ public class Game {
 
 
     public static Game create(final Room room, final Long now) {
+        room.validateToStart();
         return new Game(
                 room.getCode(),
                 DayIntroStatus.create(now),
