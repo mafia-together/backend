@@ -20,7 +20,7 @@ import mafia.mafiatogether.job.domain.Player;
 import mafia.mafiatogether.job.domain.Police;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
-import mafia.mafiatogether.room.domain.RoomManager;
+import mafia.mafiatogether.room.domain.RoomRepository;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +35,7 @@ import org.springframework.http.HttpStatus;
 public class ChatControllerTest extends ControllerTest {
 
     @Autowired
-    private RoomManager roomManager;
+    private RoomRepository roomRepository;
 
     private static String code;
     private Room room;
@@ -47,8 +47,8 @@ public class ChatControllerTest extends ControllerTest {
 
     @BeforeEach
     void setRoom() {
-        code = roomManager.create(new RoomInfo(5, 1, 1, 1));
-        room = roomManager.findByCode(code);
+        code = roomRepository.create(new RoomInfo(5, 1, 1, 1));
+        room = roomRepository.findByCode(code);
         room.joinPlayer("p1");
         room.joinPlayer("p2");
         room.joinPlayer("p3");

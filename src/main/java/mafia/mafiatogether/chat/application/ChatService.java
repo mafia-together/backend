@@ -6,7 +6,7 @@ import mafia.mafiatogether.chat.domain.Chat;
 import mafia.mafiatogether.chat.domain.Message;
 import mafia.mafiatogether.job.domain.Player;
 import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.room.domain.RoomManager;
+import mafia.mafiatogether.room.domain.RoomRepository;
 import mafia.mafiatogether.chat.application.dto.request.ChatRequest;
 import mafia.mafiatogether.chat.application.dto.response.ChatResponse;
 import org.springframework.stereotype.Service;
@@ -15,10 +15,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ChatService {
 
-    private final RoomManager roomManager;
+    private final RoomRepository roomRepository;
 
     public List<ChatResponse> findAllChat(final String code, final String name) {
-        final Room room = roomManager.findByCode(code);
+        final Room room = roomRepository.findByCode(code);
         final Chat chat = room.getChat();
         final Player player = room.getPlayer(name);
         return chat.getMessages().stream()
@@ -27,7 +27,7 @@ public class ChatService {
     }
 
     public void saveChat(final String code, final String name, final ChatRequest chatRequest) {
-        final Room room = roomManager.findByCode(code);
+        final Room room = roomRepository.findByCode(code);
         final Chat chat = room.getChat();
         final Player player = room.getPlayer(name);
         chat.save(Message.of(player, chatRequest.contents()));

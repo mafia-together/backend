@@ -9,7 +9,7 @@ import mafia.mafiatogether.global.ControllerTest;
 import mafia.mafiatogether.job.domain.Player;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
-import mafia.mafiatogether.room.domain.RoomManager;
+import mafia.mafiatogether.room.domain.RoomRepository;
 import mafia.mafiatogether.vote.domain.Vote;
 import mafia.mafiatogether.vote.application.dto.response.VoteResultResponse;
 import org.assertj.core.api.Assertions;
@@ -22,7 +22,7 @@ import org.springframework.http.HttpStatus;
 class VoteControllerTest extends ControllerTest {
 
     @Autowired
-    private RoomManager roomManager;
+    private RoomRepository roomRepository;
 
     private static String code;
     private Room room;
@@ -32,8 +32,8 @@ class VoteControllerTest extends ControllerTest {
 
     @BeforeEach
     void setRoom() {
-        code = roomManager.create(new RoomInfo(3, 1, 1, 1));
-        room = roomManager.findByCode(code);
+        code = roomRepository.create(new RoomInfo(3, 1, 1, 1));
+        room = roomRepository.findByCode(code);
         player1 = Player.create("power");
         player2 = Player.create("metthew");
         player3 = Player.create("dali");

@@ -15,8 +15,8 @@ import mafia.mafiatogether.job.domain.JobType;
 import mafia.mafiatogether.job.domain.Player;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
+import mafia.mafiatogether.room.domain.RoomRepository;
 import mafia.mafiatogether.room.domain.status.StatusType;
-import mafia.mafiatogether.room.domain.RoomManager;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +26,13 @@ import org.springframework.http.HttpStatus;
 class PlayerControllerTest extends ControllerTest {
 
     @Autowired
-    private RoomManager roomManager;
+    private RoomRepository roomRepository;
 
     @Test
     void 직업_기술을_사용한다() {
         // given
-        String code = roomManager.create(new RoomInfo(3, 1, 0, 0));
-        Room room = roomManager.findByCode(code);
+        String code = roomRepository.create(new RoomInfo(3, 1, 0, 0));
+        Room room = roomRepository.findByCode(code);
         room.joinPlayer("t1");
         room.joinPlayer("t2");
         room.joinPlayer("t3");
@@ -59,8 +59,8 @@ class PlayerControllerTest extends ControllerTest {
     @Test
     void 초기_마피아_타겟은_NULL_값이다() {
         // given
-        String code = roomManager.create(new RoomInfo(3, 1, 0, 0));
-        Room room = roomManager.findByCode(code);
+        String code = roomRepository.create(new RoomInfo(3, 1, 0, 0));
+        Room room = roomRepository.findByCode(code);
         room.joinPlayer("t1");
         room.joinPlayer("t2");
         room.joinPlayer("t3");
@@ -87,8 +87,8 @@ class PlayerControllerTest extends ControllerTest {
     @Test
     void 마피아가_빈문자열을_보낼시_아무도_죽지않는다() {
         // given
-        String code = roomManager.create(new RoomInfo(3, 1, 0, 0));
-        Room room = roomManager.findByCode(code);
+        String code = roomRepository.create(new RoomInfo(3, 1, 0, 0));
+        Room room = roomRepository.findByCode(code);
         room.joinPlayer("t1");
         room.joinPlayer("t2");
         room.joinPlayer("t3");
@@ -143,8 +143,8 @@ class PlayerControllerTest extends ControllerTest {
     @Test
     void 이미_죽은사람에게_직업_기술_사용시_실패한다() {
         // given
-        String code = roomManager.create(new RoomInfo(3, 1, 0, 0));
-        Room room = roomManager.findByCode(code);
+        String code = roomRepository.create(new RoomInfo(3, 1, 0, 0));
+        Room room = roomRepository.findByCode(code);
         room.joinPlayer("t1");
         room.joinPlayer("t2");
         room.joinPlayer("t3");
@@ -180,8 +180,8 @@ class PlayerControllerTest extends ControllerTest {
     @Test
     void 방에_없는_사람에게_직업_기술_사용시_실패한다() {
         // given
-        String code = roomManager.create(new RoomInfo(3, 1, 0, 0));
-        Room room = roomManager.findByCode(code);
+        String code = roomRepository.create(new RoomInfo(3, 1, 0, 0));
+        Room room = roomRepository.findByCode(code);
         room.joinPlayer("t1");
         room.joinPlayer("t2");
         room.joinPlayer("t3");
@@ -212,8 +212,8 @@ class PlayerControllerTest extends ControllerTest {
     @Test
     void 직업을_조회한다() {
         //given
-        String code = roomManager.create(new RoomInfo(3, 1, 0, 0));
-        Room room = roomManager.findByCode(code);
+        String code = roomRepository.create(new RoomInfo(3, 1, 0, 0));
+        Room room = roomRepository.findByCode(code);
         room.joinPlayer("t1");
         room.joinPlayer("t2");
         room.joinPlayer("t3");

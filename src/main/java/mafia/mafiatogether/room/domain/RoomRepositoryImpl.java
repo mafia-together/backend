@@ -5,17 +5,18 @@ import java.util.HashMap;
 import java.util.Map;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-@Component
-public class RoomManager {
+@Repository
+public class RoomRepositoryImpl implements RoomRepository {
 
     private final Map<String, Room> rooms;
 
-    public RoomManager() {
+    public RoomRepositoryImpl() {
         this.rooms = new HashMap<>();
     }
 
+    @Override
     public String create(
             final RoomInfo roomInfo
     ) {
@@ -28,6 +29,7 @@ public class RoomManager {
         return code;
     }
 
+    @Override
     public Room findByCode(final String code) {
         if (!rooms.containsKey(code)) {
             throw new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE);
@@ -35,10 +37,12 @@ public class RoomManager {
         return rooms.get(code);
     }
 
+    @Override
     public boolean validateCode(final String code) {
         return rooms.containsKey(code);
     }
 
+    @Override
     public Integer getTotalRoomCount() {
         return rooms.size();
     }

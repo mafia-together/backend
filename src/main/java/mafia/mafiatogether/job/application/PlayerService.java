@@ -3,7 +3,7 @@ package mafia.mafiatogether.job.application;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.job.domain.Player;
 import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.room.domain.RoomManager;
+import mafia.mafiatogether.room.domain.RoomRepository;
 import mafia.mafiatogether.job.application.dto.response.JobResponse;
 import mafia.mafiatogether.job.application.dto.response.MafiaTargetResponse;
 import mafia.mafiatogether.job.application.dto.request.PlayerExecuteAbilityRequest;
@@ -14,10 +14,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PlayerService {
 
-    private final RoomManager roomManager;
+    private final RoomRepository roomRepository;
 
     public JobResponse getPlayerJob(final String code, final String name) {
-        final Room room = roomManager.findByCode(code);
+        final Room room = roomRepository.findByCode(code);
         final Player player = room.getPlayer(name);
         return new JobResponse(player.getJobType().name());
     }
@@ -27,7 +27,7 @@ public class PlayerService {
             final String name,
             final PlayerExecuteAbilityRequest request
     ) {
-        final Room room = roomManager.findByCode(code);
+        final Room room = roomRepository.findByCode(code);
         final Player player = room.getPlayer(name);
         final String result = room.executeSkill(name, request.target());
 
@@ -38,7 +38,7 @@ public class PlayerService {
             final String code,
             final String name
     ) {
-        final Room room = roomManager.findByCode(code);
+        final Room room = roomRepository.findByCode(code);
         return new MafiaTargetResponse(room.getJobsTarget(name));
     }
 }

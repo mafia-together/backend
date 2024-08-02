@@ -15,13 +15,13 @@ import mafia.mafiatogether.job.domain.Player;
 import mafia.mafiatogether.job.application.dto.response.PlayerResponse;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
+import mafia.mafiatogether.room.domain.RoomRepository;
 import mafia.mafiatogether.room.domain.status.StatusType;
 import mafia.mafiatogether.room.application.dto.request.RoomCreateRequest;
 import mafia.mafiatogether.room.application.dto.request.RoomModifyRequest;
 import mafia.mafiatogether.room.application.dto.response.RoomCodeResponse;
 import mafia.mafiatogether.room.application.dto.response.RoomInfoResponse;
 import mafia.mafiatogether.room.application.dto.response.RoomStatusResponse;
-import mafia.mafiatogether.room.domain.RoomManager;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ import org.springframework.http.HttpStatus;
 class RoomControllerTest extends ControllerTest {
 
     @Autowired
-    private RoomManager roomManager;
+    private RoomRepository roomRepository;
 
     @Test
     void 방을_생성할_수_있다() {
@@ -91,7 +91,7 @@ class RoomControllerTest extends ControllerTest {
     @Test
     void 방을_상태를_확인할_수_있다() {
         //given
-        final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        final String code = roomRepository.create(new RoomInfo(5, 1, 1, 1));
         final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
 
         //when
@@ -111,10 +111,10 @@ class RoomControllerTest extends ControllerTest {
     @Test
     void 방을_상태를_변경할_수_있다() {
         //given
-        String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        String code = roomRepository.create(new RoomInfo(5, 1, 1, 1));
         String basic = Base64.getEncoder().encodeToString((code + ":" + "player1").getBytes());
         RoomModifyRequest request = new RoomModifyRequest(StatusType.DAY);
-        Room room = roomManager.findByCode(code);
+        Room room = roomRepository.findByCode(code);
         room.joinPlayer("player1");
         room.joinPlayer("player2");
         room.joinPlayer("player3");
@@ -138,10 +138,10 @@ class RoomControllerTest extends ControllerTest {
     @Test
     void 인원부족시_게임을_시작할_수_없다() {
         //given
-        String code = roomManager.create(new RoomInfo(3, 1, 1, 1));
+        String code = roomRepository.create(new RoomInfo(3, 1, 1, 1));
         String basic = Base64.getEncoder().encodeToString((code + ":" + "player1").getBytes());
         RoomModifyRequest request = new RoomModifyRequest(StatusType.DAY);
-        Room room = roomManager.findByCode(code);
+        Room room = roomRepository.findByCode(code);
         room.joinPlayer("player1");
         room.joinPlayer("player2");
 
@@ -163,7 +163,7 @@ class RoomControllerTest extends ControllerTest {
     @Test
     void 방에_참가할_수_있다() {
         //given
-        final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        final String code = roomRepository.create(new RoomInfo(5, 1, 1, 1));
 
         //when
         RestAssured.given().log().all()
@@ -173,15 +173,15 @@ class RoomControllerTest extends ControllerTest {
                 .statusCode(HttpStatus.OK.value());
 
         //then
-        Room room = roomManager.findByCode(code);
+        Room room = roomRepository.findByCode(code);
         Assertions.assertThat(room.getPlayer("power")).isNotNull();
     }
 
     @Test
     void 방이_꽉_차_있을때_참가에_실패한다() {
         //given
-        final String code = roomManager.create(new RoomInfo(3, 1, 1, 1));
-        final Room room = roomManager.findByCode(code);
+        final String code = roomRepository.create(new RoomInfo(3, 1, 1, 1));
+        final Room room = roomRepository.findByCode(code);
         room.joinPlayer("A");
         room.joinPlayer("C");
         room.joinPlayer("D");
@@ -201,8 +201,8 @@ class RoomControllerTest extends ControllerTest {
     @Test
     void 방에_이미_존재한느_이름으로_참가할때_참가에_실패한다() {
         //given
-        final String code = roomManager.create(new RoomInfo(3, 1, 1, 1));
-        final Room room = roomManager.findByCode(code);
+        final String code = roomRepository.create(new RoomInfo(3, 1, 1, 1));
+        final Room room = roomRepository.findByCode(code);
         room.joinPlayer("A");
         //when
         final ErrorResponse response = RestAssured.given().log().all()
@@ -220,7 +220,7 @@ class RoomControllerTest extends ControllerTest {
     @Test
     void 방의_코드를_찾는다() {
         // given
-        final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        final String code = roomRepository.create(new RoomInfo(5, 1, 1, 1));
         final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
 
         // when & then
@@ -236,7 +236,7 @@ class RoomControllerTest extends ControllerTest {
     @Test
     void 방의_코드를_검증_할_수_있다() {
         // given
-        final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        final String code = roomRepository.create(new RoomInfo(5, 1, 1, 1));
 
         // when & then
         RestAssured.given().log().all()
@@ -250,9 +250,9 @@ class RoomControllerTest extends ControllerTest {
     @Test
     void 생존한_사람이_방의_정보를_찾는다() {
         // given
-        final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        final String code = roomRepository.create(new RoomInfo(5, 1, 1, 1));
         final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
-        final Room room = roomManager.findByCode(code);
+        final Room room = roomRepository.findByCode(code);
         room.joinPlayer("power");
         room.joinPlayer("chunsik");
 
@@ -292,9 +292,9 @@ class RoomControllerTest extends ControllerTest {
     @Test
     void 죽은사람이_방의_정보를_찾는다() {
         // given
-        final String code = roomManager.create(new RoomInfo(5, 1, 1, 1));
+        final String code = roomRepository.create(new RoomInfo(5, 1, 1, 1));
         final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
-        final Room room = roomManager.findByCode(code);
+        final Room room = roomRepository.findByCode(code);
         room.joinPlayer("power");
         room.getPlayer("power").kill();
 
@@ -322,8 +322,8 @@ class RoomControllerTest extends ControllerTest {
     @Test
     void 마피아가_방의_정보를_찾는다() {
         // given
-        final String code = roomManager.create(new RoomInfo(5, 2, 1, 0));
-        final Room room = roomManager.findByCode(code);
+        final String code = roomRepository.create(new RoomInfo(5, 2, 1, 0));
+        final Room room = roomRepository.findByCode(code);
         room.joinPlayer("p1");
         room.joinPlayer("p2");
         room.joinPlayer("p3");
