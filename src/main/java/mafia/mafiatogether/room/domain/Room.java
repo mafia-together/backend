@@ -12,7 +12,6 @@ import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobType;
-import mafia.mafiatogether.vote.domain.VoteLegacy;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -20,7 +19,6 @@ public class Room {
 
     private String code;
     private final Map<String, Player> players;
-    private final VoteLegacy voteLegacy;
     private final RoomInfo roomInfo;
     private final Chat chat;
     private final JobTarget jobTarget;
@@ -30,7 +28,6 @@ public class Room {
         return new Room(
                 code,
                 new ConcurrentHashMap<>(),
-                VoteLegacy.create(),
                 roomInfo,
                 Chat.chat(),
                 new JobTarget(),
@@ -42,7 +39,6 @@ public class Room {
         return new Room(
                 null,
                 new ConcurrentHashMap<>(),
-                VoteLegacy.create(),
                 roomInfo,
                 Chat.chat(),
                 new JobTarget(),
@@ -89,26 +85,6 @@ public class Room {
         return jobTarget.getTargetName(jobType);
     }
 
-    public void votePlayer(final String name, final String targetName, final Long now) {
-        final Player player = getPlayer(name);
-        final Player target = targetName.isBlank() ? Player.NONE : getPlayer(targetName);
-        voteLegacy.choose(player, target);
-        // todo : vote에서 해결
-//        if (voteLegacy.isAllParticipatedVote(getPlayerCount())) {
-//            this.status = status.getNextStatus(null, now);
-//        }
-    }
-
-    public String getVoteResult() {
-        return voteLegacy.getVoteResult();
-    }
-
-    public Long getPlayerCount() {
-        return players.values().stream()
-                .filter(Player::isAlive)
-                .count();
-    }
-
     public boolean isEnd() {
         long aliveMafia = getAliveMafiaCount();
         long notMafiaCount = getAlivePlayerCount();
@@ -128,10 +104,6 @@ public class Room {
                 .count();
     }
 
-    public void executeVote() {
-        voteLegacy.executeVote();
-    }
-
     public void executeJobTarget() {
         jobTarget.execute();
     }
@@ -148,15 +120,10 @@ public class Room {
         return roomInfo.getTotal() == players.size();
     }
 
-    public void clearVote() {
-        this.voteLegacy.clear();
-    }
-
     public void reset() {
         for (final Player player : players.values()) {
             player.reset();
         }
-        voteLegacy.clear();
         chat.clear();
     }
 
