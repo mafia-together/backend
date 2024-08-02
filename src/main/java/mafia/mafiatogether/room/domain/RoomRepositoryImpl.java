@@ -1,6 +1,5 @@
 package mafia.mafiatogether.room.domain;
 
-import java.time.Clock;
 import java.util.HashMap;
 import java.util.Map;
 import mafia.mafiatogether.config.exception.ExceptionCode;
@@ -24,8 +23,7 @@ public class RoomRepositoryImpl implements RoomRepository {
         while (rooms.containsKey(code)) {
             code = CodeGenerator.generate();
         }
-        final Long now = Clock.systemUTC().millis();
-        rooms.put(code, Room.create(roomInfo, now));
+        rooms.put(code, Room.create(roomInfo));
         return code;
     }
 

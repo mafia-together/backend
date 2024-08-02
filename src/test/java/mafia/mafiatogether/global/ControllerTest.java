@@ -1,7 +1,6 @@
 package mafia.mafiatogether.global;
 
 import io.restassured.RestAssured;
-import io.restassured.config.RestAssuredConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;

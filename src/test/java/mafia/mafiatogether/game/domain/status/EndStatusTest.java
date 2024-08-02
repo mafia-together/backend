@@ -1,9 +1,8 @@
-package mafia.mafiatogether.room.domain.status;
+package mafia.mafiatogether.game.domain.status;
 
 import java.time.Clock;
 import java.util.List;
 import mafia.mafiatogether.game.domain.Player;
-import mafia.mafiatogether.game.domain.status.EndStatus;
 import mafia.mafiatogether.job.domain.JobType;
 import mafia.mafiatogether.job.domain.Mafia;
 import org.assertj.core.api.Assertions;

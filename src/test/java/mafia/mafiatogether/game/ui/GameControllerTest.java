@@ -4,7 +4,6 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import java.time.Clock;
 import java.util.Base64;
 import java.util.Map;
 import mafia.mafiatogether.config.exception.ErrorResponse;
@@ -28,6 +27,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
+@SuppressWarnings("NonAsciiCharacters")
 class GameControllerTest extends ControllerTest {
 
     @Autowired
@@ -45,7 +45,7 @@ class GameControllerTest extends ControllerTest {
 
     @BeforeEach
     void setGame() {
-        Room room = Room.create(code, RoomInfo.of(5, 2, 1, 1), Clock.systemDefaultZone().millis());
+        Room room = Room.create(code, RoomInfo.of(5, 2, 1, 1));
         room.joinPlayer(PLAYER1_NAME);
         room.joinPlayer(PLAYER2_NAME);
         room.joinPlayer(PLAYER3_NAME);

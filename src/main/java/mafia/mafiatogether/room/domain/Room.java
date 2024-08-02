@@ -1,7 +1,6 @@
 package mafia.mafiatogether.room.domain;
 
 import java.util.Map;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,10 +10,6 @@ import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.game.domain.Player;
-import mafia.mafiatogether.game.domain.status.Status;
-import mafia.mafiatogether.game.domain.status.StatusType;
-import mafia.mafiatogether.game.domain.status.WaitStatus;
-import mafia.mafiatogether.job.domain.Job;
 import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobType;
 import mafia.mafiatogether.vote.domain.Vote;
@@ -26,18 +21,16 @@ public class Room {
     private String code;
     private final Map<String, Player> players;
     private final Vote vote;
-    private Status status;
     private final RoomInfo roomInfo;
     private final Chat chat;
     private final JobTarget jobTarget;
     private Player master;
 
-    public static Room create(final String code, final RoomInfo roomInfo, final Long now) {
+    public static Room create(final String code, final RoomInfo roomInfo) {
         return new Room(
                 code,
                 new ConcurrentHashMap<>(),
                 Vote.create(),
-                WaitStatus.create(now),
                 roomInfo,
                 Chat.chat(),
                 new JobTarget(),
@@ -45,29 +38,16 @@ public class Room {
         );
     }
 
-    public static Room create(final RoomInfo roomInfo, final Long now) {
+    public static Room create(final RoomInfo roomInfo) {
         return new Room(
                 null,
                 new ConcurrentHashMap<>(),
                 Vote.create(),
-                WaitStatus.create(now),
                 roomInfo,
                 Chat.chat(),
                 new JobTarget(),
                 Player.NONE
         );
-    }
-
-    public StatusType getStatusType(final Long now) {
-//        if (status.isTimeOver(now)) {
-//            status = status.getNextStatus(this, now);
-//        }
-        return status.getType();
-    }
-
-    // statusType 제거
-    public void modifyStatus(final StatusType statusType, final Long now) {
-        this.status = status.getNextStatus(null, now);
     }
 
     public void joinPlayer(final String name) {
@@ -82,16 +62,6 @@ public class Room {
             master = player;
         }
         players.put(player.getName(), player);
-    }
-
-    public void distributeRole() {
-        final Queue<Job> jobs = roomInfo.getRandomJobQueue();
-        for (Player player : players.values()) {
-            if (jobs.isEmpty()) {
-                break;
-            }
-            player.modifyJob(jobs.poll());
-        }
     }
 
     public Player getPlayer(final String name) {
@@ -191,9 +161,9 @@ public class Room {
     }
 
     public String getNightResult() {
-        if (status.getType() != StatusType.NOTICE) {
-            throw new RoomException(ExceptionCode.IS_NOT_NOTICE);
-        }
+//        if (status.getType() != StatusType.NOTICE) {
+//            throw new RoomException(ExceptionCode.IS_NOT_NOTICE);
+//        }
         Player target = jobTarget.getResult();
         if (target.isAlive()) {
             return null;

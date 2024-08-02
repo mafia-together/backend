@@ -45,6 +45,9 @@ public class Game {
 
     // status 로직 넣기
     public StatusType getStatusType(final Long now) {
+        if (status.isTimeOver(now)) {
+            status = status.getNextStatus(this, now);
+        }
         return status.getType();
     }
 
