@@ -32,12 +32,12 @@ public class PlayerJobRepositoryImpl implements PlayerJobRepository {
 
     @Override
     public void deleteAllByCode(String code) {
-        List<PlayerJob> playerJobs = new ArrayList<>();
+        List<PlayerJob> deletedPlayerJob = new ArrayList<>();
         for (PlayerJob playerJob : playerJobs) {
             if (playerJob.getCode().equals(code)) {
-                playerJobs.remove(playerJob);
+                deletedPlayerJob.remove(playerJob);
             }
         }
-        playerJobs.forEach(playerJob -> playerJobs.remove(playerJob));
+        deletedPlayerJob.forEach(playerJob -> playerJobs.remove(playerJob));
     }
 }

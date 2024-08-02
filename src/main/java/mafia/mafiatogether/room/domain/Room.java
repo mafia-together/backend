@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import mafia.mafiatogether.chat.domain.Chat;
+import mafia.mafiatogether.chat.domain.ChatLegacy;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.game.domain.Player;
@@ -18,7 +18,7 @@ public class Room {
     private String code;
     private final Map<String, Player> players;
     private final RoomInfo roomInfo;
-    private final Chat chat;
+    private final ChatLegacy chatLegacy;
     private Player master;
 
     public static Room create(final String code, final RoomInfo roomInfo) {
@@ -26,7 +26,7 @@ public class Room {
                 code,
                 new ConcurrentHashMap<>(),
                 roomInfo,
-                Chat.chat(),
+                ChatLegacy.chat(),
                 Player.NONE
         );
     }
@@ -36,7 +36,7 @@ public class Room {
                 null,
                 new ConcurrentHashMap<>(),
                 roomInfo,
-                Chat.chat(),
+                ChatLegacy.chat(),
                 Player.NONE
         );
     }

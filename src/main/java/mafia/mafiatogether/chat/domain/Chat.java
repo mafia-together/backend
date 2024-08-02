@@ -1,26 +1,16 @@
 package mafia.mafiatogether.chat.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Chat {
 
-    private final List<Message> messages;
-
-    public static Chat chat() {
-        return new Chat(new ArrayList<>());
-    }
-
-    public void save(final Message message) {
-        messages.add(message);
-    }
-
-    public void clear(){
-        messages.clear();
-    }
+    private String code;
+    private String name;
+    private String contents;
+    private long timestamp;
 }

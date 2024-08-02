@@ -104,7 +104,7 @@ class StatusTest {
 //    @Test
 //    void 종료상태_일정_시간_이후_대기상태가_된며_방이_초기화된다() {
 //        // given
-//        final Chat chat = room.getChat();
+//        final ChatLegacy chat = room.getChatLegacy();
 //        final Long endTime = nightEndTime + 1_000L;
 //        final Long endEndTime = endTime + 29_000L;
 //        final Long waitTime = endEndTime + 1_000L;
