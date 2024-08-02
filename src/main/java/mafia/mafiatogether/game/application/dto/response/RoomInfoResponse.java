@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.game.domain.PlayerCollection;
-import mafia.mafiatogether.job.application.dto.response.PlayerResponse;
 
 public record RoomInfoResponse(
         Timestamp startTime,

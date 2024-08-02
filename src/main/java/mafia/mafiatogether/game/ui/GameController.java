@@ -3,7 +3,7 @@ package mafia.mafiatogether.game.ui;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.PlayerInfo;
 import mafia.mafiatogether.game.application.GameService;
-import mafia.mafiatogether.job.application.dto.PlayerInfoDto;
+import mafia.mafiatogether.config.PlayerInfoDto;
 import mafia.mafiatogether.game.application.dto.request.RoomModifyRequest;
 import mafia.mafiatogether.game.application.dto.response.RoomInfoResponse;
 import mafia.mafiatogether.game.application.dto.response.RoomResultResponse;

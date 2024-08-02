@@ -13,7 +13,7 @@ import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.global.ControllerTest;
-import mafia.mafiatogether.job.application.dto.response.PlayerResponse;
+import mafia.mafiatogether.game.application.dto.response.PlayerResponse;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
 import mafia.mafiatogether.game.application.dto.response.RoomInfoResponse;
 import mafia.mafiatogether.game.application.dto.response.RoomStatusResponse;

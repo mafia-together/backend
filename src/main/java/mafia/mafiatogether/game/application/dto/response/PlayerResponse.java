@@ -1,4 +1,4 @@
-package mafia.mafiatogether.job.application.dto.response;
+package mafia.mafiatogether.game.application.dto.response;
 
 import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.job.domain.jobtype.JobType;

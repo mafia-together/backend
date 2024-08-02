@@ -1,4 +1,4 @@
-package mafia.mafiatogether.job.application.dto;
+package mafia.mafiatogether.config;
 
 public record PlayerInfoDto(
         String code,

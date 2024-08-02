@@ -1,9 +1,7 @@
 package mafia.mafiatogether.job.domain.jobtype;
 
 import java.util.List;
-import java.util.Map;
 import lombok.Getter;
-import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.PlayerJob;
 
@@ -17,11 +15,6 @@ public class Mafia implements Job {
             final String targetName
     ) {
         return targetName;
-    }
-
-    public static void executeSkill(Map<JobType, Player> targets) {
-        final Player target = targets.getOrDefault(JobType.MAFIA, Player.NONE);
-        target.kill();
     }
 
     @Override

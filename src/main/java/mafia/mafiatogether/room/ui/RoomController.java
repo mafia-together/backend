@@ -3,7 +3,7 @@ package mafia.mafiatogether.room.ui;
 import java.util.Base64;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.PlayerInfo;
-import mafia.mafiatogether.job.application.dto.PlayerInfoDto;
+import mafia.mafiatogether.config.PlayerInfoDto;
 import mafia.mafiatogether.room.application.RoomService;
 import mafia.mafiatogether.room.application.dto.request.RoomCreateRequest;
 import mafia.mafiatogether.room.application.dto.response.RoomAuthResponse;

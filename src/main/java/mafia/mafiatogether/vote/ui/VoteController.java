@@ -3,7 +3,7 @@ package mafia.mafiatogether.vote.ui;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.PlayerInfo;
 import mafia.mafiatogether.vote.application.VoteService;
-import mafia.mafiatogether.job.application.dto.PlayerInfoDto;
+import mafia.mafiatogether.config.PlayerInfoDto;
 import mafia.mafiatogether.vote.application.dto.request.VoteRequest;
 import mafia.mafiatogether.vote.application.dto.response.VoteResultResponse;
 import org.springframework.http.ResponseEntity;
