@@ -4,6 +4,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.game.domain.Player;
+import mafia.mafiatogether.job.domain.jobtype.Doctor;
+import mafia.mafiatogether.job.domain.jobtype.Mafia;
+import mafia.mafiatogether.job.domain.jobtype.Police;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -19,9 +22,9 @@ class PoliceTest {
         Player player = Player.create("player");
         player.modifyJob(mafia);
 
-        JobTarget jobTarget = new JobTarget();
-        police.applySkill(player, jobTarget);
-        assertThatThrownBy(() -> police.applySkill(player, jobTarget))
+        JobTargetLegacy jobTargetLegacy = new JobTargetLegacy();
+        police.applySkill(player, jobTargetLegacy);
+        assertThatThrownBy(() -> police.applySkill(player, jobTargetLegacy))
                 .isInstanceOf(PlayerException.class)
                 .hasMessage("이미 스킬을 사용했습니다.");
     }
@@ -36,7 +39,7 @@ class PoliceTest {
         player.modifyJob(mafia);
 
         //then
-        Assertions.assertThat(police.applySkill(player, new JobTarget())).isEqualTo("MAFIA");
+        Assertions.assertThat(police.applySkill(player, new JobTargetLegacy())).isEqualTo("MAFIA");
     }
 
     @Test
@@ -49,6 +52,6 @@ class PoliceTest {
         player.modifyJob(mafia);
 
         //then
-        Assertions.assertThat(police.applySkill(player, new JobTarget())).isEqualTo("CITIZEN");
+        Assertions.assertThat(police.applySkill(player, new JobTargetLegacy())).isEqualTo("CITIZEN");
     }
 }

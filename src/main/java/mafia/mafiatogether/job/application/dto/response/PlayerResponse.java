@@ -1,7 +1,7 @@
 package mafia.mafiatogether.job.application.dto.response;
 
 import mafia.mafiatogether.game.domain.Player;
-import mafia.mafiatogether.job.domain.JobType;
+import mafia.mafiatogether.job.domain.jobtype.JobType;
 
 public record PlayerResponse(
         String name,

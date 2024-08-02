@@ -10,8 +10,8 @@ import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.game.domain.Player;
-import mafia.mafiatogether.job.domain.JobTarget;
-import mafia.mafiatogether.job.domain.JobType;
+import mafia.mafiatogether.job.domain.JobTargetLegacy;
+import mafia.mafiatogether.job.domain.jobtype.JobType;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -21,7 +21,7 @@ public class Room {
     private final Map<String, Player> players;
     private final RoomInfo roomInfo;
     private final Chat chat;
-    private final JobTarget jobTarget;
+    private final JobTargetLegacy jobTargetLegacy;
     private Player master;
 
     public static Room create(final String code, final RoomInfo roomInfo) {
@@ -30,7 +30,7 @@ public class Room {
                 new ConcurrentHashMap<>(),
                 roomInfo,
                 Chat.chat(),
-                new JobTarget(),
+                new JobTargetLegacy(),
                 Player.NONE
         );
     }
@@ -41,7 +41,7 @@ public class Room {
                 new ConcurrentHashMap<>(),
                 roomInfo,
                 Chat.chat(),
-                new JobTarget(),
+                new JobTargetLegacy(),
                 Player.NONE
         );
     }
@@ -76,13 +76,13 @@ public class Room {
         if (!target.isAlive() && !target.equals(Player.NONE)) {
             throw new PlayerException(ExceptionCode.NOT_ALIVE_PLAYER);
         }
-        return player.getJob().applySkill(target, jobTarget);
+        return player.getJob().applySkill(target, jobTargetLegacy);
     }
 
     public String getJobsTarget(final String name) {
         final Player player = players.get(name);
         final JobType jobType = player.getJobType();
-        return jobTarget.getTargetName(jobType);
+        return jobTargetLegacy.getTargetName(jobType);
     }
 
     public boolean isEnd() {
@@ -105,7 +105,7 @@ public class Room {
     }
 
     public void executeJobTarget() {
-        jobTarget.execute();
+        jobTargetLegacy.execute();
     }
 
     public Boolean isMaster(final Player player) {
@@ -131,7 +131,7 @@ public class Room {
 //        if (status.getType() != StatusType.NOTICE) {
 //            throw new RoomException(ExceptionCode.IS_NOT_NOTICE);
 //        }
-        Player target = jobTarget.getResult();
+        Player target = jobTargetLegacy.getResult();
         if (target.isAlive()) {
             return null;
         }

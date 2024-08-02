@@ -14,7 +14,7 @@ import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.global.ControllerTest;
 import mafia.mafiatogether.job.application.dto.response.PlayerResponse;
-import mafia.mafiatogether.job.domain.JobType;
+import mafia.mafiatogether.job.domain.jobtype.JobType;
 import mafia.mafiatogether.room.application.dto.response.RoomInfoResponse;
 import mafia.mafiatogether.room.application.dto.response.RoomStatusResponse;
 import mafia.mafiatogether.room.domain.Room;

@@ -2,7 +2,7 @@ package mafia.mafiatogether.chat.application.dto.response;
 
 import java.sql.Timestamp;
 import mafia.mafiatogether.chat.domain.Message;
-import mafia.mafiatogether.job.domain.JobType;
+import mafia.mafiatogether.job.domain.jobtype.JobType;
 
 public record ChatResponse(
         String name,

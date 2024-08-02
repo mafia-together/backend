@@ -5,8 +5,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.Player;
-import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.job.domain.JobType;
+import mafia.mafiatogether.job.domain.jobtype.JobType;
 
 public class EndStatus extends Status {
 

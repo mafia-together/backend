@@ -1,32 +1,22 @@
 package mafia.mafiatogether.job.ui;
 
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static org.hamcrest.Matchers.equalTo;
-
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
-import java.time.Clock;
-import java.util.Base64;
-import java.util.Map;
-import mafia.mafiatogether.config.exception.ErrorResponse;
-import mafia.mafiatogether.config.exception.ExceptionCode;
-import mafia.mafiatogether.game.domain.Player;
-import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.global.ControllerTest;
-import mafia.mafiatogether.job.domain.JobType;
+import mafia.mafiatogether.job.domain.JobTargetRepository;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
 import mafia.mafiatogether.room.domain.RoomRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 
 @SuppressWarnings("NonAsciiCharacters")
 class PlayerControllerTest extends ControllerTest {
-
+//
 //    @Autowired
 //    private RoomRepository roomRepository;
+//
+//    @Autowired
+//    private JobTargetRepository jobTargetRepository;
+//
 //
 //    @Test
 //    void 직업_기술을_사용한다() {

@@ -6,7 +6,7 @@ import lombok.Getter;
 import mafia.mafiatogether.game.domain.status.DayIntroStatus;
 import mafia.mafiatogether.game.domain.status.Status;
 import mafia.mafiatogether.game.domain.status.StatusType;
-import mafia.mafiatogether.job.domain.Job;
+import mafia.mafiatogether.job.domain.jobtype.Job;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
 

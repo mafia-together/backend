@@ -3,8 +3,8 @@ package mafia.mafiatogether.game.domain.status;
 import java.time.Clock;
 import java.util.List;
 import mafia.mafiatogether.game.domain.Player;
-import mafia.mafiatogether.job.domain.JobType;
-import mafia.mafiatogether.job.domain.Mafia;
+import mafia.mafiatogether.job.domain.jobtype.JobType;
+import mafia.mafiatogether.job.domain.jobtype.Mafia;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
