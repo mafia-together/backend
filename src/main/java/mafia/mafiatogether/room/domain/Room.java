@@ -12,7 +12,7 @@ import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobType;
-import mafia.mafiatogether.vote.domain.Vote;
+import mafia.mafiatogether.vote.domain.VoteLegacy;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -20,7 +20,7 @@ public class Room {
 
     private String code;
     private final Map<String, Player> players;
-    private final Vote vote;
+    private final VoteLegacy voteLegacy;
     private final RoomInfo roomInfo;
     private final Chat chat;
     private final JobTarget jobTarget;
@@ -30,7 +30,7 @@ public class Room {
         return new Room(
                 code,
                 new ConcurrentHashMap<>(),
-                Vote.create(),
+                VoteLegacy.create(),
                 roomInfo,
                 Chat.chat(),
                 new JobTarget(),
@@ -42,7 +42,7 @@ public class Room {
         return new Room(
                 null,
                 new ConcurrentHashMap<>(),
-                Vote.create(),
+                VoteLegacy.create(),
                 roomInfo,
                 Chat.chat(),
                 new JobTarget(),
@@ -92,15 +92,15 @@ public class Room {
     public void votePlayer(final String name, final String targetName, final Long now) {
         final Player player = getPlayer(name);
         final Player target = targetName.isBlank() ? Player.NONE : getPlayer(targetName);
-        vote.choose(player, target);
+        voteLegacy.choose(player, target);
         // todo : vote에서 해결
-//        if (vote.isAllParticipatedVote(getPlayerCount())) {
+//        if (voteLegacy.isAllParticipatedVote(getPlayerCount())) {
 //            this.status = status.getNextStatus(null, now);
 //        }
     }
 
     public String getVoteResult() {
-        return vote.getVoteResult();
+        return voteLegacy.getVoteResult();
     }
 
     public Long getPlayerCount() {
@@ -129,7 +129,7 @@ public class Room {
     }
 
     public void executeVote() {
-        vote.executeVote();
+        voteLegacy.executeVote();
     }
 
     public void executeJobTarget() {
@@ -149,14 +149,14 @@ public class Room {
     }
 
     public void clearVote() {
-        this.vote.clear();
+        this.voteLegacy.clear();
     }
 
     public void reset() {
         for (final Player player : players.values()) {
             player.reset();
         }
-        vote.clear();
+        voteLegacy.clear();
         chat.clear();
     }
 
