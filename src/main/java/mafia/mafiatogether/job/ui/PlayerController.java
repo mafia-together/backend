@@ -8,7 +8,7 @@ import mafia.mafiatogether.job.application.dto.request.PlayerExecuteAbilityReque
 import mafia.mafiatogether.job.application.dto.response.JobResponse;
 import mafia.mafiatogether.job.application.dto.response.MafiaTargetResponse;
 import mafia.mafiatogether.job.application.dto.response.PlayerExecuteAbilityResponse;
-import mafia.mafiatogether.room.application.dto.response.RoomNightResultResponse;
+import mafia.mafiatogether.job.application.dto.response.RoomNightResultResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;

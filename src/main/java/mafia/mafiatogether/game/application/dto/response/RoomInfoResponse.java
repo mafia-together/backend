@@ -1,13 +1,11 @@
-package mafia.mafiatogether.room.application.dto.response;
+package mafia.mafiatogether.game.application.dto.response;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.game.domain.PlayerCollection;
-import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.job.application.dto.response.PlayerResponse;
 
 public record RoomInfoResponse(

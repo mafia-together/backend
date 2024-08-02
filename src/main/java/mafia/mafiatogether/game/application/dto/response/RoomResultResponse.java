@@ -1,4 +1,4 @@
-package mafia.mafiatogether.room.application.dto.response;
+package mafia.mafiatogether.game.application.dto.response;
 
 import java.sql.Timestamp;
 import java.util.List;

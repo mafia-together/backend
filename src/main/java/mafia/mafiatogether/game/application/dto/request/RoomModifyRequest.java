@@ -1,4 +1,4 @@
-package mafia.mafiatogether.room.application.dto.request;
+package mafia.mafiatogether.game.application.dto.request;
 
 import mafia.mafiatogether.game.domain.status.StatusType;
 
