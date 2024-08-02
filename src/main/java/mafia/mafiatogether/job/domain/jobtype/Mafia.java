@@ -5,17 +5,10 @@ import java.util.Map;
 import lombok.Getter;
 import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.job.domain.JobTarget;
-import mafia.mafiatogether.job.domain.JobTargetLegacy;
 import mafia.mafiatogether.job.domain.PlayerJob;
 
 @Getter
 public class Mafia implements Job {
-
-    @Override
-    public String applySkill(final Player player, final JobTargetLegacy jobTargetLegacy) {
-        jobTargetLegacy.addTarget(JobType.MAFIA, player);
-        return player.getName();
-    }
 
     @Override
     public String applySkill(
