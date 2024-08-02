@@ -29,7 +29,7 @@ public class Game {
                 DayIntroStatus.create(now),
                 room.getRoomInfo(),
                 room.getMaster().getName(),
-                new PlayerCollection(room.getPlayers().values().stream().toList())
+                PlayerCollection.creat(room.getParticipants())
         );
     }
 

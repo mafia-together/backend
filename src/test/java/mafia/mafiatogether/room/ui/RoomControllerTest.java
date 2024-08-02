@@ -3,6 +3,7 @@ package mafia.mafiatogether.room.ui;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.Base64;
+import java.util.List;
 import java.util.stream.Stream;
 import mafia.mafiatogether.config.exception.ErrorResponse;
 import mafia.mafiatogether.config.exception.ExceptionCode;
@@ -92,7 +93,10 @@ class RoomControllerTest extends ControllerTest {
 
         //then
         Room room = roomRepository.findByCode(code);
-        Assertions.assertThat(room.getPlayer("power")).isNotNull();
+        List<String> actual = room.getParticipants().getParticipants().stream()
+                .map(participant -> participant.getName())
+                .toList();
+        Assertions.assertThat(actual).contains("power");
     }
 
     @Test

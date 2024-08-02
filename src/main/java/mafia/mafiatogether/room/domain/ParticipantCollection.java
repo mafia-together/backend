@@ -1,6 +1,8 @@
 package mafia.mafiatogether.room.domain;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.Getter;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
@@ -10,28 +12,28 @@ public class ParticipantCollection {
 
     private List<Participant> participants;
 
-    public boolean contains(String name){
-        return participants.stream()
-                .filter(participant -> participant.getName().equals(name))
-                .findFirst()
-                .isPresent();
+    public ParticipantCollection() {
+        participants = new ArrayList<>();
     }
 
-    public int size(){
+    public int size() {
         return participants.size();
     }
 
-    public void put(Participant participant){
+    public void put(Participant participant, int total) {
+        validateParticipant(participant, total);
         participants.add(participant);
     }
 
-    public Participant getParticipant(String name){
-        if (name.isBlank()) {
-            return Participant.NONE;
+    private void validateParticipant(Participant participant, int total) {
+        if (participants.size() >= total) {
+            throw new RoomException(ExceptionCode.ROOM_FULL);
         }
-        return participants.stream()
-                .filter(participant -> participant.getName().equals(name))
-                .findFirst()
-                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_PLAYER));
+        Optional<Participant> sameName = participants.stream()
+                .filter(p -> p.getName().equals(participant.getName()))
+                .findFirst();
+        if (sameName.isPresent()){
+            throw new RoomException(ExceptionCode.INVALID_NAMES);
+        }
     }
 }
