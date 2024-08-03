@@ -77,4 +77,12 @@ public class PlayerCollection {
                 .filter(player -> !player.isMafia())
                 .toList();
     }
+
+    public void executeTarget(String target) {
+        if (target.isBlank()){
+            return;
+        }
+        final Player targetPlayer = findByName(target);
+        targetPlayer.kill();
+    }
 }

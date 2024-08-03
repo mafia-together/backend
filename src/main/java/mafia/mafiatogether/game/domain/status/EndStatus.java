@@ -18,7 +18,7 @@ public class EndStatus extends Status {
 
     @Override
     public Status getNextStatus(final Game game, final Long now) {
-        // todo : game 삭제 이벤트 날리기
+        game.publishDeleteGameEvent();
         return null;
     }
 

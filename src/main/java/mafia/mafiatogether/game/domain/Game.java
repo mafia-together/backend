@@ -4,6 +4,11 @@ import java.util.List;
 import java.util.Queue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import mafia.mafiatogether.game.application.dto.event.ClearJobTargetEvent;
+import mafia.mafiatogether.game.application.dto.event.CreatePlayerJobEvent;
+import mafia.mafiatogether.game.application.dto.event.DeleteGameEvent;
+import mafia.mafiatogether.game.application.dto.event.JobExecuteEvent;
+import mafia.mafiatogether.game.application.dto.event.VoteExecuteEvent;
 import mafia.mafiatogether.game.domain.status.DayIntroStatus;
 import mafia.mafiatogether.game.domain.status.Status;
 import mafia.mafiatogether.game.domain.status.StatusType;
@@ -12,12 +17,13 @@ import mafia.mafiatogether.job.domain.jobtype.JobType;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.redis.core.RedisHash;
 
 @Getter
 @RedisHash("game")
 @AllArgsConstructor
-public class Game {
+public class Game extends AbstractAggregateRoot<Game> {
 
     @Id
     private String code;
@@ -46,9 +52,9 @@ public class Game {
             }
             player.modifyJob(jobs.poll());
         }
+        registerEvent(new CreatePlayerJobEvent(this.code, this.players));
     }
 
-    // status 로직 넣기
     public StatusType getStatusType(final Long now) {
         if (status.isTimeOver(now)) {
             status = status.getNextStatus(this, now);
@@ -94,5 +100,25 @@ public class Game {
 
     public String getWinnerJob() {
         return players.getWinnerJobType().name();
+    }
+
+    public void publishVoteExecuteEvent(){
+        registerEvent(new VoteExecuteEvent(this.code));
+    }
+
+    public void executeTarget(String target) {
+        players.executeTarget(target);
+    }
+
+    public void publicJobExecuteEvent() {
+        registerEvent(new JobExecuteEvent(this.code));
+    }
+
+    public void publishClearJobTargetEvent() {
+        registerEvent(new ClearJobTargetEvent(this.code));
+    }
+
+    public void publishDeleteGameEvent(){
+        registerEvent(new DeleteGameEvent(this.code));
     }
 }

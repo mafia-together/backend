@@ -18,6 +18,7 @@ public class NightStatus extends Status {
 
     @Override
     public Status getNextStatus(final Game game, final Long now) {
+        game.publicJobExecuteEvent();
         if (game.isEnd()) {
             return EndStatus.create(now);
         }

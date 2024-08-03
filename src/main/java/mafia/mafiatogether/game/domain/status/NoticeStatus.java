@@ -18,6 +18,7 @@ public class NoticeStatus extends Status {
 
     @Override
     public Status getNextStatus(final Game game, final Long now) {
+        game.publishClearJobTargetEvent();
         return DayStatus.create(game.getAlivePlayerCount(), now);
     }
 

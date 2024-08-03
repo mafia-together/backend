@@ -1,9 +1,7 @@
 package mafia.mafiatogether.game.domain.status;
 
-import java.util.List;
 import lombok.NoArgsConstructor;
 import mafia.mafiatogether.game.domain.Game;
-import mafia.mafiatogether.game.domain.Player;
 
 @NoArgsConstructor
 public class VoteResultStatus extends Status {
@@ -21,8 +19,8 @@ public class VoteResultStatus extends Status {
     @Override
     public Status getNextStatus(final Game game, final Long now) {
         // todo : vote event날리기
+        game.publishVoteExecuteEvent();
         if (game.isEnd()) {
-            final List<Player> players = game.getPlayers().getPlayers();
             return EndStatus.create(now);
         }
         return NightIntroStatus.create(now);

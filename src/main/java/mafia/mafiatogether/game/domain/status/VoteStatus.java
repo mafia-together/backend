@@ -21,7 +21,6 @@ public class VoteStatus extends Status {
         if (now < this.endTime) {
             return this;
         }
-        // vote event 날리기
         return VoteResultStatus.create(now);
     }
 
