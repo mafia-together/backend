@@ -22,8 +22,8 @@ public enum ExceptionCode {
     IS_NOT_DAY_INTRO(111, "방이 DAY_INTRO 상태가 아닙니다."),
     IS_NOT_NOTICE(112, "방이 NOTICE 상태가 아닙니다."),
     VOTE_IS_NOT_END(113, "투표가 진행중입니다."),
-    INVALID_CITIZEN_SKILL(114, "시민은 스킬을 사용할 수 없습니다"),
-
+    INVALID_CITIZEN_SKILL(114, "시민은 스킬을 사용할 수 없습니다")
+    , DELETED_STATUS(115, "삭제된 방입니다."),
 
     NOT_PARTICIPATING_GAME(200, "게임에 참가해 주십시오."),
     INVALID_JOB(201, "마피아만 지목 대상을 볼 수 있습니다."),

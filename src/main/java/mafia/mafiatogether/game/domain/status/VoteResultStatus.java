@@ -18,7 +18,6 @@ public class VoteResultStatus extends Status {
 
     @Override
     public Status getNextStatus(final Game game, final Long now) {
-        // todo : vote event날리기
         game.publishVoteExecuteEvent();
         if (game.isEnd()) {
             return EndStatus.create(now);

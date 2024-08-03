@@ -14,6 +14,7 @@ import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.application.dto.event.JobExecuteEvent;
 import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.game.application.dto.event.VoteExecuteEvent;
+import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobTargetRepository;
 import mafia.mafiatogether.job.domain.PlayerJob;
@@ -80,9 +81,13 @@ public class GameEventListener {
     public void listenAllPlayerVoteEvent(final AllPlayerVotedEvent allPlayerVotedEvent){
         final Game game = gameRepository.findById(allPlayerVotedEvent.getCode())
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+        if (!game.getStatus().getType().equals(StatusType.VOTE)){
+            return;
+        }
         final int votedCount = voteRepository.findAllByCode(allPlayerVotedEvent.getCode()).size();
         if (game.getAlivePlayerCount() == votedCount){
             game.skipStatus(Clock.systemDefaultZone().millis());
+            gameRepository.save(game);
         }
     }
 }

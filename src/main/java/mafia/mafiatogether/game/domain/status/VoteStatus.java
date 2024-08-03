@@ -18,9 +18,6 @@ public class VoteStatus extends Status {
 
     @Override
     public Status getNextStatus(final Game game, final Long now) {
-        if (now < this.endTime) {
-            return this;
-        }
         return VoteResultStatus.create(now);
     }
 

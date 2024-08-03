@@ -19,7 +19,7 @@ public class EndStatus extends Status {
     @Override
     public Status getNextStatus(final Game game, final Long now) {
         game.publishDeleteGameEvent();
-        return null;
+        return new DeletedStatus();
     }
 
     @Override

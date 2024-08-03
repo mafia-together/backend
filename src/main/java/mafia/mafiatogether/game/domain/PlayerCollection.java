@@ -79,7 +79,7 @@ public class PlayerCollection {
     }
 
     public void executeTarget(String target) {
-        if (target.isBlank()){
+        if (target == null || target.isBlank()){
             return;
         }
         final Player targetPlayer = findByName(target);
