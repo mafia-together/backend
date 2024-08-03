@@ -3,6 +3,7 @@ package mafia.mafiatogether.chat.ui;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.time.Clock;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,7 @@ import java.util.stream.Stream;
 import mafia.mafiatogether.chat.application.dto.response.ChatResponse;
 import mafia.mafiatogether.chat.domain.Chat;
 import mafia.mafiatogether.chat.domain.ChatRepository;
+import mafia.mafiatogether.chat.domain.Message;
 import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.global.ControllerTest;
 import mafia.mafiatogether.job.domain.PlayerJob;
@@ -59,17 +61,19 @@ public class ChatLegacyControllerTest extends ControllerTest {
         playerJobRepository.save(police);
         playerJobRepository.save(citizen);
 
-        chatRepository.save(new Chat(CODE, MAFIA1, "contents1", Clock.systemDefaultZone().millis()));
-        chatRepository.save(new Chat(CODE, MAFIA2, "contents2", Clock.systemDefaultZone().millis()));
-        chatRepository.save(new Chat(CODE, POLICE, "contents3", Clock.systemDefaultZone().millis()));
-        chatRepository.save(new Chat(CODE, DOCTOR, "contents4", Clock.systemDefaultZone().millis()));
-        chatRepository.save(new Chat(CODE, CITIZEN, "contents5", Clock.systemDefaultZone().millis()));
+        Chat chat = new Chat(CODE, new ArrayList<>());
+        chat.saveMessage(new Message(MAFIA1, "contents1", Clock.systemDefaultZone().millis()));
+        chat.saveMessage(new Message(MAFIA2, "contents2", Clock.systemDefaultZone().millis()));
+        chat.saveMessage(new Message(POLICE, "contents3", Clock.systemDefaultZone().millis()));
+        chat.saveMessage(new Message(DOCTOR, "contents4", Clock.systemDefaultZone().millis()));
+        chat.saveMessage(new Message(CITIZEN, "contents5", Clock.systemDefaultZone().millis()));
+        chatRepository.save(chat);
     }
 
     @AfterEach
-    void clearTest(){
+    void clearTest() {
         playerJobRepository.deleteAllByCode(CODE);
-        chatRepository.deleteAllByCode(CODE);
+        chatRepository.deleteById(CODE);
     }
 
     @ParameterizedTest(name = "{0}이 조회시 다른 사람 직업은 전부 null로 반환된다.")
@@ -171,7 +175,7 @@ public class ChatLegacyControllerTest extends ControllerTest {
                 .statusCode(HttpStatus.CREATED.value());
 
         // then
-        final Long actual = chatRepository.findByCode(CODE).stream().count();
+        final Long actual = chatRepository.findById(CODE).get().getMessages().stream().count();
         Assertions.assertThat(actual).isEqualTo(6);
     }
 }
