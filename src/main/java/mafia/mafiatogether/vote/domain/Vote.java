@@ -1,5 +1,6 @@
 package mafia.mafiatogether.vote.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,6 +8,7 @@ import java.util.Map.Entry;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
 
 @Getter
 @NoArgsConstructor
@@ -17,8 +19,14 @@ public class Vote {
     private String name;
     private String target;
 
+    @Id
+    @JsonIgnore
+    public String getId() {
+        return code + ":" + name;
+    }
+
     // todo : 메서드 줄이기
-    public static String countVotes(final List<Vote> votes){
+    public static String countVotes(final List<Vote> votes) {
         final Map<String, Integer> targetCounts = new HashMap<>();
         for (Vote vote : votes) {
             targetCounts.put(vote.target, targetCounts.getOrDefault(vote.target, 0) + 1);
@@ -34,10 +42,10 @@ public class Vote {
                 continue;
             }
             if (targetCount.getValue() == maxCount) {
-                numberOfMax ++;
+                numberOfMax++;
             }
         }
-        if (numberOfMax > 1){
+        if (numberOfMax > 1) {
             return "";
         }
         return maxTarget;

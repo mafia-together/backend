@@ -2,38 +2,39 @@ package mafia.mafiatogether.vote.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 @Getter
 @Repository
+@RequiredArgsConstructor
 public class VoteRepositoryImpl implements VoteRepository {
 
     private final List<Vote> votes = new ArrayList<>();
+    private final RedisTemplate<String, Object> redisTemplate;
+    private static final String KEY_PREFIX = "vote:";
 
     @Override
     public Vote save(Vote vote) {
-        Optional<Vote> exist = votes.stream()
-                .filter(v -> v.getCode().equals(vote.getCode()) && v.getName().equals(vote.getName()))
-                .findFirst();
-        exist.ifPresent(votes::remove);
-        votes.add(vote);
+        final String key = KEY_PREFIX + vote.getCode();
+        redisTemplate.opsForValue().set(key, vote);
         return vote;
     }
 
     @Override
     public List<Vote> findAllByCode(String code) {
-        return votes.stream()
-                .filter(vote -> vote.getCode().equals(code))
+        Set<String> keys = redisTemplate.keys(KEY_PREFIX + "*");
+        return keys.stream()
+                .map(key -> (Vote) redisTemplate.opsForValue().get(key))
                 .toList();
     }
 
     @Override
     public void deleteAllByCode(String code) {
-        Optional<Vote> vote = votes.stream()
-                .filter(v -> v.getCode().equals(code))
-                .findFirst();
-        vote.ifPresent(votes::remove);
+        Set<String> keys = redisTemplate.keys(KEY_PREFIX + "*");
+        redisTemplate.delete(keys);
     }
 }
