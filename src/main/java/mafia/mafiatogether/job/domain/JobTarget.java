@@ -1,11 +1,13 @@
 package mafia.mafiatogether.job.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mafia.mafiatogether.job.domain.jobtype.Job;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
+import org.springframework.data.annotation.Id;
 
 @Getter
 @NoArgsConstructor
@@ -15,6 +17,12 @@ public class JobTarget {
     private String code;
     private Job job;
     private String target;
+
+    @Id
+    @JsonIgnore
+    public String getId() {
+        return code + ":" + job.getJobType();
+    }
 
     public static final JobTarget NONE = new JobTarget(null, null, null);
 

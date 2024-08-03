@@ -7,7 +7,7 @@ import mafia.mafiatogether.job.domain.jobtype.JobType;
 public interface JobTargetRepository {
     List<JobTarget> findAllByCode(String code);
 
-    void save(JobTarget jobTarget);
+    JobTarget save(JobTarget jobTarget);
 
     Optional<JobTarget> findByCodeAndJobType(String code, JobType jobType);
 
