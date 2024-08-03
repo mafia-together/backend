@@ -96,9 +96,6 @@ class RoomControllerTest extends ControllerTest {
 
     @Test
     void 방에_참가할_수_있다() {
-        //give
-
-
         //when
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -112,6 +109,28 @@ class RoomControllerTest extends ControllerTest {
                 .map(participant -> participant.getName())
                 .toList();
         Assertions.assertThat(actual).contains("power");
+    }
+
+    @Test
+    void 처음_참가한_참가자가_방장이다() {
+        // given
+        final String expect = "master";
+
+        //when
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when().get("/rooms?code=" + CODE + "&name=" + expect)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .when().get("/rooms?code=" + CODE + "&name=not_master")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        //then
+        String actual = roomRepository.findById(CODE).get().getMaster().getName();
+        Assertions.assertThat(actual).isEqualTo(expect);
     }
 
     @Test

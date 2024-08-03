@@ -62,7 +62,7 @@ class GameControllerTest extends ControllerTest {
     @Test
     void 대기방을_상태를_확인할_수_있다() {
         //given
-        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + "power").getBytes());
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
 
         //when
         final RoomStatusResponse response = RestAssured.given().log().all()
@@ -140,6 +140,30 @@ class GameControllerTest extends ControllerTest {
 
         // then
         Assertions.assertThat(response.errorCode()).isEqualTo(ExceptionCode.NOT_ENOUGH_PLAYER.getCode());
+    }
+
+    @Test
+    void 대기방에서_방장이_방의_정보를_찾는다(){
+        // given
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
+
+        // when
+        final RoomInfoResponse response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Basic " + basic)
+                .when().get("/rooms/info")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(RoomInfoResponse.class);
+
+        /// then
+        assertSoftly(
+                softly ->{
+                    softly.assertThat(response.isMaster()).isTrue();
+                    softly.assertThat(response.players()).hasSize(4);
+                }
+        );
     }
 
     @Test
