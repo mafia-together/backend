@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,29 +24,24 @@ public class Vote {
         return code + ":" + name;
     }
 
-    // todo : 메서드 줄이기
     public static String countVotes(final List<Vote> votes) {
+        final Map<String, Integer> voteCounts = countTargetVotes(votes);
+        final int maxCount = voteCounts.values().stream().max(Integer::compareTo).orElse(0);
+        final List<String> maxCounts = voteCounts.entrySet().stream()
+                .filter(entry -> entry.getValue() == maxCount)
+                .map(Map.Entry::getKey)
+                .toList();
+        if (maxCounts.size() == 1) {
+            return maxCounts.get(0);
+        }
+        return "";
+    }
+
+    private static Map<String, Integer> countTargetVotes(List<Vote> votes) {
         final Map<String, Integer> targetCounts = new HashMap<>();
         for (Vote vote : votes) {
             targetCounts.put(vote.target, targetCounts.getOrDefault(vote.target, 0) + 1);
         }
-        int maxCount = 0;
-        int numberOfMax = 0;
-        String maxTarget = "";
-        for (Entry<String, Integer> targetCount : targetCounts.entrySet()) {
-            if (targetCount.getValue() > maxCount) {
-                maxCount = targetCount.getValue();
-                numberOfMax = 1;
-                maxTarget = targetCount.getKey();
-                continue;
-            }
-            if (targetCount.getValue() == maxCount) {
-                numberOfMax++;
-            }
-        }
-        if (numberOfMax > 1) {
-            return "";
-        }
-        return maxTarget;
+        return targetCounts;
     }
 }
