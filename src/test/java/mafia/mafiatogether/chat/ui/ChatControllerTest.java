@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 @SuppressWarnings("NonAsciiCharacters")
-public class ChatLegacyControllerTest extends ControllerTest {
+public class ChatControllerTest extends ControllerTest {
 
     @Autowired
     private ChatRepository chatRepository;

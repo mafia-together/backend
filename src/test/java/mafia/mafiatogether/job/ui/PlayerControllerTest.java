@@ -33,7 +33,7 @@ class PlayerControllerTest extends ControllerTest {
     @Autowired
     private PlayerJobRepository playerJobRepository;
 
-    private static final String code = "1234567890";
+    private static final String CODE = "1234567890";
     private static final String MAFIA1 = "mafia1";
     private static final String MAFIA2 = "mafia2";
     private static final String DOCTOR = "doctor";
@@ -42,11 +42,11 @@ class PlayerControllerTest extends ControllerTest {
 
     @BeforeEach
     void setTest() {
-        final PlayerJob mafia1 = new PlayerJob(code, MAFIA1, new Mafia());
-        final PlayerJob mafia2 = new PlayerJob(code, MAFIA2, new Mafia());
-        final PlayerJob doctor = new PlayerJob(code, DOCTOR, new Doctor());
-        final PlayerJob police = new PlayerJob(code, POLICE, new Police());
-        final PlayerJob citizen = new PlayerJob(code, CITIZEN, new Citizen());
+        final PlayerJob mafia1 = new PlayerJob(CODE, MAFIA1, new Mafia());
+        final PlayerJob mafia2 = new PlayerJob(CODE, MAFIA2, new Mafia());
+        final PlayerJob doctor = new PlayerJob(CODE, DOCTOR, new Doctor());
+        final PlayerJob police = new PlayerJob(CODE, POLICE, new Police());
+        final PlayerJob citizen = new PlayerJob(CODE, CITIZEN, new Citizen());
         playerJobRepository.save(mafia1);
         playerJobRepository.save(mafia2);
         playerJobRepository.save(doctor);
@@ -56,14 +56,14 @@ class PlayerControllerTest extends ControllerTest {
 
     @AfterEach
     void clearTest() {
-        jobTargetRepository.deleteAllByCode(code);
-        playerJobRepository.deleteAllByCode(code);
+        jobTargetRepository.deleteAllByCode(CODE);
+        playerJobRepository.deleteAllByCode(CODE);
     }
 
     @Test
     void 직업_기술을_사용한다() {
         // given
-        String basic = Base64.getEncoder().encodeToString((code + ":" + MAFIA1).getBytes());
+        String basic = Base64.getEncoder().encodeToString((CODE + ":" + MAFIA1).getBytes());
 
         // when & then
         RestAssured.given().log().all()
@@ -74,14 +74,14 @@ class PlayerControllerTest extends ControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
 
-        final JobTarget actual = jobTargetRepository.findByCodeAndJobType(code, JobType.MAFIA).get();
+        final JobTarget actual = jobTargetRepository.findByCodeAndJobType(CODE, JobType.MAFIA).get();
         Assertions.assertThat(actual.getTarget()).isEqualTo(CITIZEN);
     }
 
     @Test
     void 초기_마피아_타겟은_NULL_값이다() {
         // given
-        String basic = Base64.getEncoder().encodeToString((code + ":" + MAFIA1).getBytes());
+        String basic = Base64.getEncoder().encodeToString((CODE + ":" + MAFIA1).getBytes());
 
         // when & then
         final String actual = RestAssured.given().log().all()
@@ -105,7 +105,7 @@ class PlayerControllerTest extends ControllerTest {
         executeSkill(MAFIA1, "");
 
         // then
-        final String actual = jobTargetRepository.findByCodeAndJobType(code, JobType.MAFIA)
+        final String actual = jobTargetRepository.findByCodeAndJobType(CODE, JobType.MAFIA)
                 .get()
                 .getTarget();
         Assertions.assertThat(actual).isBlank();
@@ -113,7 +113,7 @@ class PlayerControllerTest extends ControllerTest {
     }
 
     private void executeSkill(final String name, final String target) {
-        String basic = Base64.getEncoder().encodeToString((code + ":" + name).getBytes());
+        String basic = Base64.getEncoder().encodeToString((CODE + ":" + name).getBytes());
 
         // when & then
         RestAssured.given().log().all()
@@ -128,7 +128,7 @@ class PlayerControllerTest extends ControllerTest {
     void 방에_없는_사람에게_직업_기술_사용시_실패한다() {
         // given
         final String target = "not in room";
-        String basic = Base64.getEncoder().encodeToString((code + ":" + MAFIA1).getBytes());
+        String basic = Base64.getEncoder().encodeToString((CODE + ":" + MAFIA1).getBytes());
 
         // when
         RestAssured.given().log().all()
@@ -144,7 +144,7 @@ class PlayerControllerTest extends ControllerTest {
     @Test
     void 직업을_조회한다() {
         //given
-        String basic = Base64.getEncoder().encodeToString((code + ":" + CITIZEN).getBytes());
+        String basic = Base64.getEncoder().encodeToString((CODE + ":" + CITIZEN).getBytes());
 
         // when & then
         RestAssured.given().log().all()

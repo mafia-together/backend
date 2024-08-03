@@ -12,7 +12,6 @@ import mafia.mafiatogether.game.application.dto.response.RoomStatusResponse;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.Player;
-import mafia.mafiatogether.game.domain.status.Status;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomRepository;
@@ -38,10 +37,10 @@ public class GameService {
         throw new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE);
     }
 
-    private StatusType checkStatusChanged(final Game game){
+    private StatusType checkStatusChanged(final Game game) {
         game.setStatsSnapshot();
         final StatusType statusType = game.getStatusType(Clock.systemDefaultZone().millis());
-        if (game.isStatusChanged()){
+        if (game.isStatusChanged()) {
             gameRepository.save(game);
         }
         return statusType;

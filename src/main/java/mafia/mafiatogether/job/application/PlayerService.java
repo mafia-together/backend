@@ -48,7 +48,7 @@ public class PlayerService {
         return new PlayerExecuteAbilityResponse(playerJob.getJob().getJobType().name(), result);
     }
 
-    private void validateTarget(List<PlayerJob> playerJobs, String target) {
+    private void validateTarget(final List<PlayerJob> playerJobs, String target) {
         if (target.isEmpty()) {
             return;
         }
@@ -69,7 +69,7 @@ public class PlayerService {
         return new MafiaTargetResponse(mafiaJobTarget.getTarget());
     }
 
-    public RoomNightResultResponse findJobResult(String code) {
+    public RoomNightResultResponse findJobResult(final String code) {
         final List<JobTarget> jobTargets = jobTargetRepository.findAllByCode(code);
         final String target = JobTarget.findTarget(jobTargets);
         return new RoomNightResultResponse(target);

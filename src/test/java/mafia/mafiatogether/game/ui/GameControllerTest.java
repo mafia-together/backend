@@ -36,7 +36,7 @@ class GameControllerTest extends ControllerTest {
     @Autowired
     private RoomRepository roomRepository;
 
-    private static final String code = "1234567890";
+    private static final String CODE = "1234567890";
     private static final String PLAYER1_NAME = "player1";
     private static final String PLAYER2_NAME = "player2";
     private static final String PLAYER3_NAME = "player3";
@@ -45,7 +45,7 @@ class GameControllerTest extends ControllerTest {
 
     @BeforeEach
     void setGame() {
-        Room room = Room.create(code, RoomInfo.of(5, 2, 1, 1));
+        Room room = Room.create(CODE, RoomInfo.of(5, 2, 1, 1));
         room.joinPlayer(PLAYER1_NAME);
         room.joinPlayer(PLAYER2_NAME);
         room.joinPlayer(PLAYER3_NAME);
@@ -55,14 +55,14 @@ class GameControllerTest extends ControllerTest {
 
     @AfterEach
     void clearTest() {
-        roomRepository.deleteById(code);
-        gameRepository.deleteById(code);
+        roomRepository.deleteById(CODE);
+        gameRepository.deleteById(CODE);
     }
 
     @Test
     void 대기방을_상태를_확인할_수_있다() {
         //given
-        final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + "power").getBytes());
 
         //when
         final RoomStatusResponse response = RestAssured.given().log().all()
@@ -81,7 +81,7 @@ class GameControllerTest extends ControllerTest {
     @Test
     void 게임의_상태를_확인할_수_있다() {
         //given
-        final String basic = Base64.getEncoder().encodeToString((code + ":" + PLAYER1_NAME).getBytes());
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
         startGame();
 
         //when
@@ -99,10 +99,10 @@ class GameControllerTest extends ControllerTest {
     }
 
     private void startGame() {
-        Room room = roomRepository.findById(code).get();
+        Room room = roomRepository.findById(CODE).get();
         room.joinPlayer(PLAYER5_NAME);
         roomRepository.save(room);
-        String basic = Base64.getEncoder().encodeToString((code + ":" + "player1").getBytes());
+        String basic = Base64.getEncoder().encodeToString((CODE + ":" + "player1").getBytes());
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(Map.of("statusType", StatusType.DAY_INTRO))
@@ -118,14 +118,14 @@ class GameControllerTest extends ControllerTest {
         startGame();
 
         //then
-        StatusType actual = gameRepository.findById(code).get().getStatus().getType();
+        StatusType actual = gameRepository.findById(CODE).get().getStatus().getType();
         Assertions.assertThat(actual).isEqualTo(StatusType.DAY_INTRO);
     }
 
     @Test
     void 인원부족시_게임을_시작할_수_없다() {
         //given
-        String basic = Base64.getEncoder().encodeToString((code + ":" + "player1").getBytes());
+        String basic = Base64.getEncoder().encodeToString((CODE + ":" + "player1").getBytes());
 
         //when
         final ErrorResponse response = RestAssured.given().log().all()
@@ -146,9 +146,9 @@ class GameControllerTest extends ControllerTest {
     void 생존한_사람이_방의_정보를_찾는다() {
         // given
         startGame();
-        Game game = gameRepository.findById(code).get();
+        Game game = gameRepository.findById(CODE).get();
         final Player citizen = findPlayer(game, JobType.CITIZEN);
-        final String basic = Base64.getEncoder().encodeToString((code + ":" + citizen.getName()).getBytes());
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + citizen.getName()).getBytes());
 
         // when & then
         final RoomInfoResponse response = RestAssured.given().log().all()
@@ -186,11 +186,11 @@ class GameControllerTest extends ControllerTest {
     void 죽은사람이_방의_정보를_찾는다() {
         // given
         startGame();
-        Game game = gameRepository.findById(code).get();
+        Game game = gameRepository.findById(CODE).get();
         final Player citizen = findPlayer(game, JobType.CITIZEN);
         citizen.kill();
         gameRepository.save(game);
-        final String basic = Base64.getEncoder().encodeToString((code + ":" + citizen.getName()).getBytes());
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + citizen.getName()).getBytes());
 
         // when & then
         final RoomInfoResponse response = RestAssured.given().log().all()
@@ -216,13 +216,13 @@ class GameControllerTest extends ControllerTest {
     void 마피아가_방의_정보를_찾는다() {
         // given
         startGame();
-        Game game = gameRepository.findById(code).get();
+        Game game = gameRepository.findById(CODE).get();
         final Player mafia = findPlayer(game, JobType.MAFIA);
-        final String mafiaBasic = Base64.getEncoder().encodeToString((code + ":" + mafia.getName()).getBytes());
+        final String mafiaBasic = Base64.getEncoder().encodeToString((CODE + ":" + mafia.getName()).getBytes());
         final Player doctor = findPlayer(game, JobType.DOCTOR);
-        final String doctorBasic = Base64.getEncoder().encodeToString((code + ":" + doctor.getName()).getBytes());
+        final String doctorBasic = Base64.getEncoder().encodeToString((CODE + ":" + doctor.getName()).getBytes());
         final Player citizen = findPlayer(game, JobType.CITIZEN);
-        final String citizenBasic = Base64.getEncoder().encodeToString((code + ":" + citizen.getName()).getBytes());
+        final String citizenBasic = Base64.getEncoder().encodeToString((CODE + ":" + citizen.getName()).getBytes());
 
         // when & then
         final Long mafiaCount = countMafiaResponse(mafiaBasic);

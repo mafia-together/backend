@@ -28,7 +28,7 @@ public class PlayerCollection {
         return playerCollection;
     }
 
-    public Player findByName(String name) {
+    public Player findByName(final String name) {
         return players.stream()
                 .filter(player -> player.getName().equals(name))
                 .findFirst()
@@ -78,7 +78,7 @@ public class PlayerCollection {
                 .toList();
     }
 
-    public void executeTarget(String target) {
+    public void executeTarget(final String target) {
         if (target == null || target.isBlank()){
             return;
         }

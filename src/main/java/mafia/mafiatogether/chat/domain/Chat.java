@@ -20,7 +20,7 @@ public class Chat {
         this.messages = new ArrayList<>();
     }
 
-    public void saveMessage(Message message) {
+    public void saveMessage(final Message message) {
         this.messages.add(message);
     }
 }

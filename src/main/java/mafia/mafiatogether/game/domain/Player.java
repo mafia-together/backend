@@ -32,16 +32,7 @@ public class Player {
         this.alive = false;
     }
 
-    public void heal() {
-        this.alive = true;
-    }
-
     public boolean isMafia() {
         return getJobType().equals(JobType.MAFIA);
-    }
-
-    public void reset() {
-        this.alive = true;
-        this.job = new Citizen();
     }
 }

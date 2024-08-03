@@ -30,7 +30,7 @@ class VoteControllerTest extends ControllerTest {
     @Autowired
     private VoteRepositoryImpl voteRepository;
 
-    private final static String code = "1234567890";
+    private final static String CODE = "1234567890";
     private final static String PLAYER1_NAME = "player1";
     private final static String PLAYER2_NAME = "player2";
     private final static String PLAYER3_NAME = "player3";
@@ -39,7 +39,7 @@ class VoteControllerTest extends ControllerTest {
 
     @BeforeEach
     void setTest(){
-        final Room room = Room.create(code, RoomInfo.of(5,2,1,1));
+        final Room room = Room.create(CODE, RoomInfo.of(5,2,1,1));
         room.joinPlayer(PLAYER1_NAME);
         room.joinPlayer(PLAYER2_NAME);
         room.joinPlayer(PLAYER3_NAME);
@@ -51,14 +51,14 @@ class VoteControllerTest extends ControllerTest {
 
     @AfterEach
     void clearTest() {
-        voteRepository.deleteAllByCode(code);
-        gameRepository.deleteById(code);
+        voteRepository.deleteAllByCode(CODE);
+        gameRepository.deleteById(CODE);
     }
 
     @Test
     void 투표를_할_수_있다() {
         // given
-        final String basic = Base64.getEncoder().encodeToString((code + ":" + PLAYER1_NAME).getBytes());
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
         final String expect = PLAYER2_NAME;
 
         // when & then
@@ -70,7 +70,7 @@ class VoteControllerTest extends ControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-        Vote actual = voteRepository.findAllByCode(code).stream()
+        Vote actual = voteRepository.findAllByCode(CODE).stream()
                 .filter(vote -> vote.getName().equals(PLAYER1_NAME))
                 .findFirst()
                 .get();
@@ -80,7 +80,7 @@ class VoteControllerTest extends ControllerTest {
     @Test
     void 투표에_기권_할_수_있다() {
         // given
-        final String basic = Base64.getEncoder().encodeToString((code + ":" + PLAYER1_NAME).getBytes());
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
 
         // when & then
         RestAssured.given().log().all()
@@ -91,7 +91,7 @@ class VoteControllerTest extends ControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-        Vote actual = voteRepository.findAllByCode(code).stream()
+        Vote actual = voteRepository.findAllByCode(CODE).stream()
                 .filter(vote -> vote.getName().equals(PLAYER1_NAME))
                 .findFirst()
                 .get();
@@ -101,7 +101,7 @@ class VoteControllerTest extends ControllerTest {
     @Test
     void 투표_결과를_조회한다() {
         // given
-        final String basic = Base64.getEncoder().encodeToString((code + ":" + PLAYER1_NAME).getBytes());
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
         final String expect = PLAYER1_NAME;
         List<Vote> v = voteRepository.getVotes();
         voteTarget(PLAYER1_NAME, PLAYER5_NAME);
@@ -125,7 +125,7 @@ class VoteControllerTest extends ControllerTest {
     }
 
     private void voteTarget(final String name, final String target) {
-        final String basic = Base64.getEncoder().encodeToString((code + ":" + name).getBytes());
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + name).getBytes());
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
