@@ -225,7 +225,6 @@ class GameEventListenerTest extends ControllerTest {
         final String target = PLAYER1_NAME;
         game.skipStatus(Clock.systemDefaultZone().millis()); // NOTICE
         game.skipStatus(Clock.systemDefaultZone().millis()); // DAY
-        game.skipStatus(Clock.systemDefaultZone().millis());// VOTE
         gameRepository.save(game);
 
         // when
@@ -238,6 +237,6 @@ class GameEventListenerTest extends ControllerTest {
 
         // then
         final StatusType actual = gameRepository.findById(CODE).get().getStatus().getType();
-        Assertions.assertThat(actual).isEqualTo(StatusType.VOTE_RESULT);
+        Assertions.assertThat(actual).isEqualTo(StatusType.VOTE);
     }
 }

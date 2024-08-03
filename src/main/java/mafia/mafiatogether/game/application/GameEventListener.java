@@ -9,6 +9,7 @@ import mafia.mafiatogether.chat.domain.ChatRepository;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.game.application.dto.event.ClearJobTargetEvent;
+import mafia.mafiatogether.game.application.dto.event.ClearVoteEvent;
 import mafia.mafiatogether.game.application.dto.event.StartGameEvent;
 import mafia.mafiatogether.game.application.dto.event.DeleteGameEvent;
 import mafia.mafiatogether.game.domain.Game;
@@ -45,7 +46,11 @@ public class GameEventListener {
         final String target = Vote.countVotes(votes);
         game.executeTarget(target);
         gameRepository.save(game);
-        voteRepository.deleteAllByCode(voteExecuteEvent.getCode());
+    }
+
+    @EventListener
+    public void listenClearVoteEvent(final ClearVoteEvent clearVoteEvent){
+        voteRepository.deleteAllByCode(clearVoteEvent.getCode());
     }
 
     @EventListener
@@ -85,7 +90,7 @@ public class GameEventListener {
     public void listenAllPlayerVoteEvent(final AllPlayerVotedEvent allPlayerVotedEvent){
         final Game game = gameRepository.findById(allPlayerVotedEvent.getCode())
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
-        if (!game.getStatus().getType().equals(StatusType.VOTE)){
+        if (!game.getStatus().getType().equals(StatusType.DAY)){
             return;
         }
         final int votedCount = voteRepository.findAllByCode(allPlayerVotedEvent.getCode()).size();

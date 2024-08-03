@@ -5,6 +5,7 @@ import java.util.Queue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import mafia.mafiatogether.game.application.dto.event.ClearJobTargetEvent;
+import mafia.mafiatogether.game.application.dto.event.ClearVoteEvent;
 import mafia.mafiatogether.game.application.dto.event.StartGameEvent;
 import mafia.mafiatogether.game.application.dto.event.DeleteGameEvent;
 import mafia.mafiatogether.game.application.dto.event.JobExecuteEvent;
@@ -115,6 +116,10 @@ public class Game extends AbstractAggregateRoot<Game> {
 
     public void executeTarget(String target) {
         players.executeTarget(target);
+    }
+
+    public void publicClearVoteEvent(){
+        registerEvent(new ClearVoteEvent(this.code));
     }
 
     public void publicJobExecuteEvent() {
