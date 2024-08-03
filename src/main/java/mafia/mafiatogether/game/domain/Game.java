@@ -121,4 +121,8 @@ public class Game extends AbstractAggregateRoot<Game> {
     public void publishDeleteGameEvent(){
         registerEvent(new DeleteGameEvent(this.code));
     }
+
+    public void skipStatus(final Long now) {
+        status = status.getNextStatus(this, now);
+    }
 }

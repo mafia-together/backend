@@ -1,5 +1,6 @@
 package mafia.mafiatogether.game.application;
 
+import java.time.Clock;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.chat.domain.ChatRepository;
@@ -17,6 +18,7 @@ import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobTargetRepository;
 import mafia.mafiatogether.job.domain.PlayerJob;
 import mafia.mafiatogether.job.domain.PlayerJobRepository;
+import mafia.mafiatogether.vote.application.dto.event.AllPlayerVotedEvent;
 import mafia.mafiatogether.vote.domain.Vote;
 import mafia.mafiatogether.vote.domain.VoteRepository;
 import org.springframework.context.event.EventListener;
@@ -72,5 +74,15 @@ public class GameEventListener {
         chatRepository.deleteById(deleteGameEvent.getCode());
         voteRepository.deleteAllByCode(deleteGameEvent.getCode());
         gameRepository.deleteById(deleteGameEvent.getCode());
+    }
+
+    @EventListener
+    public void listenAllPlayerVoteEvent(final AllPlayerVotedEvent allPlayerVotedEvent){
+        final Game game = gameRepository.findById(allPlayerVotedEvent.getCode())
+                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+        final int votedCount = voteRepository.findAllByCode(allPlayerVotedEvent.getCode()).size();
+        if (game.getAlivePlayerCount() == votedCount){
+            game.skipStatus(Clock.systemDefaultZone().millis());
+        }
     }
 }
