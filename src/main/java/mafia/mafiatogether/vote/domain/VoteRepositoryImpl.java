@@ -27,6 +27,9 @@ public class VoteRepositoryImpl implements VoteRepository {
     @Override
     public List<Vote> findAllByCode(String code) {
         Set<String> keys = redisTemplate.keys(KEY_PREFIX + code + ":*");
+        if (keys == null || keys.isEmpty()) {
+            return new ArrayList<>();
+        }
         return keys.stream()
                 .map(key -> (Vote) redisTemplate.opsForValue().get(key))
                 .toList();
@@ -35,6 +38,9 @@ public class VoteRepositoryImpl implements VoteRepository {
     @Override
     public void deleteAllByCode(String code) {
         Set<String> keys = redisTemplate.keys(KEY_PREFIX + code + ":*");
+        if (keys == null || keys.isEmpty()) {
+            return;
+        }
         redisTemplate.delete(keys);
     }
 }

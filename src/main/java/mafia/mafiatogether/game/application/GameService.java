@@ -11,7 +11,6 @@ import mafia.mafiatogether.game.application.dto.response.RoomResultResponse;
 import mafia.mafiatogether.game.application.dto.response.RoomStatusResponse;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.GameRepository;
-import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomRepository;

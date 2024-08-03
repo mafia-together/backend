@@ -1,5 +1,6 @@
 package mafia.mafiatogether.job.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -22,6 +23,9 @@ public class PlayerJobRepositoryImpl implements PlayerJobRepository {
     @Override
     public List<PlayerJob> findByCode(final String code) {
         final Set<String> keys = redisTemplate.keys(KEY_PREFIX + code + ":*");
+        if (keys == null || keys.isEmpty()) {
+            return new ArrayList<>();
+        }
         return keys.stream()
                 .map(key -> (PlayerJob) redisTemplate.opsForValue().get(key))
                 .toList();
@@ -37,6 +41,9 @@ public class PlayerJobRepositoryImpl implements PlayerJobRepository {
     @Override
     public void deleteAllByCode(final String code) {
         final Set<String> keys = redisTemplate.keys(KEY_PREFIX + code + ":*");
+        if (keys == null || keys.isEmpty()) {
+            return;
+        }
         redisTemplate.delete(keys);
     }
 }
