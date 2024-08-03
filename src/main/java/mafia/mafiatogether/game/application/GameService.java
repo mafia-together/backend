@@ -5,15 +5,14 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
-import mafia.mafiatogether.game.domain.Game;
-import mafia.mafiatogether.game.domain.GameRepository;
-import mafia.mafiatogether.game.domain.Player;
-import mafia.mafiatogether.game.domain.status.EndStatus;
-import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.game.application.dto.request.RoomModifyRequest;
 import mafia.mafiatogether.game.application.dto.response.RoomInfoResponse;
 import mafia.mafiatogether.game.application.dto.response.RoomResultResponse;
 import mafia.mafiatogether.game.application.dto.response.RoomStatusResponse;
+import mafia.mafiatogether.game.domain.Game;
+import mafia.mafiatogether.game.domain.GameRepository;
+import mafia.mafiatogether.game.domain.Player;
+import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomRepository;
 import org.springframework.stereotype.Service;
@@ -58,6 +57,6 @@ public class GameService {
         if (!game.isEnd()) {
             throw new RoomException(ExceptionCode.GAME_IS_NOT_FINISHED);
         }
-        return RoomResultResponse.of((EndStatus) game.getStatus());
+        return RoomResultResponse.from(game);
     }
 }

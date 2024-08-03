@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.PlayerException;
+import mafia.mafiatogether.job.domain.jobtype.JobType;
 import mafia.mafiatogether.room.domain.Participant;
 import mafia.mafiatogether.room.domain.ParticipantCollection;
 
@@ -56,5 +57,24 @@ public class PlayerCollection {
         return players.stream()
                 .filter(player -> player.isAlive())
                 .count();
+    }
+
+    public JobType getWinnerJobType(){
+        if (getAliveMafiaCount() == 0){
+            return JobType.CITIZEN;
+        }
+        return JobType.MAFIA;
+    }
+
+    public List<Player> getMafias(){
+        return players.stream()
+                .filter(player -> player.isMafia())
+                .toList();
+    }
+
+    public List<Player> getNotMafias(){
+        return players.stream()
+                .filter(player -> !player.isMafia())
+                .toList();
     }
 }

@@ -1,10 +1,11 @@
 package mafia.mafiatogether.game.domain.status;
 
 import java.util.List;
+import lombok.NoArgsConstructor;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.Player;
-import mafia.mafiatogether.room.domain.Room;
 
+@NoArgsConstructor
 public class VoteResultStatus extends Status {
 
     public static final Long THREE_SECOND = 3_000L;
@@ -22,7 +23,7 @@ public class VoteResultStatus extends Status {
         // todo : vote event날리기
         if (game.isEnd()) {
             final List<Player> players = game.getPlayers().getPlayers();
-            return EndStatus.create(players, now);
+            return EndStatus.create(now);
         }
         return NightIntroStatus.create(now);
     }

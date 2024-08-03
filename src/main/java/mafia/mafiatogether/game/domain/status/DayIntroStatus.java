@@ -1,8 +1,9 @@
 package mafia.mafiatogether.game.domain.status;
 
+import lombok.NoArgsConstructor;
 import mafia.mafiatogether.game.domain.Game;
-import mafia.mafiatogether.room.domain.Room;
 
+@NoArgsConstructor
 public class DayIntroStatus extends Status {
 
     private static final Long THREE_SECOND = 3_000L;

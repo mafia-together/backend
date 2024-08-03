@@ -1,5 +1,6 @@
 package mafia.mafiatogether.game.domain;
 
+import java.util.List;
 import java.util.Queue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,14 +8,18 @@ import mafia.mafiatogether.game.domain.status.DayIntroStatus;
 import mafia.mafiatogether.game.domain.status.Status;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.job.domain.jobtype.Job;
+import mafia.mafiatogether.job.domain.jobtype.JobType;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
 @Getter
+@RedisHash("game")
 @AllArgsConstructor
 public class Game {
 
-    // id
+    @Id
     private String code;
     private Status status;
     private RoomInfo roomInfo;
@@ -71,5 +76,23 @@ public class Game {
 
     public Long getAlivePlayerCount() {
         return players.getAlivePlayerCount();
+    }
+
+    public List<Player> getWinners() {
+        if (players.getWinnerJobType().equals(JobType.MAFIA)) {
+            return players.getMafias();
+        }
+        return players.getNotMafias();
+    }
+
+    public List<Player> getLosers() {
+        if (players.getWinnerJobType().equals(JobType.MAFIA)){
+            return players.getNotMafias();
+        }
+        return players.getMafias();
+    }
+
+    public String getWinnerJob() {
+        return players.getWinnerJobType().name();
     }
 }

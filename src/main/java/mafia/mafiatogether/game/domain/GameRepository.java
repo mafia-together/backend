@@ -1,10 +1,6 @@
 package mafia.mafiatogether.game.domain;
 
-import java.util.Optional;
+import org.springframework.data.repository.CrudRepository;
 
-public interface GameRepository {
-    Optional<Game> findById(String id);
-    Game save(Game game);
-
-    void deleteById(String code);
+public interface GameRepository extends CrudRepository<Game, String> {
 }

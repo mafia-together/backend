@@ -1,10 +1,9 @@
 package mafia.mafiatogether.game.domain.status;
 
-import java.util.List;
+import lombok.NoArgsConstructor;
 import mafia.mafiatogether.game.domain.Game;
-import mafia.mafiatogether.game.domain.Player;
-import mafia.mafiatogether.room.domain.Room;
 
+@NoArgsConstructor
 public class NightStatus extends Status {
 
     public static final Long FORTY_SECOND = 40_000L;
@@ -20,7 +19,7 @@ public class NightStatus extends Status {
     @Override
     public Status getNextStatus(final Game game, final Long now) {
         if (game.isEnd()) {
-            return EndStatus.create(game.getPlayers().getPlayers(), now);
+            return EndStatus.create(now);
         }
         return DayIntroStatus.create(now);
     }
