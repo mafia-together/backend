@@ -19,14 +19,14 @@ public class VoteRepositoryImpl implements VoteRepository {
 
     @Override
     public Vote save(Vote vote) {
-        final String key = KEY_PREFIX + vote.getId();
+        final String key = KEY_PREFIX + vote.getCode();
         redisTemplate.opsForValue().set(key, vote);
         return vote;
     }
 
     @Override
     public List<Vote> findAllByCode(String code) {
-        Set<String> keys = redisTemplate.keys(KEY_PREFIX + code + ":*");
+        Set<String> keys = redisTemplate.keys(KEY_PREFIX + "*");
         return keys.stream()
                 .map(key -> (Vote) redisTemplate.opsForValue().get(key))
                 .toList();
@@ -34,7 +34,7 @@ public class VoteRepositoryImpl implements VoteRepository {
 
     @Override
     public void deleteAllByCode(String code) {
-        Set<String> keys = redisTemplate.keys(KEY_PREFIX + code + ":*");
+        Set<String> keys = redisTemplate.keys(KEY_PREFIX + "*");
         redisTemplate.delete(keys);
     }
 }
