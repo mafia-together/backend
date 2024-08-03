@@ -5,15 +5,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
 @Getter
+@RedisHash("room")
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Room {
 
+    @Id
     private String code;
     private ParticipantCollection participants;
-    private final RoomInfo roomInfo;
+    private RoomInfo roomInfo;
     private Participant master;
+
+    public Room(){
+        this.participants = new ParticipantCollection();
+    }
 
     public static Room create(final String code, final RoomInfo roomInfo) {
         return new Room(

@@ -31,14 +31,15 @@ public class GameService {
         if (game.isPresent()) {
             return new RoomStatusResponse(game.get().getStatusType(now));
         }
-        if (roomRepository.validateCode(code)) {
+        if (roomRepository.existsById(code)) {
             return new RoomStatusResponse(StatusType.WAIT);
         }
         throw new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE);
     }
 
     public void modifyStatus(final String code, final RoomModifyRequest request) {
-        final Room room = roomRepository.findByCode(code);
+        final Room room = roomRepository.findById(code)
+                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         Game game = Game.create(room, Clock.systemDefaultZone().millis());
         game.distributeRole();
         gameRepository.save(game);

@@ -99,8 +99,9 @@ class GameControllerTest extends ControllerTest {
     }
 
     private void startGame() {
-        Room room = roomRepository.findByCode(code);
+        Room room = roomRepository.findById(code).get();
         room.joinPlayer(PLAYER5_NAME);
+        roomRepository.save(room);
         String basic = Base64.getEncoder().encodeToString((code + ":" + "player1").getBytes());
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

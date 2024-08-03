@@ -15,6 +15,8 @@ import mafia.mafiatogether.room.domain.RoomInfo;
 import mafia.mafiatogether.room.domain.RoomRepository;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -27,6 +29,19 @@ class RoomControllerTest extends ControllerTest {
 
     @Autowired
     private RoomRepository roomRepository;
+
+    private final String CODE = "12345867890";
+
+    @BeforeEach
+    void setTest(){
+        final Room room = Room.create(CODE, RoomInfo.of(3,1,1,1));
+        roomRepository.save(room);
+    }
+
+    @AfterEach
+    void clearTest(){
+        roomRepository.deleteById(CODE);
+    }
 
     @Test
     void 방을_생성할_수_있다() {
@@ -81,18 +96,18 @@ class RoomControllerTest extends ControllerTest {
 
     @Test
     void 방에_참가할_수_있다() {
-        //given
-        final String code = roomRepository.create(new RoomInfo(5, 1, 1, 1));
+        //give
+
 
         //when
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/rooms?code=" + code + "&name=power")
+                .when().get("/rooms?code=" + CODE + "&name=power")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
 
         //then
-        Room room = roomRepository.findByCode(code);
+        Room room = roomRepository.findById(CODE).get();
         List<String> actual = room.getParticipants().getParticipants().stream()
                 .map(participant -> participant.getName())
                 .toList();
@@ -102,15 +117,15 @@ class RoomControllerTest extends ControllerTest {
     @Test
     void 방이_꽉_차_있을때_참가에_실패한다() {
         //given
-        final String code = roomRepository.create(new RoomInfo(3, 1, 1, 1));
-        final Room room = roomRepository.findByCode(code);
+        final Room room = roomRepository.findById(CODE).get();
         room.joinPlayer("A");
         room.joinPlayer("C");
         room.joinPlayer("D");
+        roomRepository.save(room);
         //when
         final ErrorResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/rooms?code=" + code + "&name=E")
+                .when().get("/rooms?code=" + CODE + "&name=E")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .extract()
@@ -123,13 +138,13 @@ class RoomControllerTest extends ControllerTest {
     @Test
     void 방에_이미_존재한느_이름으로_참가할때_참가에_실패한다() {
         //given
-        final String code = roomRepository.create(new RoomInfo(3, 1, 1, 1));
-        final Room room = roomRepository.findByCode(code);
+        final Room room = roomRepository.findById(CODE).get();
         room.joinPlayer("A");
+        roomRepository.save(room);
         //when
         final ErrorResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/rooms?code=" + code + "&name=A")
+                .when().get("/rooms?code=" + CODE + "&name=A")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .extract()
@@ -142,8 +157,7 @@ class RoomControllerTest extends ControllerTest {
     @Test
     void 방의_코드를_찾는다() {
         // given
-        final String code = roomRepository.create(new RoomInfo(5, 1, 1, 1));
-        final String basic = Base64.getEncoder().encodeToString((code + ":" + "power").getBytes());
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + "power").getBytes());
 
         // when & then
         RestAssured.given().log().all()
@@ -152,22 +166,17 @@ class RoomControllerTest extends ControllerTest {
                 .when().get("/rooms/code")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("code", Matchers.equalTo(code));
+                .body("code", Matchers.equalTo(CODE));
     }
 
     @Test
     void 방의_코드를_검증_할_수_있다() {
-        // given
-        final String code = roomRepository.create(new RoomInfo(5, 1, 1, 1));
-
         // when & then
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/rooms/code/exist?code=" + code)
+                .when().get("/rooms/code/exist?code=" + CODE)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("exist", Matchers.equalTo(true));
     }
-
-
 }
