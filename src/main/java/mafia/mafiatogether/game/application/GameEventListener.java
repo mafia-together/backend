@@ -1,13 +1,15 @@
 package mafia.mafiatogether.game.application;
 
 import java.time.Clock;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import mafia.mafiatogether.chat.domain.Chat;
 import mafia.mafiatogether.chat.domain.ChatRepository;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.game.application.dto.event.ClearJobTargetEvent;
-import mafia.mafiatogether.game.application.dto.event.CreatePlayerJobEvent;
+import mafia.mafiatogether.game.application.dto.event.StartGameEvent;
 import mafia.mafiatogether.game.application.dto.event.DeleteGameEvent;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.GameRepository;
@@ -62,10 +64,12 @@ public class GameEventListener {
     }
 
     @EventListener
-    public void listenCreatPlayerJobEvent(final CreatePlayerJobEvent createPlayerJobEvent){
-        for (Player player : createPlayerJobEvent.getPlayerCollection().getPlayers()){
-            playerJobRepository.save(new PlayerJob(createPlayerJobEvent.getCode(), player.getName(), player.getJob()));
+    public void listenStartGameEvent(final StartGameEvent startGameEvent){
+        for (Player player : startGameEvent.getPlayerCollection().getPlayers()){
+            playerJobRepository.save(new PlayerJob(startGameEvent.getCode(), player.getName(), player.getJob()));
         }
+        final Chat chat = new Chat(startGameEvent.getCode(), new ArrayList<>());
+        chatRepository.save(chat);
     }
 
     @EventListener

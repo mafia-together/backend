@@ -6,7 +6,7 @@ import mafia.mafiatogether.game.domain.PlayerCollection;
 
 @Getter
 @RequiredArgsConstructor
-public class CreatePlayerJobEvent {
+public class StartGameEvent {
 
     private final String code;
     private final PlayerCollection playerCollection;

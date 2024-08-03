@@ -5,7 +5,7 @@ import java.util.Queue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import mafia.mafiatogether.game.application.dto.event.ClearJobTargetEvent;
-import mafia.mafiatogether.game.application.dto.event.CreatePlayerJobEvent;
+import mafia.mafiatogether.game.application.dto.event.StartGameEvent;
 import mafia.mafiatogether.game.application.dto.event.DeleteGameEvent;
 import mafia.mafiatogether.game.application.dto.event.JobExecuteEvent;
 import mafia.mafiatogether.game.application.dto.event.VoteExecuteEvent;
@@ -59,7 +59,7 @@ public class Game extends AbstractAggregateRoot<Game> {
             }
             player.modifyJob(jobs.poll());
         }
-        registerEvent(new CreatePlayerJobEvent(this.code, this.players));
+        registerEvent(new StartGameEvent(this.code, this.players));
     }
 
     public StatusType getStatusType(final Long now) {
