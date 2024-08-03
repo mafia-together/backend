@@ -16,8 +16,10 @@ import mafia.mafiatogether.job.domain.PlayerJob;
 import mafia.mafiatogether.job.domain.PlayerJobRepository;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ChatService {
 

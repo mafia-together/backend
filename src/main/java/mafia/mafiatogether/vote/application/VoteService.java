@@ -8,8 +8,10 @@ import mafia.mafiatogether.vote.domain.Vote;
 import mafia.mafiatogether.vote.domain.VoteRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class VoteService {
 
@@ -19,7 +21,6 @@ public class VoteService {
     public void votePlayer(final String code, final String name, final String targetName) {
         final Vote vote = new Vote(code, name, targetName);
         voteRepository.save(vote);
-        // todo : game 전원 투표하였는지 이벤트 발행
         eventPublisher.publishEvent(new AllPlayerVotedEvent(code));
     }
 
