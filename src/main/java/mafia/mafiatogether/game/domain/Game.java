@@ -32,16 +32,23 @@ public class Game extends AbstractAggregateRoot<Game> {
     private String master;
     private PlayerCollection players;
 
+    private transient Status statusSnapshot;
 
     public static Game create(final Room room, final Long now) {
         room.validateToStart();
+        final Status status = DayIntroStatus.create(now);
         return new Game(
                 room.getCode(),
-                DayIntroStatus.create(now),
+                status,
                 room.getRoomInfo(),
                 room.getMaster().getName(),
-                PlayerCollection.creat(room.getParticipants())
+                PlayerCollection.creat(room.getParticipants()),
+                status
         );
+    }
+
+    public Game(){
+        this.players = new PlayerCollection();
     }
 
     public void distributeRole() {
@@ -124,5 +131,13 @@ public class Game extends AbstractAggregateRoot<Game> {
 
     public void skipStatus(final Long now) {
         status = status.getNextStatus(this, now);
+    }
+
+    public void setStatsSnapshot(){
+        this.statusSnapshot = status;
+    }
+
+    public boolean isStatusChanged(){
+        return !statusSnapshot.getType().equals(status.getType());
     }
 }
