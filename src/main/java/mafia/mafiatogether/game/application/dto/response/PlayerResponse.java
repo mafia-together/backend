@@ -40,4 +40,12 @@ public record PlayerResponse(
                 player.isMafia() ? JobType.MAFIA : null
         );
     }
+
+    public static PlayerResponse forLobby(final String name){
+        return new PlayerResponse(
+                name,
+                true,
+                JobType.CITIZEN
+        );
+    }
 }

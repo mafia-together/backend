@@ -55,10 +55,17 @@ public class GameService {
     }
 
     public RoomInfoResponse findRoomInfo(final String code, final String name) {
-        final Game game = gameRepository.findById(code)
+        final Optional<Game> game = gameRepository.findById(code);
+        if (!game.isPresent()) {
+            return getLobbyInfo(code, name);
+        }
+        return RoomInfoResponse.ofGame(game.get(), name);
+    }
+
+    private RoomInfoResponse getLobbyInfo(final String code, final String name) {
+        final Room room = roomRepository.findById(code)
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
-        final Player player = game.getPlayer(name);
-        return RoomInfoResponse.of(game, player, game.isMaster(player));
+        return RoomInfoResponse.ofRoom(room, name);
     }
 
     public RoomResultResponse findResult(final String code) {
