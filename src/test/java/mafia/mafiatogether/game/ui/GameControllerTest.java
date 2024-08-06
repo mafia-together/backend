@@ -9,7 +9,6 @@ import java.util.Map;
 import mafia.mafiatogether.config.exception.ErrorResponse;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.game.domain.Game;
-import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.global.ControllerTest;
@@ -17,46 +16,17 @@ import mafia.mafiatogether.game.application.dto.response.PlayerResponse;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
 import mafia.mafiatogether.game.application.dto.response.RoomInfoResponse;
 import mafia.mafiatogether.game.application.dto.response.RoomStatusResponse;
-import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.room.domain.RoomInfo;
-import mafia.mafiatogether.room.domain.RoomRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 @SuppressWarnings("NonAsciiCharacters")
 class GameControllerTest extends ControllerTest {
 
-    @Autowired
-    private GameRepository gameRepository;
-
-    @Autowired
-    private RoomRepository roomRepository;
-
-    private static final String CODE = "1234567890";
-    private static final String PLAYER1_NAME = "player1";
-    private static final String PLAYER2_NAME = "player2";
-    private static final String PLAYER3_NAME = "player3";
-    private static final String PLAYER4_NAME = "player4";
-    private static final String PLAYER5_NAME = "player5";
-
     @BeforeEach
-    void setGame() {
-        Room room = Room.create(CODE, RoomInfo.of(5, 2, 1, 1));
-        room.joinPlayer(PLAYER1_NAME);
-        room.joinPlayer(PLAYER2_NAME);
-        room.joinPlayer(PLAYER3_NAME);
-        room.joinPlayer(PLAYER4_NAME);
-        roomRepository.save(room);
-    }
-
-    @AfterEach
-    void clearTest() {
-        roomRepository.deleteById(CODE);
-        gameRepository.deleteById(CODE);
+    void setTest(){
+        setRoom();
     }
 
     @Test
@@ -82,7 +52,7 @@ class GameControllerTest extends ControllerTest {
     void 게임의_상태를_확인할_수_있다() {
         //given
         final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
-        startGame();
+        setGame();
 
         //when
         final RoomStatusResponse response = RestAssured.given().log().all()
@@ -98,24 +68,10 @@ class GameControllerTest extends ControllerTest {
         Assertions.assertThat(response.statusType()).isEqualTo(StatusType.DAY_INTRO);
     }
 
-    private void startGame() {
-        Room room = roomRepository.findById(CODE).get();
-        room.joinPlayer(PLAYER5_NAME);
-        roomRepository.save(room);
-        String basic = Base64.getEncoder().encodeToString((CODE + ":" + "player1").getBytes());
-        RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(Map.of("statusType", StatusType.DAY_INTRO))
-                .header("Authorization", "Basic " + basic)
-                .when().patch("/rooms/status")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value());
-    }
-
     @Test
     void 방을_상태를_변경할_수_있다() {
         //given & when
-        startGame();
+        setGame();
 
         //then
         StatusType actual = gameRepository.findById(CODE).get().getStatus().getType();
@@ -169,7 +125,7 @@ class GameControllerTest extends ControllerTest {
     @Test
     void 생존한_사람이_방의_정보를_찾는다() {
         // given
-        startGame();
+        setGame();
         Game game = gameRepository.findById(CODE).get();
         final Player citizen = findPlayer(game, JobType.CITIZEN);
         final String basic = Base64.getEncoder().encodeToString((CODE + ":" + citizen.getName()).getBytes());
@@ -209,7 +165,7 @@ class GameControllerTest extends ControllerTest {
     @Test
     void 죽은사람이_방의_정보를_찾는다() {
         // given
-        startGame();
+        setGame();
         Game game = gameRepository.findById(CODE).get();
         final Player citizen = findPlayer(game, JobType.CITIZEN);
         citizen.kill();
@@ -239,7 +195,7 @@ class GameControllerTest extends ControllerTest {
     @Test
     void 마피아가_방의_정보를_찾는다() {
         // given
-        startGame();
+        setGame();
         Game game = gameRepository.findById(CODE).get();
         final Player mafia = findPlayer(game, JobType.MAFIA);
         final String mafiaBasic = Base64.getEncoder().encodeToString((CODE + ":" + mafia.getName()).getBytes());

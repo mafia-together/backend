@@ -9,14 +9,9 @@ import java.util.Map;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.global.ControllerTest;
 import mafia.mafiatogether.job.domain.JobTarget;
-import mafia.mafiatogether.job.domain.JobTargetRepository;
-import mafia.mafiatogether.job.domain.PlayerJob;
 import mafia.mafiatogether.job.domain.PlayerJobRepository;
-import mafia.mafiatogether.job.domain.jobtype.Citizen;
-import mafia.mafiatogether.job.domain.jobtype.Doctor;
+import mafia.mafiatogether.job.domain.SkillRepository;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
-import mafia.mafiatogether.job.domain.jobtype.Mafia;
-import mafia.mafiatogether.job.domain.jobtype.Police;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,35 +23,21 @@ import org.springframework.http.HttpStatus;
 class PlayerControllerTest extends ControllerTest {
 
     @Autowired
-    private JobTargetRepository jobTargetRepository;
+    private SkillRepository skillRepository;
 
     @Autowired
     private PlayerJobRepository playerJobRepository;
 
-    private static final String CODE = "1234567890";
-    private static final String MAFIA1 = "mafia1";
-    private static final String MAFIA2 = "mafia2";
-    private static final String DOCTOR = "doctor";
-    private static final String POLICE = "police";
-    private static final String CITIZEN = "citizen";
-
     @BeforeEach
     void setTest() {
-        final PlayerJob mafia1 = new PlayerJob(CODE, MAFIA1, new Mafia());
-        final PlayerJob mafia2 = new PlayerJob(CODE, MAFIA2, new Mafia());
-        final PlayerJob doctor = new PlayerJob(CODE, DOCTOR, new Doctor());
-        final PlayerJob police = new PlayerJob(CODE, POLICE, new Police());
-        final PlayerJob citizen = new PlayerJob(CODE, CITIZEN, new Citizen());
-        playerJobRepository.save(mafia1);
-        playerJobRepository.save(mafia2);
-        playerJobRepository.save(doctor);
-        playerJobRepository.save(police);
-        playerJobRepository.save(citizen);
+        setRoom();
+        setGame();
     }
+
 
     @AfterEach
     void clearTest() {
-        jobTargetRepository.deleteAllByCode(CODE);
+        skillRepository.deleteById(CODE);
         playerJobRepository.deleteAllByCode(CODE);
     }
 
@@ -74,7 +55,7 @@ class PlayerControllerTest extends ControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
 
-        final JobTarget actual = jobTargetRepository.findByCodeAndJobType(CODE, JobType.MAFIA).get();
+        final JobTarget actual = skillRepository.findById(CODE).get().findJobTargetBy(JobType.MAFIA);
         Assertions.assertThat(actual.getTarget()).isEqualTo(CITIZEN);
     }
 
@@ -105,9 +86,7 @@ class PlayerControllerTest extends ControllerTest {
         executeSkill(MAFIA1, "");
 
         // then
-        final String actual = jobTargetRepository.findByCodeAndJobType(CODE, JobType.MAFIA)
-                .get()
-                .getTarget();
+        final String actual = skillRepository.findById(CODE).get().findJobTargetBy(JobType.MAFIA).getTarget();
         Assertions.assertThat(actual).isBlank();
 
     }

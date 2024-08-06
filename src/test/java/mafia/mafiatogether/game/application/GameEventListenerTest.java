@@ -1,5 +1,7 @@
 package mafia.mafiatogether.game.application;
 
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+
 import java.time.Clock;
 import java.util.List;
 import mafia.mafiatogether.chat.domain.ChatRepository;
@@ -10,10 +12,10 @@ import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.global.ControllerTest;
 import mafia.mafiatogether.job.application.PlayerService;
 import mafia.mafiatogether.job.application.dto.request.PlayerExecuteAbilityRequest;
-import mafia.mafiatogether.job.domain.JobTarget;
-import mafia.mafiatogether.job.domain.JobTargetRepository;
 import mafia.mafiatogether.job.domain.PlayerJob;
 import mafia.mafiatogether.job.domain.PlayerJobRepository;
+import mafia.mafiatogether.job.domain.Skill;
+import mafia.mafiatogether.job.domain.SkillRepository;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
@@ -44,7 +46,7 @@ class GameEventListenerTest extends ControllerTest {
     private PlayerService playerService;
 
     @Autowired
-    private JobTargetRepository jobTargetRepository;
+    private SkillRepository skillRepository;
 
     @Autowired
     private PlayerJobRepository playerJobRepository;
@@ -176,8 +178,14 @@ class GameEventListenerTest extends ControllerTest {
         gameRepository.save(game);
 
         // then
-        final List<JobTarget> actual = jobTargetRepository.findAllByCode(CODE);
-        Assertions.assertThat(actual).hasSize(0);
+        final Skill actual = skillRepository.findById(CODE).get();
+        assertSoftly(
+                softly -> {
+                    for (JobType jobType : JobType.values()) {
+                        softly.assertThat(actual.findJobTargetBy(jobType)).isNull();
+                    }
+                }
+        );
     }
 
     @Test
@@ -209,7 +217,7 @@ class GameEventListenerTest extends ControllerTest {
         final boolean gameExists = gameRepository.existsById(CODE);
         final boolean voteExists = voteRepository.existsById(CODE);
         final boolean chatExists = chatRepository.existsById(CODE);
-        final boolean jobTargetExists = jobTargetRepository.findAllByCode(CODE).size() != 0;
+        final boolean jobTargetExists = skillRepository.existsById(CODE);
         final boolean playerJobExists = playerJobRepository.findByCode(CODE).size() != 0;
 
         Assertions.assertThat(gameExists).isFalse();

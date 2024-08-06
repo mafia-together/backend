@@ -30,8 +30,6 @@ class RoomControllerTest extends ControllerTest {
     @Autowired
     private RoomRepository roomRepository;
 
-    private final String CODE = "12345867890";
-
     @BeforeEach
     void setTest(){
         final Room room = Room.create(CODE, RoomInfo.of(3,1,1,1));
