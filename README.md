@@ -13,11 +13,7 @@
 
 ## 기술 스택
 ---
-### 백엔드
-![Skill](https://github.com/user-attachments/assets/1b2530ca-cbd2-4510-ac7e-f68370308626)
-
-### 인프라
-![Infra](https://github.com/user-attachments/assets/b7741db3-5b72-4907-b257-36820a31d5a0)
+![Skill](https://github.com/user-attachments/assets/470314c4-ed1a-49c2-b775-80f17d457706)
 
 ## 인프라 아키텍쳐
 ---
