@@ -15,11 +15,10 @@ public record ChatResponse(
 
     public static ChatResponse of(
             Message message,
-            String name,
+            boolean isOwner,
             boolean isMafia,
             JobType jobType
     ) {
-        final boolean isOwner = message.getName().equals(name);
         return new ChatResponse(
                 message.getName(),
                 message.getContents(),

@@ -32,7 +32,12 @@ public class ChatService {
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         final boolean isMafia = playerJobs.get(name).equals(JobType.MAFIA);
         return chat.getMessages().stream()
-                .map(message -> ChatResponse.of(message, name, isMafia, playerJobs.get(message.getName())))
+                .map(message -> ChatResponse.of(
+                        message,
+                        message.getName().equals(name),
+                        isMafia,
+                        playerJobs.get(message.getName()))
+                )
                 .toList();
     }
 
