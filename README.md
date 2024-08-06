@@ -14,16 +14,18 @@
 ## 기술 스택
 ---
 ### 백엔드
-![Skill](https://github.com/user-attachments/assets/564751fc-bdfe-4309-9e99-21042962b6e5)
+![Skill](https://github.com/user-attachments/assets/1b2530ca-cbd2-4510-ac7e-f68370308626)
+
 ### 인프라
-![Infra](https://github.com/user-attachments/assets/6469243a-57e4-40ed-ad32-10552c6e5a8b)
+![Infra](https://github.com/user-attachments/assets/b7741db3-5b72-4907-b257-36820a31d5a0)
 
 ## 인프라 아키텍쳐
 ---
-![infra-architecture](https://github.com/user-attachments/assets/4bbc6a3a-3b0a-4d48-bcc1-a95d3cb6deef)
+![infra-architecture](https://github.com/user-attachments/assets/e7db379d-8218-47f1-995c-9fa7efd4ce38)
 
 ## 실시간 통신
-![실시간 통신](https://github.com/user-attachments/assets/102ba6d3-81f3-4ae2-be8b-88df2b7f131d)
+---
+![실시간 통신](https://github.com/user-attachments/assets/333165f1-eb30-4a3f-aede-b0494e91ca73)
 
 ## 멤버
 
