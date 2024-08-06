@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mafia.mafiatogether.job.domain.jobtype.Job;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
-import org.springframework.data.annotation.Id;
 
 @Getter
 @NoArgsConstructor
@@ -18,7 +17,6 @@ public class JobTarget {
     private Job job;
     private String target;
 
-    @Id
     @JsonIgnore
     public String getId() {
         return code + ":" + job.getJobType();
@@ -39,9 +37,5 @@ public class JobTarget {
             return NONE.getTarget();
         }
         return mafiaTarget.getTarget();
-    }
-
-    public boolean isSameJobType(final JobType jobType) {
-        return this.getJob().getJobType().equals(jobType);
     }
 }

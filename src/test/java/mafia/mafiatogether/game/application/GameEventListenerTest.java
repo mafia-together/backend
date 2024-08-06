@@ -207,7 +207,7 @@ class GameEventListenerTest extends ControllerTest {
 
         // then
         final boolean gameExists = gameRepository.existsById(CODE);
-        final boolean voteExists = voteRepository.findAllByCode(CODE).size() != 0;
+        final boolean voteExists = voteRepository.existsById(CODE);
         final boolean chatExists = chatRepository.existsById(CODE);
         final boolean jobTargetExists = jobTargetRepository.findAllByCode(CODE).size() != 0;
         final boolean playerJobExists = playerJobRepository.findByCode(CODE).size() != 0;

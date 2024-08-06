@@ -4,7 +4,6 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.time.Clock;
 import java.util.Base64;
-import java.util.List;
 import java.util.Map;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.GameRepository;
@@ -12,8 +11,7 @@ import mafia.mafiatogether.global.ControllerTest;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
 import mafia.mafiatogether.vote.application.dto.response.VoteResultResponse;
-import mafia.mafiatogether.vote.domain.Vote;
-import mafia.mafiatogether.vote.domain.VoteRepositoryImpl;
+import mafia.mafiatogether.vote.domain.VoteRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,7 +26,7 @@ class VoteControllerTest extends ControllerTest {
     private GameRepository gameRepository;
 
     @Autowired
-    private VoteRepositoryImpl voteRepository;
+    private VoteRepository voteRepository;
 
     private final static String CODE = "1234567890";
     private final static String PLAYER1_NAME = "player1";
@@ -38,20 +36,21 @@ class VoteControllerTest extends ControllerTest {
     private final static String PLAYER5_NAME = "player5";
 
     @BeforeEach
-    void setTest(){
-        final Room room = Room.create(CODE, RoomInfo.of(5,2,1,1));
+    void setTest() {
+        final Room room = Room.create(CODE, RoomInfo.of(5, 2, 1, 1));
         room.joinPlayer(PLAYER1_NAME);
         room.joinPlayer(PLAYER2_NAME);
         room.joinPlayer(PLAYER3_NAME);
         room.joinPlayer(PLAYER4_NAME);
         room.joinPlayer(PLAYER5_NAME);
         final Game game = Game.create(room, Clock.systemDefaultZone().millis());
+        game.distributeRole();
         gameRepository.save(game);
     }
 
     @AfterEach
     void clearTest() {
-        voteRepository.deleteAllByCode(CODE);
+        voteRepository.deleteById(CODE);
         gameRepository.deleteById(CODE);
     }
 
@@ -70,11 +69,8 @@ class VoteControllerTest extends ControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-        Vote actual = voteRepository.findAllByCode(CODE).stream()
-                .filter(vote -> vote.getName().equals(PLAYER1_NAME))
-                .findFirst()
-                .get();
-        Assertions.assertThat(actual.getTarget()).isEqualTo(expect);
+        String actual = voteRepository.findById(CODE).get().countVotes();
+        Assertions.assertThat(actual).isEqualTo(expect);
     }
 
     @Test
@@ -91,11 +87,8 @@ class VoteControllerTest extends ControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-        Vote actual = voteRepository.findAllByCode(CODE).stream()
-                .filter(vote -> vote.getName().equals(PLAYER1_NAME))
-                .findFirst()
-                .get();
-        Assertions.assertThat(actual.getTarget()).isBlank();
+        String actual = voteRepository.findById(CODE).get().countVotes();
+        Assertions.assertThat(actual).isBlank();
     }
 
     @Test
@@ -103,7 +96,6 @@ class VoteControllerTest extends ControllerTest {
         // given
         final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
         final String expect = PLAYER1_NAME;
-        List<Vote> v = voteRepository.getVotes();
         voteTarget(PLAYER1_NAME, PLAYER5_NAME);
         voteTarget(PLAYER2_NAME, PLAYER5_NAME);
         voteTarget(PLAYER3_NAME, expect);

@@ -42,15 +42,19 @@ public class GameEventListener {
     public void listenVoteExecuteEvent(final VoteExecuteEvent voteExecuteEvent){
         final Game game = gameRepository.findById(voteExecuteEvent.getCode())
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
-        List<Vote> votes = voteRepository.findAllByCode(voteExecuteEvent.getCode());
-        final String target = Vote.countVotes(votes);
+        final Vote vote = voteRepository.findById(voteExecuteEvent.getCode())
+                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+        final String target = vote.countVotes();
         game.executeTarget(target);
         gameRepository.save(game);
     }
 
     @EventListener
     public void listenClearVoteEvent(final ClearVoteEvent clearVoteEvent){
-        voteRepository.deleteAllByCode(clearVoteEvent.getCode());
+        final Vote vote = voteRepository.findById(clearVoteEvent.getCode())
+                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+        vote.clearVoteTargets();
+        voteRepository.save(vote);
     }
 
     @EventListener
@@ -74,7 +78,9 @@ public class GameEventListener {
             playerJobRepository.save(new PlayerJob(startGameEvent.getCode(), player.getName(), player.getJob()));
         }
         final Chat chat = new Chat(startGameEvent.getCode(), new ArrayList<>());
+        final Vote vote = new Vote(startGameEvent.getCode(), new ArrayList<>());
         chatRepository.save(chat);
+        voteRepository.save(vote);
     }
 
     @EventListener
@@ -82,7 +88,7 @@ public class GameEventListener {
         playerJobRepository.deleteAllByCode(deleteGameEvent.getCode());
         jobTargetRepository.deleteAllByCode(deleteGameEvent.getCode());
         chatRepository.deleteById(deleteGameEvent.getCode());
-        voteRepository.deleteAllByCode(deleteGameEvent.getCode());
+        voteRepository.deleteById(deleteGameEvent.getCode());
         gameRepository.deleteById(deleteGameEvent.getCode());
     }
 
@@ -93,8 +99,9 @@ public class GameEventListener {
         if (!game.getStatus().getType().equals(StatusType.DAY)){
             return;
         }
-        final int votedCount = voteRepository.findAllByCode(allPlayerVotedEvent.getCode()).size();
-        if (game.getAlivePlayerCount() == votedCount){
+        final Vote vote = voteRepository.findById(allPlayerVotedEvent.getCode())
+                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+        if (game.getAlivePlayerCount() == vote.getVotedCount()){
             game.skipStatus(Clock.systemDefaultZone().millis());
             gameRepository.save(game);
         }

@@ -1,47 +1,55 @@
 package mafia.mafiatogether.vote.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
-@Getter
-@NoArgsConstructor
+@RedisHash("vote")
 @AllArgsConstructor
 public class Vote {
 
-    private String code;
-    private String name;
-    private String target;
-
     @Id
-    @JsonIgnore
-    public String getId() {
-        return code + ":" + name;
+    private String code;
+    private List<VoteTarget> voteTargets;
+
+    public Vote() {
+        this.voteTargets = new ArrayList<>();
     }
 
-    public static String countVotes(final List<Vote> votes) {
-        final Map<String, Integer> voteCounts = countTargetVotes(votes);
+    public void addVoteTarget(VoteTarget voteTarget) {
+        this.voteTargets.add(voteTarget);
+    }
+
+    public void clearVoteTargets() {
+        voteTargets.clear();
+    }
+
+    public String countVotes() {
+        final Map<String, Integer> voteCounts = countTargetVotes(voteTargets);
         final int maxCount = voteCounts.values().stream().max(Integer::compareTo).orElse(0);
         final List<String> maxCounts = voteCounts.entrySet().stream()
                 .filter(entry -> entry.getValue() == maxCount)
                 .map(Map.Entry::getKey)
                 .toList();
         if (maxCounts.size() == 1) {
-            return maxCounts.get(0);
+            return maxCounts.getFirst();
         }
         return "";
     }
 
-    private static Map<String, Integer> countTargetVotes(List<Vote> votes) {
+    private Map<String, Integer> countTargetVotes(List<VoteTarget> voteTargets) {
         final Map<String, Integer> targetCounts = new HashMap<>();
-        for (Vote vote : votes) {
-            targetCounts.put(vote.target, targetCounts.getOrDefault(vote.target, 0) + 1);
+        for (VoteTarget voteTarget : voteTargets) {
+            targetCounts.put(voteTarget.getTarget(), targetCounts.getOrDefault(voteTarget.getTarget(), 0) + 1);
         }
         return targetCounts;
+    }
+
+    public int getVotedCount() {
+        return voteTargets.size();
     }
 }
