@@ -8,9 +8,8 @@ import java.util.Base64;
 import java.util.Map;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.global.ControllerTest;
-import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.PlayerJobRepository;
-import mafia.mafiatogether.job.domain.SkillRepository;
+import mafia.mafiatogether.job.domain.JobTargetRepository;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -23,7 +22,7 @@ import org.springframework.http.HttpStatus;
 class PlayerControllerTest extends ControllerTest {
 
     @Autowired
-    private SkillRepository skillRepository;
+    private JobTargetRepository jobTargetRepository;
 
     @Autowired
     private PlayerJobRepository playerJobRepository;
@@ -37,7 +36,7 @@ class PlayerControllerTest extends ControllerTest {
 
     @AfterEach
     void clearTest() {
-        skillRepository.deleteById(CODE);
+        jobTargetRepository.deleteById(CODE);
         playerJobRepository.deleteAllByCode(CODE);
     }
 
@@ -55,8 +54,8 @@ class PlayerControllerTest extends ControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
 
-        final JobTarget actual = skillRepository.findById(CODE).get().findJobTargetBy(JobType.MAFIA);
-        Assertions.assertThat(actual.getTarget()).isEqualTo(CITIZEN);
+        final String actual = jobTargetRepository.findById(CODE).get().findJobTargetBy(JobType.MAFIA);
+        Assertions.assertThat(actual).isEqualTo(CITIZEN);
     }
 
     @Test
@@ -86,7 +85,7 @@ class PlayerControllerTest extends ControllerTest {
         executeSkill(MAFIA1, "");
 
         // then
-        final String actual = skillRepository.findById(CODE).get().findJobTargetBy(JobType.MAFIA).getTarget();
+        final String actual = jobTargetRepository.findById(CODE).get().findJobTargetBy(JobType.MAFIA);
         Assertions.assertThat(actual).isBlank();
 
     }

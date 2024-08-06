@@ -2,6 +2,7 @@ package mafia.mafiatogether.game.application;
 
 import java.time.Clock;
 import java.util.ArrayList;
+import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.chat.domain.Chat;
 import mafia.mafiatogether.chat.domain.ChatRepository;
@@ -19,8 +20,8 @@ import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.job.domain.PlayerJob;
 import mafia.mafiatogether.job.domain.PlayerJobRepository;
-import mafia.mafiatogether.job.domain.Skill;
-import mafia.mafiatogether.job.domain.SkillRepository;
+import mafia.mafiatogether.job.domain.JobTarget;
+import mafia.mafiatogether.job.domain.JobTargetRepository;
 import mafia.mafiatogether.vote.application.dto.event.AllPlayerVotedEvent;
 import mafia.mafiatogether.vote.domain.Vote;
 import mafia.mafiatogether.vote.domain.VoteRepository;
@@ -33,7 +34,7 @@ public class GameEventListener {
 
     private final GameRepository gameRepository;
     private final VoteRepository voteRepository;
-    private final SkillRepository skillRepository;
+    private final JobTargetRepository jobTargetRepository;
     private final PlayerJobRepository playerJobRepository;
     private final ChatRepository chatRepository;
 
@@ -60,19 +61,19 @@ public class GameEventListener {
     public void listenJobExecuteEvent(final JobExecuteEvent jobExecuteEvent) {
         final Game game = gameRepository.findById(jobExecuteEvent.getCode())
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
-        final Skill skill = skillRepository.findById(jobExecuteEvent.getCode())
+        final JobTarget jobTarget = jobTargetRepository.findById(jobExecuteEvent.getCode())
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
-        final String target = skill.findTarget();
+        final String target = jobTarget.findTarget();
         game.executeTarget(target);
         gameRepository.save(game);
     }
 
     @EventListener
     public void listenClearJobTargetEvent(final ClearJobTargetEvent clearJobTargetEvent) {
-        final Skill skill = skillRepository.findById(clearJobTargetEvent.getCode())
+        final JobTarget jobTarget = jobTargetRepository.findById(clearJobTargetEvent.getCode())
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
-        skill.clearJobTargets();
-        skillRepository.save(skill);
+        jobTarget.clearJobTargets();
+        jobTargetRepository.save(jobTarget);
     }
 
     @EventListener
@@ -81,17 +82,17 @@ public class GameEventListener {
             playerJobRepository.save(new PlayerJob(startGameEvent.getCode(), player.getName(), player.getJob()));
         }
         final Chat chat = new Chat(startGameEvent.getCode(), new ArrayList<>());
-        final Vote vote = new Vote(startGameEvent.getCode(), new ArrayList<>());
-        final Skill skill = new Skill(startGameEvent.getCode(), new ArrayList<>());
+        final Vote vote = new Vote(startGameEvent.getCode(), new HashMap<>());
+        final JobTarget jobTarget = new JobTarget(startGameEvent.getCode(), new HashMap<>());
         chatRepository.save(chat);
         voteRepository.save(vote);
-        skillRepository.save(skill);
+        jobTargetRepository.save(jobTarget);
     }
 
     @EventListener
     public void listenDeleteGameEvent(final DeleteGameEvent deleteGameEvent) {
         playerJobRepository.deleteAllByCode(deleteGameEvent.getCode());
-        skillRepository.deleteById(deleteGameEvent.getCode());
+        jobTargetRepository.deleteById(deleteGameEvent.getCode());
         chatRepository.deleteById(deleteGameEvent.getCode());
         voteRepository.deleteById(deleteGameEvent.getCode());
         gameRepository.deleteById(deleteGameEvent.getCode());

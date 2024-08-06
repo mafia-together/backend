@@ -1,25 +1,23 @@
 package mafia.mafiatogether.job.domain.jobtype;
 
 import java.util.List;
+import java.util.Map;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.PlayerException;
-import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.PlayerJob;
 
 public class Police implements Job {
 
     @Override
     public String applySkill(
-            final List<JobTarget> jobTargets,
+            final Map<JobType, String> jobTargets,
             final List<PlayerJob> playerJobs,
             final String targetName
     ) {
-        jobTargets.stream()
-                .filter(jobTarget -> jobTarget.getJob().getJobType().equals(JobType.POLICE))
-                .findFirst()
-                .ifPresent(jobTarget -> {
-                    throw new PlayerException(ExceptionCode.POLICE_DUPLICATE_SKILL);
-                });
+
+        if (jobTargets.containsKey(JobType.POLICE)) {
+            throw new PlayerException(ExceptionCode.POLICE_DUPLICATE_SKILL);
+        }
         JobType jobType = playerJobs.stream()
                 .filter(playerJob -> playerJob.getName().equals(targetName))
                 .findFirst()

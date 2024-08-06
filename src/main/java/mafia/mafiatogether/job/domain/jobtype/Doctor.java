@@ -1,14 +1,14 @@
 package mafia.mafiatogether.job.domain.jobtype;
 
 import java.util.List;
-import mafia.mafiatogether.job.domain.JobTarget;
+import java.util.Map;
 import mafia.mafiatogether.job.domain.PlayerJob;
 
 public class Doctor implements Job {
 
     @Override
     public String applySkill(
-            final List<JobTarget> jobTargets,
+            final Map<JobType, String> jobTargets,
             final List<PlayerJob> playerJobs,
             final String targetName
     ) {

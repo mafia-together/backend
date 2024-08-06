@@ -14,8 +14,8 @@ import mafia.mafiatogether.job.application.PlayerService;
 import mafia.mafiatogether.job.application.dto.request.PlayerExecuteAbilityRequest;
 import mafia.mafiatogether.job.domain.PlayerJob;
 import mafia.mafiatogether.job.domain.PlayerJobRepository;
-import mafia.mafiatogether.job.domain.Skill;
-import mafia.mafiatogether.job.domain.SkillRepository;
+import mafia.mafiatogether.job.domain.JobTarget;
+import mafia.mafiatogether.job.domain.JobTargetRepository;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomInfo;
@@ -46,7 +46,7 @@ class GameEventListenerTest extends ControllerTest {
     private PlayerService playerService;
 
     @Autowired
-    private SkillRepository skillRepository;
+    private JobTargetRepository jobTargetRepository;
 
     @Autowired
     private PlayerJobRepository playerJobRepository;
@@ -178,7 +178,7 @@ class GameEventListenerTest extends ControllerTest {
         gameRepository.save(game);
 
         // then
-        final Skill actual = skillRepository.findById(CODE).get();
+        final JobTarget actual = jobTargetRepository.findById(CODE).get();
         assertSoftly(
                 softly -> {
                     for (JobType jobType : JobType.values()) {
@@ -217,7 +217,7 @@ class GameEventListenerTest extends ControllerTest {
         final boolean gameExists = gameRepository.existsById(CODE);
         final boolean voteExists = voteRepository.existsById(CODE);
         final boolean chatExists = chatRepository.existsById(CODE);
-        final boolean jobTargetExists = skillRepository.existsById(CODE);
+        final boolean jobTargetExists = jobTargetRepository.existsById(CODE);
         final boolean playerJobExists = playerJobRepository.findByCode(CODE).size() != 0;
 
         Assertions.assertThat(gameExists).isFalse();

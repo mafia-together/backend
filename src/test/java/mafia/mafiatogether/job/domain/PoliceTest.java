@@ -2,8 +2,8 @@ package mafia.mafiatogether.job.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.job.domain.jobtype.Citizen;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
@@ -18,7 +18,7 @@ class PoliceTest {
     private static final String CODE = "1234567890";
     private static final String MAFIA = "mafia";
     private static final String CITIZEN = "citizen";
-    private List<PlayerJob> PLAYER_JOBS = List.of(
+    private final List<PlayerJob> PLAYER_JOBS = List.of(
             new PlayerJob(CODE, MAFIA, new Mafia()),
             new PlayerJob(CODE, CITIZEN, new Citizen()),
             new PlayerJob(CODE, "police", new Police())
@@ -27,7 +27,7 @@ class PoliceTest {
     @Test
     void 이미_스킬을_사용한_경우_예외가_발생한다() {
         // given
-        final List<JobTarget> jobTargets = List.of(new JobTarget(CODE, new Police(), MAFIA));
+        final Map<JobType, String> jobTargets = Map.of(JobType.POLICE, MAFIA);
         final Police police = new Police();
 
         // when & then
@@ -39,7 +39,7 @@ class PoliceTest {
     @Test
     void 경찰은_마피아를_확인할_수_있다() {
         //given
-        final List<JobTarget> jobTargets = new ArrayList<>();
+        final Map<JobType, String> jobTargets = Map.of();
         final Police police = new Police();
 
         // when
@@ -52,7 +52,7 @@ class PoliceTest {
     @Test
     void 경찰은_시민을_확인할_수_있다() {
         //given
-        final List<JobTarget> jobTargets = new ArrayList<>();
+        final Map<JobType, String> jobTargets = Map.of();
         Police police = new Police();
 
         // when

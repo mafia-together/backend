@@ -1,6 +1,5 @@
 package mafia.mafiatogether.vote.domain;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,14 +13,14 @@ public class Vote {
 
     @Id
     private String code;
-    private List<VoteTarget> voteTargets;
+    private Map<String, String> voteTargets;
 
     public Vote() {
-        this.voteTargets = new ArrayList<>();
+        this.voteTargets = new HashMap<>();
     }
 
-    public void addVoteTarget(VoteTarget voteTarget) {
-        this.voteTargets.add(voteTarget);
+    public void addVoteTarget(final String name, String vote) {
+        this.voteTargets.put(name, vote);
     }
 
     public void clearVoteTargets() {
@@ -29,7 +28,7 @@ public class Vote {
     }
 
     public String countVotes() {
-        final Map<String, Integer> voteCounts = countTargetVotes(voteTargets);
+        final Map<String, Integer> voteCounts = countTargetVotes();
         final int maxCount = voteCounts.values().stream().max(Integer::compareTo).orElse(0);
         final List<String> maxCounts = voteCounts.entrySet().stream()
                 .filter(entry -> entry.getValue() == maxCount)
@@ -41,10 +40,10 @@ public class Vote {
         return "";
     }
 
-    private Map<String, Integer> countTargetVotes(List<VoteTarget> voteTargets) {
+    private Map<String, Integer> countTargetVotes() {
         final Map<String, Integer> targetCounts = new HashMap<>();
-        for (VoteTarget voteTarget : voteTargets) {
-            targetCounts.put(voteTarget.getTarget(), targetCounts.getOrDefault(voteTarget.getTarget(), 0) + 1);
+        for (String target : voteTargets.values()) {
+            targetCounts.put(target, targetCounts.getOrDefault(target, 0) + 1);
         }
         return targetCounts;
     }
