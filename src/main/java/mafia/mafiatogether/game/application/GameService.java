@@ -45,7 +45,7 @@ public class GameService {
         return statusType;
     }
 
-    public void modifyStatus(final String code, final RoomModifyRequest request) {
+    public void modifyStatus(final String code) {
         final Room room = roomRepository.findById(code)
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         Game game = Game.create(room, Clock.systemDefaultZone().millis());

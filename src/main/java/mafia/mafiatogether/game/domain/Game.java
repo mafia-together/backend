@@ -6,9 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import mafia.mafiatogether.game.application.dto.event.ClearJobTargetEvent;
 import mafia.mafiatogether.game.application.dto.event.ClearVoteEvent;
-import mafia.mafiatogether.game.application.dto.event.StartGameEvent;
 import mafia.mafiatogether.game.application.dto.event.DeleteGameEvent;
 import mafia.mafiatogether.game.application.dto.event.JobExecuteEvent;
+import mafia.mafiatogether.game.application.dto.event.StartGameEvent;
 import mafia.mafiatogether.game.application.dto.event.VoteExecuteEvent;
 import mafia.mafiatogether.game.domain.status.DayIntroStatus;
 import mafia.mafiatogether.game.domain.status.Status;
@@ -43,12 +43,12 @@ public class Game extends AbstractAggregateRoot<Game> {
                 status,
                 room.getRoomInfo(),
                 room.getMaster().getName(),
-                PlayerCollection.creat(room.getParticipants()),
+                PlayerCollection.create(room.getParticipants()),
                 status
         );
     }
 
-    public Game(){
+    public Game() {
         this.players = new PlayerCollection();
     }
 
@@ -100,7 +100,7 @@ public class Game extends AbstractAggregateRoot<Game> {
     }
 
     public List<Player> getLosers() {
-        if (players.getWinnerJobType().equals(JobType.MAFIA)){
+        if (players.getWinnerJobType().equals(JobType.MAFIA)) {
             return players.getNotMafias();
         }
         return players.getMafias();
@@ -110,7 +110,7 @@ public class Game extends AbstractAggregateRoot<Game> {
         return players.getWinnerJobType().name();
     }
 
-    public void publishVoteExecuteEvent(){
+    public void publishVoteExecuteEvent() {
         registerEvent(new VoteExecuteEvent(this.code));
     }
 
@@ -118,7 +118,7 @@ public class Game extends AbstractAggregateRoot<Game> {
         players.executeTarget(target);
     }
 
-    public void publicClearVoteEvent(){
+    public void publicClearVoteEvent() {
         registerEvent(new ClearVoteEvent(this.code));
     }
 
@@ -130,7 +130,7 @@ public class Game extends AbstractAggregateRoot<Game> {
         registerEvent(new ClearJobTargetEvent(this.code));
     }
 
-    public void publishDeleteGameEvent(){
+    public void publishDeleteGameEvent() {
         registerEvent(new DeleteGameEvent(this.code));
     }
 
@@ -138,11 +138,11 @@ public class Game extends AbstractAggregateRoot<Game> {
         status = status.getNextStatus(this, now);
     }
 
-    public void setStatsSnapshot(){
+    public void setStatsSnapshot() {
         this.statusSnapshot = status;
     }
 
-    public boolean isStatusChanged(){
+    public boolean isStatusChanged() {
         return !statusSnapshot.getType().equals(status.getType());
     }
 }

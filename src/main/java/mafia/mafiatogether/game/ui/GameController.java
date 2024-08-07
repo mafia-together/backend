@@ -32,7 +32,7 @@ public class GameController {
             @PlayerInfo final PlayerInfoDto playerInfoDto,
             @RequestBody final RoomModifyRequest request
     ) {
-        gameService.modifyStatus(playerInfoDto.code(), request);
+        gameService.modifyStatus(playerInfoDto.code());
         return ResponseEntity.ok().build();
     }
 

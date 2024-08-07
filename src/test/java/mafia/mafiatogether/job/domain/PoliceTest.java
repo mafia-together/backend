@@ -15,7 +15,6 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("NonAsciiCharacters")
 class PoliceTest {
 
-    private static final String CODE = "1234567890";
     private static final String MAFIA = "mafia";
     private static final String CITIZEN = "citizen";
     private static final String POLICE = "police";

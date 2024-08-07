@@ -20,7 +20,7 @@ public class PlayerCollection {
         this.players = new ArrayList<>();
     }
 
-    public static PlayerCollection creat(ParticipantCollection participants) {
+    public static PlayerCollection create(ParticipantCollection participants) {
         final PlayerCollection playerCollection = new PlayerCollection();
         for (Participant participant : participants.getParticipants()) {
             playerCollection.getPlayers().add(Player.create(participant.getName()));
@@ -59,27 +59,27 @@ public class PlayerCollection {
                 .count();
     }
 
-    public JobType getWinnerJobType(){
-        if (getAliveMafiaCount() == 0){
+    public JobType getWinnerJobType() {
+        if (getAliveMafiaCount() == 0) {
             return JobType.CITIZEN;
         }
         return JobType.MAFIA;
     }
 
-    public List<Player> getMafias(){
+    public List<Player> getMafias() {
         return players.stream()
                 .filter(player -> player.isMafia())
                 .toList();
     }
 
-    public List<Player> getNotMafias(){
+    public List<Player> getNotMafias() {
         return players.stream()
                 .filter(player -> !player.isMafia())
                 .toList();
     }
 
     public void executeTarget(final String target) {
-        if (target == null || target.isBlank()){
+        if (target == null || target.isBlank()) {
             return;
         }
         final Player targetPlayer = findByName(target);
