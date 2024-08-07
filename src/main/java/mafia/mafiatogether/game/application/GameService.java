@@ -5,7 +5,6 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
-import mafia.mafiatogether.game.application.dto.request.RoomModifyRequest;
 import mafia.mafiatogether.game.application.dto.response.RoomInfoResponse;
 import mafia.mafiatogether.game.application.dto.response.RoomResultResponse;
 import mafia.mafiatogether.game.application.dto.response.RoomStatusResponse;
