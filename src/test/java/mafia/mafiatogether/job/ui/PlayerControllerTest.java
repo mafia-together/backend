@@ -37,7 +37,7 @@ class PlayerControllerTest extends ControllerTest {
     @AfterEach
     void clearTest() {
         jobTargetRepository.deleteById(CODE);
-        playerJobRepository.deleteAllByCode(CODE);
+        playerJobRepository.deleteById(CODE);
     }
 
     @Test

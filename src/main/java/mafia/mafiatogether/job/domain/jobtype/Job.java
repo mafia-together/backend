@@ -10,7 +10,7 @@ public interface Job {
 
     String applySkill(
             final Map<JobType, String> jobTargets,
-            final List<PlayerJob> playerJobs,
+            final Map<String, Job> playerJobs,
             final String targetName
     );
 

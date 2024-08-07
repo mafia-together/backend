@@ -78,12 +78,14 @@ public class GameEventListener {
 
     @EventListener
     public void listenStartGameEvent(final StartGameEvent startGameEvent) {
+        final PlayerJob playerJob = new PlayerJob(startGameEvent.getCode(), new HashMap<>());
         for (Player player : startGameEvent.getPlayerCollection().getPlayers()) {
-            playerJobRepository.save(new PlayerJob(startGameEvent.getCode(), player.getName(), player.getJob()));
+            playerJob.add(player.getName(), player.getJob());
         }
         final Chat chat = new Chat(startGameEvent.getCode(), new ArrayList<>());
         final Vote vote = new Vote(startGameEvent.getCode(), new HashMap<>());
         final JobTarget jobTarget = new JobTarget(startGameEvent.getCode(), new HashMap<>());
+        playerJobRepository.save(playerJob);
         chatRepository.save(chat);
         voteRepository.save(vote);
         jobTargetRepository.save(jobTarget);
@@ -91,7 +93,7 @@ public class GameEventListener {
 
     @EventListener
     public void listenDeleteGameEvent(final DeleteGameEvent deleteGameEvent) {
-        playerJobRepository.deleteAllByCode(deleteGameEvent.getCode());
+        playerJobRepository.deleteById(deleteGameEvent.getCode());
         jobTargetRepository.deleteById(deleteGameEvent.getCode());
         chatRepository.deleteById(deleteGameEvent.getCode());
         voteRepository.deleteById(deleteGameEvent.getCode());

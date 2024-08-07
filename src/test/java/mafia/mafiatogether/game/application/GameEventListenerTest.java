@@ -192,8 +192,8 @@ class GameEventListenerTest extends ControllerTest {
     void 직업_분배_이후_플레이어_직업이_저장된다() {
         // given & when : setTest()
         // then
-        final List<PlayerJob> actual = playerJobRepository.findByCode(CODE);
-        Assertions.assertThat(actual).hasSize(5);
+        final PlayerJob actual = playerJobRepository.findById(CODE).get();
+        Assertions.assertThat(actual.getPlayerJobs().keySet()).hasSize(5);
     }
 
     @Test
@@ -218,7 +218,7 @@ class GameEventListenerTest extends ControllerTest {
         final boolean voteExists = voteRepository.existsById(CODE);
         final boolean chatExists = chatRepository.existsById(CODE);
         final boolean jobTargetExists = jobTargetRepository.existsById(CODE);
-        final boolean playerJobExists = playerJobRepository.findByCode(CODE).size() != 0;
+        final boolean playerJobExists = playerJobRepository.existsById(CODE);
 
         Assertions.assertThat(gameExists).isFalse();
         Assertions.assertThat(voteExists).isFalse();

@@ -47,7 +47,7 @@ public class ChatControllerTest extends ControllerTest {
     }
 
     @Test
-    void 시민이_내역을_조회할_수_있다() {
+    void 시민이_채팅_내역을_조회할_수_있다() {
         // given
         final String basic = Base64.getEncoder().encodeToString((CODE + ":" + CITIZEN).getBytes());
 
@@ -58,7 +58,7 @@ public class ChatControllerTest extends ControllerTest {
     }
 
     @Test
-    void 의사이_내역을_조회할_수_있다() {
+    void 의사이_채팅_내역을_조회할_수_있다() {
         // given
         final String basic = Base64.getEncoder().encodeToString((CODE + ":" + DOCTOR).getBytes());
 
@@ -69,7 +69,7 @@ public class ChatControllerTest extends ControllerTest {
     }
 
     @Test
-    void 경찰이_내역을_조회할_수_있다() {
+    void 경찰이_채팅_내역을_조회할_수_있다() {
         // given
         final String basic = Base64.getEncoder().encodeToString((CODE + ":" + POLICE).getBytes());
 

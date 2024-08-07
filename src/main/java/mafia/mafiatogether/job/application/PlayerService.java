@@ -1,6 +1,5 @@
 package mafia.mafiatogether.job.application;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.PlayerException;
@@ -10,10 +9,11 @@ import mafia.mafiatogether.job.application.dto.response.JobResponse;
 import mafia.mafiatogether.job.application.dto.response.MafiaTargetResponse;
 import mafia.mafiatogether.job.application.dto.response.PlayerExecuteAbilityResponse;
 import mafia.mafiatogether.job.application.dto.response.RoomNightResultResponse;
-import mafia.mafiatogether.job.domain.PlayerJob;
-import mafia.mafiatogether.job.domain.PlayerJobRepository;
 import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobTargetRepository;
+import mafia.mafiatogether.job.domain.PlayerJob;
+import mafia.mafiatogether.job.domain.PlayerJobRepository;
+import mafia.mafiatogether.job.domain.jobtype.Job;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,9 +26,9 @@ public class PlayerService {
     private final PlayerJobRepository playerJobRepository;
 
     public JobResponse getPlayerJob(final String code, final String name) {
-        final PlayerJob playerJob = playerJobRepository.findByCodeAndName(code, name)
-                .orElseThrow(() -> new PlayerException(ExceptionCode.INVALID_PLAYER));
-        return new JobResponse(playerJob.getJob().getJobType().name());
+        final PlayerJob playerJob = playerJobRepository.findById(code)
+                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+        return new JobResponse(playerJob.findJobByName(name).getJobType().name());
     }
 
     public PlayerExecuteAbilityResponse executeSkill(
@@ -38,37 +38,34 @@ public class PlayerService {
     ) {
         final JobTarget jobTarget = jobTargetRepository.findById(code)
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
-        final List<PlayerJob> playerJobs = playerJobRepository.findByCode(code);
-        final PlayerJob playerJob = playerJobs.stream()
-                .filter(value -> value.getName().equals(name))
-                .findFirst()
-                .orElseThrow(() -> new PlayerException(ExceptionCode.INVALID_PLAYER));
-        validateTarget(playerJobs, request.target());
-        final String result = playerJob.getJob().applySkill(jobTarget.getJobTargets(), playerJobs, request.target());
-        jobTarget.addJobTarget(playerJob.getJob().getJobType(), request.target());
+        final PlayerJob playerJob = playerJobRepository.findById(code)
+                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+        validateTarget(playerJob, request.target());
+        final Job requestJob = playerJob.findJobByName(name);
+        final String result = requestJob.applySkill(jobTarget.getJobTargets(), playerJob.getPlayerJobs(),
+                request.target());
+        jobTarget.addJobTarget(requestJob.getJobType(), request.target());
         jobTargetRepository.save(jobTarget);
-        return new PlayerExecuteAbilityResponse(playerJob.getJob().getJobType().name(), result);
+        return new PlayerExecuteAbilityResponse(requestJob.getJobType().name(), result);
     }
 
-    private void validateTarget(final List<PlayerJob> playerJobs, String target) {
+    private void validateTarget(final PlayerJob playerJob, String target) {
         if (target.isEmpty()) {
             return;
         }
-        playerJobs.stream()
-                .filter(value -> value.getName().equals(target))
-                .findFirst()
-                .orElseThrow(() -> new PlayerException(ExceptionCode.INVALID_PLAYER));
+        playerJob.findJobByName(target);
     }
 
     public MafiaTargetResponse getTarget(
             final String code,
             final String name
     ) {
-        final PlayerJob playerJob = playerJobRepository.findByCodeAndName(code, name)
-                .orElseThrow(() -> new PlayerException(ExceptionCode.INVALID_PLAYER));
+        final Job playerJob = playerJobRepository.findById(code)
+                .orElseThrow(() -> new PlayerException(ExceptionCode.INVALID_PLAYER))
+                .findJobByName(name);
         final JobTarget jobTarget = jobTargetRepository.findById(code)
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
-        final String mafiaJobTarget = jobTarget.findJobTargetBy(playerJob.getJob().getJobType());
+        final String mafiaJobTarget = jobTarget.findJobTargetBy(playerJob.getJobType());
         return new MafiaTargetResponse(mafiaJobTarget);
     }
 

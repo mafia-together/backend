@@ -1,9 +1,7 @@
 package mafia.mafiatogether.chat.application;
 
 import java.time.Clock;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.chat.application.dto.request.ChatRequest;
 import mafia.mafiatogether.chat.application.dto.response.ChatResponse;
@@ -14,7 +12,6 @@ import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
 import mafia.mafiatogether.job.domain.PlayerJob;
 import mafia.mafiatogether.job.domain.PlayerJobRepository;
-import mafia.mafiatogether.job.domain.jobtype.JobType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,26 +24,19 @@ public class ChatService {
     private final ChatRepository chatRepository;
 
     public List<ChatResponse> findAllChat(final String code, final String name) {
-        final Map<String, JobType> playerJobs = convertPlayerJobsToMap(playerJobRepository.findByCode(code));
+        final PlayerJob playerJobs = playerJobRepository.findById(code)
+                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         final Chat chat = chatRepository.findById(code)
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
-        final boolean isMafia = playerJobs.get(name).equals(JobType.MAFIA);
+        final boolean isMafia = playerJobs.isMafia(name);
         return chat.getMessages().stream()
                 .map(message -> ChatResponse.of(
                         message,
                         message.getName().equals(name),
                         isMafia,
-                        playerJobs.get(message.getName()))
-                )
+                        playerJobs.findJobByName(name).getJobType()
+                ))
                 .toList();
-    }
-
-    private static Map<String, JobType> convertPlayerJobsToMap(final List<PlayerJob> playerJobs) {
-        final Map<String, JobType> playerJobMap = new HashMap<>();
-        for (PlayerJob playerJob : playerJobs) {
-            playerJobMap.put(playerJob.getName(), playerJob.getJob().getJobType());
-        }
-        return playerJobMap;
     }
 
     public void saveChat(final String code, final String name, final ChatRequest chatRequest) {

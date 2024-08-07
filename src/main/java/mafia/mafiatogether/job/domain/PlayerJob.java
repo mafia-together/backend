@@ -1,22 +1,41 @@
 package mafia.mafiatogether.job.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import mafia.mafiatogether.config.exception.ExceptionCode;
+import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.job.domain.jobtype.Job;
+import mafia.mafiatogether.job.domain.jobtype.JobType;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
 @Getter
-@NoArgsConstructor
+@RedisHash("playerJob")
 @AllArgsConstructor
 public class PlayerJob {
 
+    @Id
     private String code;
-    private String name;
-    private Job job;
+    private Map<String, Job> playerJobs;
 
-    @JsonIgnore
-    public String getId() {
-        return code + ":" + name;
+    public PlayerJob() {
+        this.playerJobs = new HashMap<>();
+    }
+
+    public Job findJobByName(String name) {
+        if (!playerJobs.containsKey(name)) {
+            throw new PlayerException(ExceptionCode.INVALID_PLAYER);
+        }
+        return playerJobs.get(name);
+    }
+
+    public boolean isMafia(String name) {
+        return findJobByName(name).getJobType().equals(JobType.MAFIA);
+    }
+
+    public void add(String name, Job job) {
+        this.playerJobs.put(name, job);
     }
 }

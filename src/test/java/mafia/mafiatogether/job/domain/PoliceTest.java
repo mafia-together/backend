@@ -2,10 +2,10 @@ package mafia.mafiatogether.job.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.List;
 import java.util.Map;
 import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.job.domain.jobtype.Citizen;
+import mafia.mafiatogether.job.domain.jobtype.Job;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
 import mafia.mafiatogether.job.domain.jobtype.Mafia;
 import mafia.mafiatogether.job.domain.jobtype.Police;
@@ -18,10 +18,11 @@ class PoliceTest {
     private static final String CODE = "1234567890";
     private static final String MAFIA = "mafia";
     private static final String CITIZEN = "citizen";
-    private final List<PlayerJob> PLAYER_JOBS = List.of(
-            new PlayerJob(CODE, MAFIA, new Mafia()),
-            new PlayerJob(CODE, CITIZEN, new Citizen()),
-            new PlayerJob(CODE, "police", new Police())
+    private static final String POLICE = "police";
+    private final Map<String, Job> PLAYER_JOB = Map.of(
+            MAFIA, new Mafia(),
+            CITIZEN, new Citizen(),
+            POLICE, new Police()
     );
 
     @Test
@@ -31,7 +32,7 @@ class PoliceTest {
         final Police police = new Police();
 
         // when & then
-        assertThatThrownBy(() -> police.applySkill(jobTargets, PLAYER_JOBS, MAFIA))
+        assertThatThrownBy(() -> police.applySkill(jobTargets, PLAYER_JOB, MAFIA))
                 .isInstanceOf(PlayerException.class)
                 .hasMessage("이미 스킬을 사용했습니다.");
     }
@@ -43,7 +44,7 @@ class PoliceTest {
         final Police police = new Police();
 
         // when
-        String actual = police.applySkill(jobTargets, PLAYER_JOBS, MAFIA);
+        String actual = police.applySkill(jobTargets, PLAYER_JOB, MAFIA);
 
         //then
         Assertions.assertThat(actual).isEqualTo(JobType.MAFIA.name());
@@ -56,7 +57,7 @@ class PoliceTest {
         Police police = new Police();
 
         // when
-        String actual = police.applySkill(jobTargets, PLAYER_JOBS, CITIZEN);
+        String actual = police.applySkill(jobTargets, PLAYER_JOB, CITIZEN);
 
         //then
         Assertions.assertThat(actual).isEqualTo(JobType.CITIZEN.name());
