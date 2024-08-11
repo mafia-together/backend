@@ -118,11 +118,11 @@ public class Game extends AbstractAggregateRoot<Game> {
         players.executeTarget(target);
     }
 
-    public void publicClearVoteEvent() {
+    public void publishClearVoteEvent() {
         registerEvent(new ClearVoteEvent(this.code));
     }
 
-    public void publicJobExecuteEvent() {
+    public void publishJobExecuteEvent() {
         registerEvent(new JobExecuteEvent(this.code));
     }
 
