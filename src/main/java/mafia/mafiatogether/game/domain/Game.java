@@ -115,7 +115,7 @@ public class Game extends AbstractAggregateRoot<Game> {
     }
 
     public void executeTarget(String target) {
-        players.executeTarget(target);
+        players.killTarget(target);
     }
 
     public void publishClearVoteEvent() {

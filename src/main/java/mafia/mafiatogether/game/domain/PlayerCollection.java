@@ -41,7 +41,7 @@ public class PlayerCollection {
 
     public long getAliveMafiaCount() {
         return players.stream()
-                .filter(player -> player.isMafia())
+                .filter(Player::isMafia)
                 .filter(Player::isAlive)
                 .count();
     }
@@ -55,7 +55,7 @@ public class PlayerCollection {
 
     public Long getAlivePlayerCount() {
         return players.stream()
-                .filter(player -> player.isAlive())
+                .filter(Player::isAlive)
                 .count();
     }
 
@@ -68,7 +68,7 @@ public class PlayerCollection {
 
     public List<Player> getMafias() {
         return players.stream()
-                .filter(player -> player.isMafia())
+                .filter(Player::isMafia)
                 .toList();
     }
 
@@ -78,7 +78,7 @@ public class PlayerCollection {
                 .toList();
     }
 
-    public void executeTarget(final String target) {
+    public void killTarget(final String target) {
         if (target == null || target.isBlank()) {
             return;
         }
