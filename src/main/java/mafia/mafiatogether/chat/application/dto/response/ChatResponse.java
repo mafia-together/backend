@@ -31,10 +31,14 @@ public record ChatResponse(
     private static JobType filteringMafia(
             final boolean isOwner,
             final boolean isMafia,
-            final JobType jobType) {
-        if (isMafia) {
-            return jobType.equals(JobType.MAFIA) ? jobType : null;
+            final JobType jobType
+    ) {
+        if (isMafia && jobType.equals(JobType.MAFIA)) {
+            return jobType;
         }
-        return isOwner ? jobType : null;
+        if (isOwner) {
+            return jobType;
+        }
+        return null;
     }
 }
