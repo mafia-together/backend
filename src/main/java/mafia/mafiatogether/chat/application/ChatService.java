@@ -1,35 +1,50 @@
 package mafia.mafiatogether.chat.application;
 
+import java.time.Clock;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.chat.domain.Chat;
-import mafia.mafiatogether.chat.domain.Message;
-import mafia.mafiatogether.job.domain.Player;
-import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.room.domain.RoomManager;
 import mafia.mafiatogether.chat.application.dto.request.ChatRequest;
 import mafia.mafiatogether.chat.application.dto.response.ChatResponse;
+import mafia.mafiatogether.chat.domain.Chat;
+import mafia.mafiatogether.chat.domain.ChatRepository;
+import mafia.mafiatogether.chat.domain.Message;
+import mafia.mafiatogether.config.exception.ExceptionCode;
+import mafia.mafiatogether.config.exception.RoomException;
+import mafia.mafiatogether.job.domain.PlayerJob;
+import mafia.mafiatogether.job.domain.PlayerJobRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class ChatService {
 
-    private final RoomManager roomManager;
+    private final PlayerJobRepository playerJobRepository;
+    private final ChatRepository chatRepository;
 
+    @Transactional(readOnly = true)
     public List<ChatResponse> findAllChat(final String code, final String name) {
-        final Room room = roomManager.findByCode(code);
-        final Chat chat = room.getChat();
-        final Player player = room.getPlayer(name);
+        final PlayerJob playerJobs = playerJobRepository.findById(code)
+                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+        final Chat chat = chatRepository.findById(code)
+                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+        final boolean isMafia = playerJobs.isMafia(name);
         return chat.getMessages().stream()
-                .map(message -> ChatResponse.of(message, name, player.isMafia()))
+                .map(message -> ChatResponse.of(
+                        message,
+                        message.getName().equals(name),
+                        isMafia,
+                        playerJobs.findJobByName(name).getJobType()
+                ))
                 .toList();
     }
 
+    @Transactional
     public void saveChat(final String code, final String name, final ChatRequest chatRequest) {
-        final Room room = roomManager.findByCode(code);
-        final Chat chat = room.getChat();
-        final Player player = room.getPlayer(name);
-        chat.save(Message.of(player, chatRequest.contents()));
+        final Chat chat = chatRepository.findById(code)
+                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+        final Message message = new Message(name, chatRequest.contents(), Clock.systemDefaultZone().millis());
+        chat.saveMessage(message);
+        chatRepository.save(chat);
     }
 }

@@ -9,10 +9,10 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
-import mafia.mafiatogether.job.domain.Doctor;
-import mafia.mafiatogether.job.domain.Job;
-import mafia.mafiatogether.job.domain.Mafia;
-import mafia.mafiatogether.job.domain.Police;
+import mafia.mafiatogether.job.domain.jobtype.Doctor;
+import mafia.mafiatogether.job.domain.jobtype.Job;
+import mafia.mafiatogether.job.domain.jobtype.Mafia;
+import mafia.mafiatogether.job.domain.jobtype.Police;
 
 @Getter
 @RequiredArgsConstructor

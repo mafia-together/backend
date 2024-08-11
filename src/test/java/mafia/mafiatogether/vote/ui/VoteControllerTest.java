@@ -2,69 +2,47 @@ package mafia.mafiatogether.vote.ui;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import java.time.Clock;
 import java.util.Base64;
 import java.util.Map;
 import mafia.mafiatogether.global.ControllerTest;
-import mafia.mafiatogether.job.domain.Player;
-import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.room.domain.RoomInfo;
-import mafia.mafiatogether.room.domain.RoomManager;
-import mafia.mafiatogether.vote.domain.Vote;
 import mafia.mafiatogether.vote.application.dto.response.VoteResultResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 @SuppressWarnings("NonAsciiCharacters")
 class VoteControllerTest extends ControllerTest {
 
-    @Autowired
-    private RoomManager roomManager;
-
-    private static String code;
-    private Room room;
-    private Player player1;
-    private Player player2;
-    private Player player3;
-
     @BeforeEach
-    void setRoom() {
-        code = roomManager.create(new RoomInfo(3, 1, 1, 1));
-        room = roomManager.findByCode(code);
-        player1 = Player.create("power");
-        player2 = Player.create("metthew");
-        player3 = Player.create("dali");
-        room.joinPlayer(player1.getName());
-        room.joinPlayer(player2.getName());
-        room.joinPlayer(player3.getName());
+    void setTest(){
+        setRoom();
+        setGame();
     }
 
     @Test
     void 투표를_할_수_있다() {
         // given
-        final String basic = Base64.getEncoder().encodeToString((code + ":" + player1.getName()).getBytes());
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
+        final String expect = PLAYER2_NAME;
 
         // when & then
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .body(Map.of("target", player2.getName()))
+                .body(Map.of("target", expect))
                 .when().post("/vote")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-        Vote vote = room.getVote();
-        vote.executeVote();
-        Assertions.assertThat(vote.getVoteResult()).isEqualTo(player2.getName());
+        String actual = voteRepository.findById(CODE).get().countVotes();
+        Assertions.assertThat(actual).isEqualTo(expect);
     }
 
     @Test
     void 투표에_기권_할_수_있다() {
         // given
-        final String basic = Base64.getEncoder().encodeToString((code + ":" + player1.getName()).getBytes());
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
 
         // when & then
         RestAssured.given().log().all()
@@ -75,19 +53,20 @@ class VoteControllerTest extends ControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-        final Vote vote = room.getVote();
-        vote.executeVote();
-        Assertions.assertThat(vote.getVoteResult()).isBlank();
+        String actual = voteRepository.findById(CODE).get().countVotes();
+        Assertions.assertThat(actual).isBlank();
     }
 
     @Test
     void 투표_결과를_조회한다() {
         // given
-        final String basic = Base64.getEncoder().encodeToString((code + ":" + player1.getName()).getBytes());
-        room.votePlayer(player1.getName(), player2.getName(), Clock.systemDefaultZone().millis());
-        room.votePlayer(player2.getName(), player2.getName(), Clock.systemDefaultZone().millis());
-        room.votePlayer(player3.getName(), player1.getName(), Clock.systemDefaultZone().millis());
-        room.executeVote();
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
+        final String expect = PLAYER1_NAME;
+        voteTarget(PLAYER1_NAME, PLAYER5_NAME);
+        voteTarget(PLAYER2_NAME, PLAYER5_NAME);
+        voteTarget(PLAYER3_NAME, expect);
+        voteTarget(PLAYER4_NAME, expect);
+        voteTarget(PLAYER5_NAME, expect);
 
         // when & then
         final VoteResultResponse voteResultResponse = RestAssured.given().log().all()
@@ -99,6 +78,18 @@ class VoteControllerTest extends ControllerTest {
                 .extract()
                 .body()
                 .as(VoteResultResponse.class);
-        Assertions.assertThat(voteResultResponse.dead()).isEqualTo(player2.getName());
+
+        Assertions.assertThat(voteResultResponse.dead()).isEqualTo(expect);
+    }
+
+    private void voteTarget(final String name, final String target) {
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + name).getBytes());
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Basic " + basic)
+                .body(Map.of("target", target))
+                .when().post("/vote")
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 }

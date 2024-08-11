@@ -1,25 +1,36 @@
 package mafia.mafiatogether.vote.application;
 
-import java.time.Clock;
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.room.domain.RoomManager;
+import mafia.mafiatogether.config.exception.ExceptionCode;
+import mafia.mafiatogether.config.exception.RoomException;
+import mafia.mafiatogether.vote.application.dto.event.AllPlayerVotedEvent;
 import mafia.mafiatogether.vote.application.dto.response.VoteResultResponse;
+import mafia.mafiatogether.vote.domain.Vote;
+import mafia.mafiatogether.vote.domain.VoteRepository;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class VoteService {
 
-    private final RoomManager roomManager;
+    private final VoteRepository voteRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
+    @Transactional
     public void votePlayer(final String code, final String name, final String targetName) {
-        final Room room = roomManager.findByCode(code);
-        room.votePlayer(name, targetName, Clock.systemDefaultZone().millis());
+        final Vote vote = voteRepository.findById(code)
+                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+        vote.addVoteTarget(name, targetName);
+        voteRepository.save(vote);
+        eventPublisher.publishEvent(new AllPlayerVotedEvent(code));
     }
 
+    @Transactional(readOnly = true)
     public VoteResultResponse getResult(final String code) {
-        final Room room = roomManager.findByCode(code);
-        return new VoteResultResponse(room.getVoteResult());
+        final Vote vote = voteRepository.findById(code)
+                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+        return new VoteResultResponse(vote.countVotes());
     }
 }

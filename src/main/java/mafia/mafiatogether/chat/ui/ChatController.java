@@ -7,7 +7,7 @@ import mafia.mafiatogether.config.PlayerInfo;
 import mafia.mafiatogether.chat.application.ChatService;
 import mafia.mafiatogether.chat.application.dto.request.ChatRequest;
 import mafia.mafiatogether.chat.application.dto.response.ChatResponse;
-import mafia.mafiatogether.job.application.dto.PlayerInfoDto;
+import mafia.mafiatogether.config.PlayerInfoDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

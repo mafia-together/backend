@@ -1,72 +1,54 @@
 package mafia.mafiatogether.vote.domain;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.ConcurrentHashMap;
 import lombok.AllArgsConstructor;
-import mafia.mafiatogether.job.domain.Player;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.redis.core.RedisHash;
 
+@RedisHash("vote")
 @AllArgsConstructor
 public class Vote {
 
-    private final Map<Player, Player> playerVote;
-    private Player votedPlayer;
+    @Id
+    private String code;
+    private Map<String, String> voteTargets;
 
-    public static Vote create() {
-        return new Vote(new ConcurrentHashMap<>(), Player.NONE);
+    public Vote() {
+        this.voteTargets = new HashMap<>();
     }
 
-    public void choose(final Player player, final Player target) {
-        playerVote.put(player, target);
+    public void addVoteTarget(final String name, String vote) {
+        this.voteTargets.put(name, vote);
     }
 
-    public String getVoteResult() {
-        return votedPlayer.getName();
+    public void clearVoteTargets() {
+        voteTargets.clear();
     }
 
-    private Player countVotes() {
-        final Map<Player, Integer> voteCounts = new HashMap<>();
-        for (final Player player : playerVote.values()) {
-            voteCounts.put(player, voteCounts.getOrDefault(player, 0) + 1);
+    public String countVotes() {
+        final Map<String, Integer> voteCounts = countTargetVotes();
+        final int maxCount = voteCounts.values().stream().max(Integer::compareTo).orElse(0);
+        final List<String> maxCounts = voteCounts.entrySet().stream()
+                .filter(entry -> entry.getValue() == maxCount)
+                .map(Map.Entry::getKey)
+                .toList();
+        if (maxCounts.size() == 1) {
+            return maxCounts.getFirst();
         }
-        return findMaxVotedPlayer(voteCounts);
+        return "";
     }
 
-    private Player findMaxVotedPlayer(final Map<Player, Integer> voteCounts) {
-        int maxCount = 0;
-        int count = 0;
-        Player maxVotedPlayer = Player.NONE;
-        for (Entry<Player, Integer> voteCount : voteCounts.entrySet()) {
-            if (voteCount.getKey() == Player.NONE) {
-                continue;
-            }
-            if (maxCount == voteCount.getValue()) {
-                count++;
-            }
-            if (maxCount < voteCount.getValue()) {
-                maxCount = voteCount.getValue();
-                count = 1;
-                maxVotedPlayer = voteCount.getKey();
-            }
+    private Map<String, Integer> countTargetVotes() {
+        final Map<String, Integer> targetCounts = new HashMap<>();
+        for (String target : voteTargets.values()) {
+            targetCounts.put(target, targetCounts.getOrDefault(target, 0) + 1);
         }
-        if (count > 1) {
-            return Player.NONE;
-        }
-        return maxVotedPlayer;
+        return targetCounts;
     }
 
-    public void executeVote() {
-        votedPlayer = countVotes();
-        votedPlayer.kill();
-    }
-
-    public void clear() {
-        votedPlayer = Player.NONE;
-        playerVote.clear();
-    }
-
-    public boolean isAllParticipatedVote(final Long total) {
-        return this.playerVote.keySet().size() == total;
+    public int getVotedCount() {
+        return voteTargets.size();
     }
 }

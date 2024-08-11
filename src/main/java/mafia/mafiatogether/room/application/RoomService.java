@@ -1,75 +1,46 @@
 package mafia.mafiatogether.room.application;
 
-import io.micrometer.core.instrument.Gauge;
-import io.micrometer.core.instrument.MeterRegistry;
-import java.time.Clock;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
-import mafia.mafiatogether.job.domain.Player;
-import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.room.domain.RoomManager;
-import mafia.mafiatogether.room.domain.status.EndStatus;
-import mafia.mafiatogether.room.application.dto.response.RoomCodeResponse;
 import mafia.mafiatogether.room.application.dto.request.RoomCreateRequest;
-import mafia.mafiatogether.room.application.dto.response.RoomInfoResponse;
-import mafia.mafiatogether.room.application.dto.request.RoomModifyRequest;
-import mafia.mafiatogether.room.application.dto.response.RoomNightResultResponse;
-import mafia.mafiatogether.room.application.dto.response.RoomResultResponse;
-import mafia.mafiatogether.room.application.dto.response.RoomStatusResponse;
+import mafia.mafiatogether.room.application.dto.response.RoomCodeResponse;
 import mafia.mafiatogether.room.application.dto.response.RoomValidateResponse;
+import mafia.mafiatogether.room.domain.CodeGenerator;
+import mafia.mafiatogether.room.domain.Room;
+import mafia.mafiatogether.room.domain.RoomInfo;
+import mafia.mafiatogether.room.domain.RoomRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class RoomService {
 
-    private final RoomManager roomManager;
-    private final MeterRegistry meterRegistry;
+    private final RoomRepository roomRepository;
 
+    @Transactional
     public RoomCodeResponse create(final RoomCreateRequest request) {
-        final String code = roomManager.create(request.toDomain());
-        Gauge.builder("room", roomManager, RoomManager::getTotalRoomCount).tag("info", "size").register(meterRegistry);
+        String code = CodeGenerator.generate();
+        while (roomRepository.existsById(code)){
+            code = CodeGenerator.generate();
+        }
+        final RoomInfo roomInfo = RoomInfo.of(request.total(), request.mafia(), request.doctor(), request.police());
+        final Room room = Room.create(code, roomInfo);
+        roomRepository.save(room);
         return new RoomCodeResponse(code);
     }
 
+    @Transactional
     public void join(final String code, final String name) {
-        final Room room = roomManager.findByCode(code);
+        final Room room = roomRepository.findById(code)
+                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         room.joinPlayer(name);
+        roomRepository.save(room);
     }
 
-    public RoomStatusResponse findStatus(final String code) {
-        final Room room = roomManager.findByCode(code);
-        final Long now = Clock.systemDefaultZone().millis();
-        return new RoomStatusResponse(room.getStatusType(now));
-    }
-
-    public void modifyStatus(final String code, final RoomModifyRequest request) {
-        final Room room = roomManager.findByCode(code);
-        final Long now = Clock.systemDefaultZone().millis();
-        room.modifyStatus(request.statusType(), now);
-    }
-
-    public RoomInfoResponse findRoomInfo(final String code, final String name) {
-        final Room room = roomManager.findByCode(code);
-        final Player player = room.getPlayer(name);
-        return RoomInfoResponse.of(room, player, room.isMaster(player));
-    }
-
+    @Transactional(readOnly = true)
     public RoomValidateResponse validateCode(final String code) {
-        return new RoomValidateResponse(roomManager.validateCode(code));
-    }
-
-    public RoomResultResponse findResult(final String code) {
-        final Room room = roomManager.findByCode(code);
-        if (!room.isEnd()) {
-            throw new RoomException(ExceptionCode.GAME_IS_NOT_FINISHED);
-        }
-        return RoomResultResponse.of((EndStatus) room.getStatus());
-    }
-
-    public RoomNightResultResponse findNightResult(final String code) {
-        final Room room = roomManager.findByCode(code);
-        return new RoomNightResultResponse(room.getNightResult());
+        return new RoomValidateResponse(roomRepository.existsById(code));
     }
 }
