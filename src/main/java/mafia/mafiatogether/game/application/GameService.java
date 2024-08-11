@@ -38,7 +38,7 @@ public class GameService {
     private StatusType checkStatusChanged(final Game game) {
         game.setStatsSnapshot();
         final StatusType statusType = game.getStatusType(Clock.systemDefaultZone().millis());
-        if (game.isStatusChanged()) {
+        if (game.isStatusChanged() && game.isNotDeleted()) {
             gameRepository.save(game);
         }
         return statusType;

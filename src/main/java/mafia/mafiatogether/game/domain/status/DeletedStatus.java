@@ -15,6 +15,6 @@ public class DeletedStatus extends Status{
 
     @Override
     public StatusType getType() {
-        throw new RoomException(ExceptionCode.DELETED_STATUS);
+        return StatusType.WAIT;
     }
 }
