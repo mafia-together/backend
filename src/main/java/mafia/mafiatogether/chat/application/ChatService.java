@@ -34,7 +34,7 @@ public class ChatService {
                         message,
                         message.getName().equals(name),
                         isMafia,
-                        playerJobs.findJobByName(name).getJobType()
+                        playerJobs.findJobByName(message.getName()).getJobType()
                 ))
                 .toList();
     }

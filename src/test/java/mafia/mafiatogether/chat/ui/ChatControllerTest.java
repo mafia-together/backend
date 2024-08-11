@@ -130,12 +130,16 @@ public class ChatControllerTest extends ControllerTest {
         Long countOtherJobs = responses.stream()
                 .filter(response -> response.job() != null && response.job() != JobType.MAFIA)
                 .count();
+        Long countMafia = responses.stream()
+                .filter(response -> response.job() != null && response.job().equals(JobType.MAFIA))
+                .count();
 
         SoftAssertions.assertSoftly(
                 softAssertions -> {
                     softAssertions.assertThat(playerJob).isEqualTo(JobType.MAFIA);
                     softAssertions.assertThat(otherMafia).isEqualTo(JobType.MAFIA);
                     softAssertions.assertThat(countOtherJobs).isEqualTo(0);
+                    softAssertions.assertThat(countMafia).isEqualTo(2);
                 }
         );
     }
