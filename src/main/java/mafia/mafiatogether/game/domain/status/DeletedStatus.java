@@ -15,6 +15,6 @@ public class DeletedStatus extends Status{
 
     @Override
     public StatusType getType() {
-        return StatusType.WAIT;
+        return StatusType.DELETED;
     }
 }

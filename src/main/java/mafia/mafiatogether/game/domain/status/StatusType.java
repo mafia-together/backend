@@ -10,5 +10,6 @@ public enum StatusType {
     VOTE_RESULT,
     NIGHT_INTRO,
     NIGHT,
-    END
+    END,
+    DELETED
 }

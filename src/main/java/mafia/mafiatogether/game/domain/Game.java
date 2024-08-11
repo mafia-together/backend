@@ -147,6 +147,6 @@ public class Game extends AbstractAggregateRoot<Game> {
     }
 
     public boolean isNotDeleted(){
-        return !status.getType().equals(StatusType.WAIT);
+        return !status.getType().equals(StatusType.DELETED);
     }
 }
