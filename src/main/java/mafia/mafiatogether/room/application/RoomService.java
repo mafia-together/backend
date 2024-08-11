@@ -14,12 +14,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class RoomService {
 
     private final RoomRepository roomRepository;
 
+    @Transactional
     public RoomCodeResponse create(final RoomCreateRequest request) {
         String code = CodeGenerator.generate();
         while (roomRepository.existsById(code)){
@@ -31,6 +31,7 @@ public class RoomService {
         return new RoomCodeResponse(code);
     }
 
+    @Transactional
     public void join(final String code, final String name) {
         final Room room = roomRepository.findById(code)
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
@@ -38,6 +39,7 @@ public class RoomService {
         roomRepository.save(room);
     }
 
+    @Transactional(readOnly = true)
     public RoomValidateResponse validateCode(final String code) {
         return new RoomValidateResponse(roomRepository.existsById(code));
     }

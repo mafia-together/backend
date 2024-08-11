@@ -18,19 +18,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class PlayerService {
 
     private final JobTargetRepository jobTargetRepository;
     private final PlayerJobRepository playerJobRepository;
 
+    @Transactional(readOnly = true)
     public JobResponse getPlayerJob(final String code, final String name) {
         final PlayerJob playerJob = playerJobRepository.findById(code)
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         return new JobResponse(playerJob.findJobByName(name).getJobType().name());
     }
 
+    @Transactional
     public PlayerExecuteAbilityResponse executeSkill(
             final String code,
             final String name,
@@ -56,6 +57,7 @@ public class PlayerService {
         playerJob.findJobByName(target);
     }
 
+    @Transactional(readOnly = true)
     public MafiaTargetResponse getTarget(
             final String code,
             final String name
@@ -69,6 +71,7 @@ public class PlayerService {
         return new MafiaTargetResponse(mafiaJobTarget);
     }
 
+    @Transactional(readOnly = true)
     public RoomNightResultResponse findJobResult(final String code) {
         final JobTarget jobTarget = jobTargetRepository.findById(code)
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_PLAYER));

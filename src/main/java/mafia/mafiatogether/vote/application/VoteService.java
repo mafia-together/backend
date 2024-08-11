@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class VoteService {
 
     private final VoteRepository voteRepository;
     private final ApplicationEventPublisher eventPublisher;
 
+    @Transactional
     public void votePlayer(final String code, final String name, final String targetName) {
         final Vote vote = voteRepository.findById(code)
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
@@ -27,6 +27,7 @@ public class VoteService {
         eventPublisher.publishEvent(new AllPlayerVotedEvent(code));
     }
 
+    @Transactional(readOnly = true)
     public VoteResultResponse getResult(final String code) {
         final Vote vote = voteRepository.findById(code)
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));

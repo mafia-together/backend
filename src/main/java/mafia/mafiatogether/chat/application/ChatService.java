@@ -16,13 +16,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class ChatService {
 
     private final PlayerJobRepository playerJobRepository;
     private final ChatRepository chatRepository;
 
+    @Transactional(readOnly = true)
     public List<ChatResponse> findAllChat(final String code, final String name) {
         final PlayerJob playerJobs = playerJobRepository.findById(code)
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
@@ -39,6 +39,7 @@ public class ChatService {
                 .toList();
     }
 
+    @Transactional
     public void saveChat(final String code, final String name, final ChatRequest chatRequest) {
         final Chat chat = chatRepository.findById(code)
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));

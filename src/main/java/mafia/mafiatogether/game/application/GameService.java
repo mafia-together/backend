@@ -17,13 +17,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class GameService {
 
     private final RoomRepository roomRepository;
     private final GameRepository gameRepository;
 
+    @Transactional
     public RoomStatusResponse findStatus(final String code) {
         final Optional<Game> game = gameRepository.findById(code);
         if (game.isPresent()) {
@@ -44,6 +44,7 @@ public class GameService {
         return statusType;
     }
 
+    @Transactional
     public void modifyStatus(final String code) {
         final Room room = roomRepository.findById(code)
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
@@ -52,6 +53,7 @@ public class GameService {
         gameRepository.save(game);
     }
 
+    @Transactional(readOnly = true)
     public RoomInfoResponse findRoomInfo(final String code, final String name) {
         final Optional<Game> game = gameRepository.findById(code);
         if (!game.isPresent()) {
@@ -66,6 +68,7 @@ public class GameService {
         return RoomInfoResponse.ofRoom(room, name);
     }
 
+    @Transactional(readOnly = true)
     public RoomResultResponse findResult(final String code) {
         final Game game = gameRepository.findById(code)
                 .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
