@@ -145,4 +145,8 @@ public class Game extends AbstractAggregateRoot<Game> {
     public boolean isStatusChanged() {
         return !statusSnapshot.getType().equals(status.getType());
     }
+
+    public boolean isNotDeleted(){
+        return !status.getType().equals(StatusType.DELETED);
+    }
 }
