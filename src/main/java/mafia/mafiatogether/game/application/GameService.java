@@ -39,6 +39,7 @@ public class GameService {
         game.setStatsSnapshot();
         final StatusType statusType = game.getStatusType(Clock.systemDefaultZone().millis());
         if (game.isDeleted()){
+            gameRepository.delete(game);
             return StatusType.WAIT;
         }
         if (game.isStatusChanged()) {
