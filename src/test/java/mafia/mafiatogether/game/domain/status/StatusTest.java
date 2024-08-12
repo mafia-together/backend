@@ -85,7 +85,8 @@ class StatusTest {
     @Test
     void 밤_이후_게임종료_조건달성시_게임이_종료된다() {
         // given
-        final Long endTime = nightEndTime + 1_000L;
+        final Long nextNoticeTime = nextDay + 3_000L;
+        final Long endTime = nextNoticeTime + 3_000L;
         game.getStatusType(noticeTime);
         game.getStatusType(dayTime);
         game.getStatusType(voteTime);
@@ -94,6 +95,8 @@ class StatusTest {
         game.getStatusType(nightTime);
         game.getPlayer(PLAYER1).kill();
         game.getPlayer(PLAYER2).kill();
+        game.getStatusType(nextDay);
+        game.getStatusType(nextNoticeTime);
 
         // when & then
         Assertions.assertThat(game.getStatusType(endTime)).isEqualTo(StatusType.END);
