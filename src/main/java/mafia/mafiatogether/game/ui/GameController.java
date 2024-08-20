@@ -12,22 +12,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/games")
 public class GameController {
 
     private final GameService gameService;
 
-    @GetMapping("/rooms/status")
+    @GetMapping("/status")
     public ResponseEntity<RoomStatusResponse> findStatus(
             @PlayerInfo final PlayerInfoDto playerInfoDto
     ) {
         return ResponseEntity.ok(gameService.findStatus(playerInfoDto.code()));
     }
 
-    @PatchMapping("/rooms/status")
+    @PatchMapping("/status")
     public ResponseEntity<Void> modifyStatus(
             @PlayerInfo final PlayerInfoDto playerInfoDto,
             @RequestBody final RoomModifyRequest request
@@ -37,14 +39,14 @@ public class GameController {
     }
 
 
-    @GetMapping("/rooms/result")
+    @GetMapping("/result")
     public ResponseEntity<RoomResultResponse> findResult(
             @PlayerInfo final PlayerInfoDto playerInfoDto
     ) {
         return ResponseEntity.ok(gameService.findResult(playerInfoDto.code()));
     }
 
-    @GetMapping("/rooms/info")
+    @GetMapping("/info")
     public ResponseEntity<RoomInfoResponse> findRoomInfo(
             @PlayerInfo PlayerInfoDto playerInfoDto
     ) {
