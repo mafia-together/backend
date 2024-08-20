@@ -5,9 +5,9 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.GameException;
-import mafia.mafiatogether.game.application.dto.response.RoomInfoResponse;
-import mafia.mafiatogether.game.application.dto.response.RoomResultResponse;
-import mafia.mafiatogether.game.application.dto.response.RoomStatusResponse;
+import mafia.mafiatogether.game.application.dto.response.GameInfoResponse;
+import mafia.mafiatogether.game.application.dto.response.GameResultResponse;
+import mafia.mafiatogether.game.application.dto.response.GameStatusResponse;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.status.StatusType;
@@ -24,13 +24,13 @@ public class GameService {
     private final GameRepository gameRepository;
 
     @Transactional
-    public RoomStatusResponse findStatus(final String code) {
+    public GameStatusResponse findStatus(final String code) {
         final Optional<Game> game = gameRepository.findById(code);
         if (game.isPresent()) {
-            return new RoomStatusResponse(checkStatusChanged(game.get()));
+            return new GameStatusResponse(checkStatusChanged(game.get()));
         }
         if (lobbyRepository.existsById(code)) {
-            return new RoomStatusResponse(StatusType.WAIT);
+            return new GameStatusResponse(StatusType.WAIT);
         }
         throw new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE);
     }
@@ -58,27 +58,27 @@ public class GameService {
     }
 
     @Transactional(readOnly = true)
-    public RoomInfoResponse findRoomInfo(final String code, final String name) {
+    public GameInfoResponse findGameInfo(final String code, final String name) {
         final Optional<Game> game = gameRepository.findById(code);
         if (!game.isPresent()) {
             return getLobbyInfo(code, name);
         }
-        return RoomInfoResponse.ofGame(game.get(), name);
+        return GameInfoResponse.ofGame(game.get(), name);
     }
 
-    private RoomInfoResponse getLobbyInfo(final String code, final String name) {
+    private GameInfoResponse getLobbyInfo(final String code, final String name) {
         final Lobby lobby = lobbyRepository.findById(code)
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
-        return RoomInfoResponse.ofRoom(lobby, name);
+        return GameInfoResponse.ofLobby(lobby, name);
     }
 
     @Transactional(readOnly = true)
-    public RoomResultResponse findResult(final String code) {
+    public GameResultResponse findResult(final String code) {
         final Game game = gameRepository.findById(code)
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         if (!game.isEnd()) {
             throw new GameException(ExceptionCode.GAME_IS_NOT_FINISHED);
         }
-        return RoomResultResponse.from(game);
+        return GameResultResponse.from(game);
     }
 }

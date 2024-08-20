@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.PlayerInfo;
 import mafia.mafiatogether.game.application.GameService;
 import mafia.mafiatogether.config.PlayerInfoDto;
-import mafia.mafiatogether.game.application.dto.request.RoomModifyRequest;
-import mafia.mafiatogether.game.application.dto.response.RoomInfoResponse;
-import mafia.mafiatogether.game.application.dto.response.RoomResultResponse;
-import mafia.mafiatogether.game.application.dto.response.RoomStatusResponse;
+import mafia.mafiatogether.game.application.dto.request.GameStartRequest;
+import mafia.mafiatogether.game.application.dto.response.GameInfoResponse;
+import mafia.mafiatogether.game.application.dto.response.GameResultResponse;
+import mafia.mafiatogether.game.application.dto.response.GameStatusResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -23,7 +23,7 @@ public class GameController {
     private final GameService gameService;
 
     @GetMapping("/status")
-    public ResponseEntity<RoomStatusResponse> findStatus(
+    public ResponseEntity<GameStatusResponse> findStatus(
             @PlayerInfo final PlayerInfoDto playerInfoDto
     ) {
         return ResponseEntity.ok(gameService.findStatus(playerInfoDto.code()));
@@ -32,7 +32,7 @@ public class GameController {
     @PatchMapping("/status")
     public ResponseEntity<Void> modifyStatus(
             @PlayerInfo final PlayerInfoDto playerInfoDto,
-            @RequestBody final RoomModifyRequest request
+            @RequestBody final GameStartRequest request
     ) {
         gameService.modifyStatus(playerInfoDto.code());
         return ResponseEntity.ok().build();
@@ -40,16 +40,16 @@ public class GameController {
 
 
     @GetMapping("/result")
-    public ResponseEntity<RoomResultResponse> findResult(
+    public ResponseEntity<GameResultResponse> findResult(
             @PlayerInfo final PlayerInfoDto playerInfoDto
     ) {
         return ResponseEntity.ok(gameService.findResult(playerInfoDto.code()));
     }
 
     @GetMapping("/info")
-    public ResponseEntity<RoomInfoResponse> findRoomInfo(
+    public ResponseEntity<GameInfoResponse> findGameInfo(
             @PlayerInfo PlayerInfoDto playerInfoDto
     ) {
-        return ResponseEntity.ok(gameService.findRoomInfo(playerInfoDto.code(), playerInfoDto.name()));
+        return ResponseEntity.ok(gameService.findGameInfo(playerInfoDto.code(), playerInfoDto.name()));
     }
 }

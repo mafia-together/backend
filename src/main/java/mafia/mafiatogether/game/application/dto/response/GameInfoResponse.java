@@ -10,7 +10,7 @@ import mafia.mafiatogether.game.domain.PlayerCollection;
 import mafia.mafiatogether.lobby.domain.ParticipantCollection;
 import mafia.mafiatogether.lobby.domain.Lobby;
 
-public record RoomInfoResponse(
+public record GameInfoResponse(
         Timestamp startTime,
         Timestamp endTime,
         Boolean isAlive,
@@ -19,9 +19,9 @@ public record RoomInfoResponse(
         String myName,
         List<PlayerResponse> players
 ) {
-    public static RoomInfoResponse ofGame(final Game game, final String name) {
+    public static GameInfoResponse ofGame(final Game game, final String name) {
         final Player player = game.getPlayer(name);
-        return new RoomInfoResponse(
+        return new GameInfoResponse(
                 game.getStatus().getStartTime(),
                 game.getStatus().getEndTime(),
                 player.isAlive(),
@@ -32,8 +32,8 @@ public record RoomInfoResponse(
         );
     }
 
-    public static RoomInfoResponse ofRoom(Lobby lobby, String name) {
-        return new RoomInfoResponse(
+    public static GameInfoResponse ofLobby(Lobby lobby, String name) {
+        return new GameInfoResponse(
                 new Timestamp(Clock.systemDefaultZone().millis()),
                 new Timestamp(Clock.systemDefaultZone().millis()),
                 true,

@@ -9,7 +9,7 @@ import mafia.mafiatogether.game.domain.Game;
 public class DeletedStatus extends Status{
 
     @Override
-    public Status getNextStatus(Game room, Long now) {
+    public Status getNextStatus(Game game, Long now) {
         throw new GameException(ExceptionCode.DELETED_STATUS);
     }
 

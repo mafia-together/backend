@@ -2,15 +2,15 @@ package mafia.mafiatogether.game.application.dto.response;
 
 import mafia.mafiatogether.game.domain.Player;
 
-public record RoomResultPlayerDto(
+public record GameResultPlayerDto(
         String name,
         Boolean isAlive,
         String job
 ) {
-    public static RoomResultPlayerDto of(
+    public static GameResultPlayerDto of(
             final Player player
     ) {
-        return new RoomResultPlayerDto(
+        return new GameResultPlayerDto(
                 player.getName(),
                 player.isAlive(),
                 player.getJobType().name()
