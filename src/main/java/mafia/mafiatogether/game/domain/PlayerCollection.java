@@ -7,8 +7,8 @@ import lombok.Getter;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
-import mafia.mafiatogether.room.domain.Participant;
-import mafia.mafiatogether.room.domain.ParticipantCollection;
+import mafia.mafiatogether.lobby.domain.Participant;
+import mafia.mafiatogether.lobby.domain.ParticipantCollection;
 
 @Getter
 @AllArgsConstructor

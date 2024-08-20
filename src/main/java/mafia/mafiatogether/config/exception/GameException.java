@@ -1,8 +1,8 @@
 package mafia.mafiatogether.config.exception;
 
-public class RoomException extends GlobalException{
+public class GameException extends GlobalException{
 
-    public RoomException(final ExceptionCode code) {
+    public GameException(final ExceptionCode code) {
         super(code.getCode(),code.getMessage());
     }
 }

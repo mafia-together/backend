@@ -1,4 +1,4 @@
-package mafia.mafiatogether.room.ui;
+package mafia.mafiatogether.lobby.ui;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -8,11 +8,11 @@ import java.util.stream.Stream;
 import mafia.mafiatogether.config.exception.ErrorResponse;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.global.ControllerTest;
-import mafia.mafiatogether.room.application.dto.request.RoomCreateRequest;
-import mafia.mafiatogether.room.application.dto.response.RoomCodeResponse;
-import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.room.domain.RoomInfo;
-import mafia.mafiatogether.room.domain.RoomRepository;
+import mafia.mafiatogether.lobby.application.dto.request.LobbyCreateRequest;
+import mafia.mafiatogether.lobby.application.dto.response.LobbyCodeResponse;
+import mafia.mafiatogether.lobby.domain.Lobby;
+import mafia.mafiatogether.lobby.domain.LobbyInfo;
+import mafia.mafiatogether.lobby.domain.LobbyRepository;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
@@ -25,36 +25,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 @SuppressWarnings("NonAsciiCharacters")
-class RoomControllerTest extends ControllerTest {
+class LobbyControllerTest extends ControllerTest {
 
     @Autowired
-    private RoomRepository roomRepository;
+    private LobbyRepository lobbyRepository;
 
     @BeforeEach
     void setTest(){
-        final Room room = Room.create(CODE, RoomInfo.of(3,1,1,1));
-        roomRepository.save(room);
+        final Lobby lobby = Lobby.create(CODE, LobbyInfo.of(3,1,1,1));
+        lobbyRepository.save(lobby);
     }
 
     @AfterEach
     void clearTest(){
-        roomRepository.deleteById(CODE);
+        lobbyRepository.deleteById(CODE);
     }
 
     @Test
     void 방을_생성할_수_있다() {
         //given
-        final RoomCreateRequest request = new RoomCreateRequest(5, 1, 1, 1);
+        final LobbyCreateRequest request = new LobbyCreateRequest(5, 1, 1, 1);
 
         //when
-        final RoomCodeResponse response = RestAssured.given().log().all()
+        final LobbyCodeResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
                 .when().post("/rooms")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .as(RoomCodeResponse.class);
+                .as(LobbyCodeResponse.class);
 
         //then
         Assertions.assertThat(response.code()).isNotBlank();
@@ -68,7 +68,7 @@ class RoomControllerTest extends ControllerTest {
             final int mafia
     ) {
         //given
-        final RoomCreateRequest request = new RoomCreateRequest(total, mafia, 1, 1);
+        final LobbyCreateRequest request = new LobbyCreateRequest(total, mafia, 1, 1);
 
         //when
         final ErrorResponse response = RestAssured.given().log().all()
@@ -102,8 +102,8 @@ class RoomControllerTest extends ControllerTest {
                 .statusCode(HttpStatus.OK.value());
 
         //then
-        Room room = roomRepository.findById(CODE).get();
-        List<String> actual = room.getParticipants().getParticipants().stream()
+        Lobby lobby = lobbyRepository.findById(CODE).get();
+        List<String> actual = lobby.getParticipants().getParticipants().stream()
                 .map(participant -> participant.getName())
                 .toList();
         Assertions.assertThat(actual).contains("power");
@@ -127,18 +127,18 @@ class RoomControllerTest extends ControllerTest {
                 .statusCode(HttpStatus.OK.value());
 
         //then
-        String actual = roomRepository.findById(CODE).get().getMaster().getName();
+        String actual = lobbyRepository.findById(CODE).get().getMaster().getName();
         Assertions.assertThat(actual).isEqualTo(expect);
     }
 
     @Test
     void 방이_꽉_차_있을때_참가에_실패한다() {
         //given
-        final Room room = roomRepository.findById(CODE).get();
-        room.joinPlayer("A");
-        room.joinPlayer("C");
-        room.joinPlayer("D");
-        roomRepository.save(room);
+        final Lobby lobby = lobbyRepository.findById(CODE).get();
+        lobby.joinPlayer("A");
+        lobby.joinPlayer("C");
+        lobby.joinPlayer("D");
+        lobbyRepository.save(lobby);
         //when
         final ErrorResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
@@ -155,9 +155,9 @@ class RoomControllerTest extends ControllerTest {
     @Test
     void 방에_이미_존재한느_이름으로_참가할때_참가에_실패한다() {
         //given
-        final Room room = roomRepository.findById(CODE).get();
-        room.joinPlayer("A");
-        roomRepository.save(room);
+        final Lobby lobby = lobbyRepository.findById(CODE).get();
+        lobby.joinPlayer("A");
+        lobbyRepository.save(lobby);
         //when
         final ErrorResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)

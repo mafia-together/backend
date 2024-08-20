@@ -1,4 +1,4 @@
-package mafia.mafiatogether.room.domain;
+package mafia.mafiatogether.lobby.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

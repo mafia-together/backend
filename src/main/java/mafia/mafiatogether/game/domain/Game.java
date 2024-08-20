@@ -15,8 +15,8 @@ import mafia.mafiatogether.game.domain.status.Status;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.job.domain.jobtype.Job;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
-import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.room.domain.RoomInfo;
+import mafia.mafiatogether.lobby.domain.Lobby;
+import mafia.mafiatogether.lobby.domain.LobbyInfo;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.domain.AbstractAggregateRoot;
 import org.springframework.data.redis.core.RedisHash;
@@ -29,21 +29,21 @@ public class Game extends AbstractAggregateRoot<Game> {
     @Id
     private String code;
     private Status status;
-    private RoomInfo roomInfo;
+    private LobbyInfo lobbyInfo;
     private String master;
     private PlayerCollection players;
 
     private transient Status statusSnapshot;
 
-    public static Game create(final Room room, final Long now) {
-        room.validateToStart();
+    public static Game create(final Lobby lobby, final Long now) {
+        lobby.validateToStart();
         final Status status = DayIntroStatus.create(now);
         return new Game(
-                room.getCode(),
+                lobby.getCode(),
                 status,
-                room.getRoomInfo(),
-                room.getMaster().getName(),
-                PlayerCollection.create(room.getParticipants()),
+                lobby.getLobbyInfo(),
+                lobby.getMaster().getName(),
+                PlayerCollection.create(lobby.getParticipants()),
                 status
         );
     }
@@ -53,7 +53,7 @@ public class Game extends AbstractAggregateRoot<Game> {
     }
 
     public void distributeRole() {
-        final Queue<Job> jobs = roomInfo.getRandomJobQueue();
+        final Queue<Job> jobs = lobbyInfo.getRandomJobQueue();
         for (Player player : players.getPlayers()) {
             if (jobs.isEmpty()) {
                 break;

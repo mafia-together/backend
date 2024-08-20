@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.game.domain.PlayerCollection;
-import mafia.mafiatogether.room.domain.ParticipantCollection;
-import mafia.mafiatogether.room.domain.Room;
+import mafia.mafiatogether.lobby.domain.ParticipantCollection;
+import mafia.mafiatogether.lobby.domain.Lobby;
 
 public record RoomInfoResponse(
         Timestamp startTime,
@@ -32,15 +32,15 @@ public record RoomInfoResponse(
         );
     }
 
-    public static RoomInfoResponse ofRoom(Room room, String name) {
+    public static RoomInfoResponse ofRoom(Lobby lobby, String name) {
         return new RoomInfoResponse(
                 new Timestamp(Clock.systemDefaultZone().millis()),
                 new Timestamp(Clock.systemDefaultZone().millis()),
                 true,
-                room.getRoomInfo().getTotal(),
-                room.getMaster().getName().equals(name),
+                lobby.getLobbyInfo().getTotal(),
+                lobby.getMaster().getName().equals(name),
                 name,
-                convertFrom(room.getParticipants())
+                convertFrom(lobby.getParticipants())
         );
     }
 
