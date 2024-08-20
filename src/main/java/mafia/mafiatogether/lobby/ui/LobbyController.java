@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/rooms")
+@RequestMapping("/lobbies")
 public class LobbyController {
 
     private final LobbyService lobbyService;
@@ -52,5 +52,4 @@ public class LobbyController {
     ) {
         return ResponseEntity.ok(lobbyService.validateCode(code));
     }
-
 }
