@@ -31,7 +31,7 @@ class VoteControllerTest extends ControllerTest {
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
                 .body(Map.of("target", expect))
-                .when().post("/vote")
+                .when().post("/votes")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
@@ -49,7 +49,7 @@ class VoteControllerTest extends ControllerTest {
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
                 .body(Map.of("target", ""))
-                .when().post("/vote")
+                .when().post("/votes")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
@@ -72,7 +72,7 @@ class VoteControllerTest extends ControllerTest {
         final VoteResultResponse voteResultResponse = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/vote")
+                .when().get("/votes")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -88,7 +88,7 @@ class VoteControllerTest extends ControllerTest {
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
                 .body(Map.of("target", target))
-                .when().post("/vote")
+                .when().post("/votes")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }

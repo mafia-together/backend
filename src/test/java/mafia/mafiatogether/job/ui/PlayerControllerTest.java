@@ -50,7 +50,7 @@ class PlayerControllerTest extends ControllerTest {
                 .contentType(ContentType.JSON)
                 .body(Map.of("target", CITIZEN))
                 .header("Authorization", "Basic " + basic)
-                .when().post("/players/skill")
+                .when().post("/jobs/skill")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
 
@@ -67,7 +67,7 @@ class PlayerControllerTest extends ControllerTest {
         final String actual = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/players/skill")
+                .when().get("/jobs/skill")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -98,7 +98,7 @@ class PlayerControllerTest extends ControllerTest {
                 .contentType(ContentType.JSON)
                 .body(Map.of("target", target))
                 .header("Authorization", "Basic " + basic)
-                .when().post("/players/skill")
+                .when().post("/jobs/skill")
                 .then().log().all();
     }
 
@@ -113,7 +113,7 @@ class PlayerControllerTest extends ControllerTest {
                 .contentType(ContentType.JSON)
                 .body(Map.of("target", target))
                 .header("Authorization", "Basic " + basic)
-                .when().post("/players/skill")
+                .when().post("/jobs/skill")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("errorCode", equalTo(ExceptionCode.INVALID_PLAYER.getCode()));
@@ -128,7 +128,7 @@ class PlayerControllerTest extends ControllerTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/players/my/job")
+                .when().get("/jobs/my")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("job", equalTo("CITIZEN"));

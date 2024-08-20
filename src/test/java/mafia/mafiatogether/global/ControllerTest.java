@@ -72,7 +72,7 @@ public abstract class ControllerTest {
                 .contentType(ContentType.JSON)
                 .body(Map.of("statusType", StatusType.DAY_INTRO))
                 .header("Authorization", "Basic " + basic)
-                .when().patch("/rooms/status")
+                .when().patch("/games/status")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
         final PlayerCollection players = gameRepository.findById(CODE).get().getPlayers();

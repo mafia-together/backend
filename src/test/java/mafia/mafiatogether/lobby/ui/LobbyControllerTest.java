@@ -50,7 +50,7 @@ class LobbyControllerTest extends ControllerTest {
         final LobbyCodeResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/rooms")
+                .when().post("/lobbies")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
@@ -74,7 +74,7 @@ class LobbyControllerTest extends ControllerTest {
         final ErrorResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(request)
-                .when().post("/rooms")
+                .when().post("/lobbies")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .extract()
@@ -97,7 +97,7 @@ class LobbyControllerTest extends ControllerTest {
         //when
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/rooms?code=" + CODE + "&name=power")
+                .when().get("/lobbies?code=" + CODE + "&name=power")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
 
@@ -117,12 +117,12 @@ class LobbyControllerTest extends ControllerTest {
         //when
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/rooms?code=" + CODE + "&name=" + expect)
+                .when().get("/lobbies?code=" + CODE + "&name=" + expect)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/rooms?code=" + CODE + "&name=not_master")
+                .when().get("/lobbies?code=" + CODE + "&name=not_master")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
 
@@ -142,7 +142,7 @@ class LobbyControllerTest extends ControllerTest {
         //when
         final ErrorResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/rooms?code=" + CODE + "&name=E")
+                .when().get("/lobbies?code=" + CODE + "&name=E")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .extract()
@@ -161,7 +161,7 @@ class LobbyControllerTest extends ControllerTest {
         //when
         final ErrorResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/rooms?code=" + CODE + "&name=A")
+                .when().get("/lobbies?code=" + CODE + "&name=A")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .extract()
@@ -180,7 +180,7 @@ class LobbyControllerTest extends ControllerTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/rooms/code")
+                .when().get("/lobbies/code")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("code", Matchers.equalTo(CODE));
@@ -191,7 +191,7 @@ class LobbyControllerTest extends ControllerTest {
         // when & then
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .when().get("/rooms/code/exist?code=" + CODE)
+                .when().get("/lobbies/code/exist?code=" + CODE)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("exist", Matchers.equalTo(true));
