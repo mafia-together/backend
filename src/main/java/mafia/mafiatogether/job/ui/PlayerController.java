@@ -13,20 +13,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/jobs")
 public class PlayerController {
 
     private final PlayerService playerService;
 
-    @GetMapping("/players/my/job")
+    @GetMapping("/my")
     public ResponseEntity<JobResponse> getJob(@PlayerInfo PlayerInfoDto playerInfoDto) {
         return ResponseEntity.ok(playerService.getPlayerJob(playerInfoDto.code(), playerInfoDto.name()));
     }
 
-    @PostMapping("/players/skill")
+    @PostMapping("/skill")
     public ResponseEntity<PlayerExecuteAbilityResponse> executeSkill(
             @PlayerInfo PlayerInfoDto playerInfoDto,
             @RequestBody PlayerExecuteAbilityRequest request
@@ -38,7 +40,7 @@ public class PlayerController {
         ));
     }
 
-    @GetMapping("/players/skill")
+    @GetMapping("/skill")
     public ResponseEntity<MafiaTargetResponse> getTarget(
             @PlayerInfo PlayerInfoDto playerInfoDto
     ) {
@@ -50,7 +52,7 @@ public class PlayerController {
 
 
     // job
-    @GetMapping("/rooms/night/result")
+    @GetMapping("/jobs/skill/result")
     public ResponseEntity<RoomNightResultResponse> findNightResult(
             @PlayerInfo final PlayerInfoDto playerInfoDto
     ) {
