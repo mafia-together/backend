@@ -3,12 +3,12 @@ package mafia.mafiatogether.job.ui;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.PlayerInfo;
 import mafia.mafiatogether.config.PlayerInfoDto;
-import mafia.mafiatogether.job.application.PlayerService;
-import mafia.mafiatogether.job.application.dto.request.PlayerExecuteAbilityRequest;
+import mafia.mafiatogether.job.application.JobService;
+import mafia.mafiatogether.job.application.dto.request.JobExecuteAbilityRequest;
 import mafia.mafiatogether.job.application.dto.response.JobResponse;
 import mafia.mafiatogether.job.application.dto.response.MafiaTargetResponse;
-import mafia.mafiatogether.job.application.dto.response.PlayerExecuteAbilityResponse;
-import mafia.mafiatogether.job.application.dto.response.RoomNightResultResponse;
+import mafia.mafiatogether.job.application.dto.response.JobExecuteAbilityResponse;
+import mafia.mafiatogether.job.application.dto.response.JobResultResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,21 +19,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/jobs")
-public class PlayerController {
+public class JobController {
 
-    private final PlayerService playerService;
+    private final JobService jobService;
 
     @GetMapping("/my")
     public ResponseEntity<JobResponse> getJob(@PlayerInfo PlayerInfoDto playerInfoDto) {
-        return ResponseEntity.ok(playerService.getPlayerJob(playerInfoDto.code(), playerInfoDto.name()));
+        return ResponseEntity.ok(jobService.getPlayerJob(playerInfoDto.code(), playerInfoDto.name()));
     }
 
     @PostMapping("/skill")
-    public ResponseEntity<PlayerExecuteAbilityResponse> executeSkill(
+    public ResponseEntity<JobExecuteAbilityResponse> executeSkill(
             @PlayerInfo PlayerInfoDto playerInfoDto,
-            @RequestBody PlayerExecuteAbilityRequest request
+            @RequestBody JobExecuteAbilityRequest request
     ) {
-        return ResponseEntity.ok(playerService.executeSkill(
+        return ResponseEntity.ok(jobService.executeSkill(
                 playerInfoDto.code(),
                 playerInfoDto.name(),
                 request
@@ -44,7 +44,7 @@ public class PlayerController {
     public ResponseEntity<MafiaTargetResponse> getTarget(
             @PlayerInfo PlayerInfoDto playerInfoDto
     ) {
-        return ResponseEntity.ok(playerService.getTarget(
+        return ResponseEntity.ok(jobService.getTarget(
                 playerInfoDto.code(),
                 playerInfoDto.name()
         ));
@@ -53,9 +53,9 @@ public class PlayerController {
 
     // job
     @GetMapping("/jobs/skill/result")
-    public ResponseEntity<RoomNightResultResponse> findNightResult(
+    public ResponseEntity<JobResultResponse> findNightResult(
             @PlayerInfo final PlayerInfoDto playerInfoDto
     ) {
-        return ResponseEntity.ok(playerService.findJobResult(playerInfoDto.code()));
+        return ResponseEntity.ok(jobService.findJobResult(playerInfoDto.code()));
     }
 }

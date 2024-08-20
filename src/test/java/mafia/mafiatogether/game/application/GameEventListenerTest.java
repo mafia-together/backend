@@ -9,8 +9,8 @@ import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.global.ControllerTest;
-import mafia.mafiatogether.job.application.PlayerService;
-import mafia.mafiatogether.job.application.dto.request.PlayerExecuteAbilityRequest;
+import mafia.mafiatogether.job.application.JobService;
+import mafia.mafiatogether.job.application.dto.request.JobExecuteAbilityRequest;
 import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobTargetRepository;
 import mafia.mafiatogether.job.domain.PlayerJob;
@@ -42,7 +42,7 @@ class GameEventListenerTest extends ControllerTest {
     private LobbyRepository lobbyRepository;
 
     @Autowired
-    private PlayerService playerService;
+    private JobService jobService;
 
     @Autowired
     private JobTargetRepository jobTargetRepository;
@@ -114,7 +114,7 @@ class GameEventListenerTest extends ControllerTest {
         gameRepository.save(game);
 
         // when
-        playerService.executeSkill(CODE, mafia, new PlayerExecuteAbilityRequest(target));
+        jobService.executeSkill(CODE, mafia, new JobExecuteAbilityRequest(target));
         game = gameRepository.findById(CODE).get();
         game.skipStatus(Clock.systemDefaultZone().millis()); // DAY_INTRO
         gameRepository.save(game);
@@ -144,8 +144,8 @@ class GameEventListenerTest extends ControllerTest {
         gameRepository.save(game);
 
         // when
-        playerService.executeSkill(CODE, mafia, new PlayerExecuteAbilityRequest(target));
-        playerService.executeSkill(CODE, doctor, new PlayerExecuteAbilityRequest(target));
+        jobService.executeSkill(CODE, mafia, new JobExecuteAbilityRequest(target));
+        jobService.executeSkill(CODE, doctor, new JobExecuteAbilityRequest(target));
         game = gameRepository.findById(CODE).get();
         game.skipStatus(Clock.systemDefaultZone().millis()); // DAY_INTRO
         gameRepository.save(game);
@@ -167,7 +167,7 @@ class GameEventListenerTest extends ControllerTest {
         game.skipStatus(Clock.systemDefaultZone().millis());// NIGHT_INTRO
         game.skipStatus(Clock.systemDefaultZone().millis());// NIGHT
         gameRepository.save(game);
-        playerService.executeSkill(CODE, mafia, new PlayerExecuteAbilityRequest(PLAYER1_NAME));
+        jobService.executeSkill(CODE, mafia, new JobExecuteAbilityRequest(PLAYER1_NAME));
         game.skipStatus(Clock.systemDefaultZone().millis());// DAY_INTRO
         game.skipStatus(Clock.systemDefaultZone().millis());// NOTICE
         gameRepository.save(game);

@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 @SuppressWarnings("NonAsciiCharacters")
-class PlayerControllerTest extends ControllerTest {
+class JobControllerTest extends ControllerTest {
 
     @Autowired
     private JobTargetRepository jobTargetRepository;

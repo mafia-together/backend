@@ -4,11 +4,11 @@ import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.PlayerException;
 import mafia.mafiatogether.config.exception.GameException;
-import mafia.mafiatogether.job.application.dto.request.PlayerExecuteAbilityRequest;
+import mafia.mafiatogether.job.application.dto.request.JobExecuteAbilityRequest;
 import mafia.mafiatogether.job.application.dto.response.JobResponse;
 import mafia.mafiatogether.job.application.dto.response.MafiaTargetResponse;
-import mafia.mafiatogether.job.application.dto.response.PlayerExecuteAbilityResponse;
-import mafia.mafiatogether.job.application.dto.response.RoomNightResultResponse;
+import mafia.mafiatogether.job.application.dto.response.JobExecuteAbilityResponse;
+import mafia.mafiatogether.job.application.dto.response.JobResultResponse;
 import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobTargetRepository;
 import mafia.mafiatogether.job.domain.PlayerJob;
@@ -19,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-public class PlayerService {
+public class JobService {
 
     private final JobTargetRepository jobTargetRepository;
     private final PlayerJobRepository playerJobRepository;
@@ -32,10 +32,10 @@ public class PlayerService {
     }
 
     @Transactional
-    public PlayerExecuteAbilityResponse executeSkill(
+    public JobExecuteAbilityResponse executeSkill(
             final String code,
             final String name,
-            final PlayerExecuteAbilityRequest request
+            final JobExecuteAbilityRequest request
     ) {
         final JobTarget jobTarget = jobTargetRepository.findById(code)
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
@@ -47,7 +47,7 @@ public class PlayerService {
                 request.target());
         jobTarget.addJobTarget(requestJob.getJobType(), request.target());
         jobTargetRepository.save(jobTarget);
-        return new PlayerExecuteAbilityResponse(requestJob.getJobType().name(), result);
+        return new JobExecuteAbilityResponse(requestJob.getJobType().name(), result);
     }
 
     private void validateTarget(final PlayerJob playerJob, String target) {
@@ -72,10 +72,10 @@ public class PlayerService {
     }
 
     @Transactional(readOnly = true)
-    public RoomNightResultResponse findJobResult(final String code) {
+    public JobResultResponse findJobResult(final String code) {
         final JobTarget jobTarget = jobTargetRepository.findById(code)
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_PLAYER));
         final String target = jobTarget.findTarget();
-        return new RoomNightResultResponse(target);
+        return new JobResultResponse(target);
     }
 }

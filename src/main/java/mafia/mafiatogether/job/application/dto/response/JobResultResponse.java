@@ -1,6 +1,6 @@
 package mafia.mafiatogether.job.application.dto.response;
 
-public record RoomNightResultResponse(
+public record JobResultResponse(
     String dead
 ) {
 }

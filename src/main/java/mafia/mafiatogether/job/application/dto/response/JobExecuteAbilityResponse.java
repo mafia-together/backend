@@ -1,6 +1,6 @@
 package mafia.mafiatogether.job.application.dto.response;
 
-public record PlayerExecuteAbilityResponse(
+public record JobExecuteAbilityResponse(
         String job,
         String result
 ) {
