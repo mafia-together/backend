@@ -1,7 +1,6 @@
 package mafia.mafiatogether.room.domain;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import java.time.Instant;
 import lombok.Getter;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.config.exception.RoomException;
@@ -10,7 +9,6 @@ import org.springframework.data.redis.core.RedisHash;
 
 @Getter
 @RedisHash("room")
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Room {
 
     @Id
@@ -18,8 +16,22 @@ public class Room {
     private ParticipantCollection participants;
     private RoomInfo roomInfo;
     private Participant master;
+    private Long lastUpdateTime;
 
-    public Room(){
+    private Room(
+            final String code,
+            final ParticipantCollection participants,
+            final RoomInfo roomInfo,
+            final Participant master
+    ) {
+        this.code = code;
+        this.participants = participants;
+        this.roomInfo = roomInfo;
+        this.master = master;
+        this.lastUpdateTime = Instant.now().getEpochSecond();
+    }
+
+    public Room() {
         this.participants = new ParticipantCollection();
     }
 
@@ -53,5 +65,9 @@ public class Room {
         if (roomInfo.getTotal() != participants.size()) {
             throw new RoomException(ExceptionCode.NOT_ENOUGH_PLAYER);
         }
+    }
+
+    public void updateTimeNow() {
+        this.lastUpdateTime = Instant.now().getEpochSecond();
     }
 }

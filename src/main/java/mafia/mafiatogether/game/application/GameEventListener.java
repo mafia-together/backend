@@ -18,10 +18,12 @@ import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.game.domain.status.StatusType;
-import mafia.mafiatogether.job.domain.PlayerJob;
-import mafia.mafiatogether.job.domain.PlayerJobRepository;
 import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobTargetRepository;
+import mafia.mafiatogether.job.domain.PlayerJob;
+import mafia.mafiatogether.job.domain.PlayerJobRepository;
+import mafia.mafiatogether.room.domain.Room;
+import mafia.mafiatogether.room.domain.RoomRepository;
 import mafia.mafiatogether.vote.application.dto.event.AllPlayerVotedEvent;
 import mafia.mafiatogether.vote.domain.Vote;
 import mafia.mafiatogether.vote.domain.VoteRepository;
@@ -34,6 +36,7 @@ public class GameEventListener {
 
     private final GameRepository gameRepository;
     private final VoteRepository voteRepository;
+    private final RoomRepository roomRepository;
     private final JobTargetRepository jobTargetRepository;
     private final PlayerJobRepository playerJobRepository;
     private final ChatRepository chatRepository;
@@ -98,6 +101,10 @@ public class GameEventListener {
         chatRepository.deleteById(deleteGameEvent.getCode());
         voteRepository.deleteById(deleteGameEvent.getCode());
         gameRepository.deleteById(deleteGameEvent.getCode());
+
+        final Room room = roomRepository.findById(deleteGameEvent.getCode())
+                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+        room.updateTimeNow();
     }
 
     @EventListener
