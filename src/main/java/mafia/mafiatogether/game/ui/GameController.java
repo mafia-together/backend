@@ -4,14 +4,12 @@ import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.PlayerInfo;
 import mafia.mafiatogether.game.application.GameService;
 import mafia.mafiatogether.config.PlayerInfoDto;
-import mafia.mafiatogether.game.application.dto.request.GameStartRequest;
 import mafia.mafiatogether.game.application.dto.response.GameInfoResponse;
 import mafia.mafiatogether.game.application.dto.response.GameResultResponse;
 import mafia.mafiatogether.game.application.dto.response.GameStatusResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,15 +27,13 @@ public class GameController {
         return ResponseEntity.ok(gameService.findStatus(playerInfoDto.code()));
     }
 
-    @PatchMapping("/status")
-    public ResponseEntity<Void> modifyStatus(
-            @PlayerInfo final PlayerInfoDto playerInfoDto,
-            @RequestBody final GameStartRequest request
+    @PostMapping("/start")
+    public ResponseEntity<Void> startGame(
+            @PlayerInfo final PlayerInfoDto playerInfoDto
     ) {
-        gameService.modifyStatus(playerInfoDto.code());
+        gameService.startGame(playerInfoDto.code());
         return ResponseEntity.ok().build();
     }
-
 
     @GetMapping("/result")
     public ResponseEntity<GameResultResponse> findResult(

@@ -88,7 +88,7 @@ class GameControllerTest extends ControllerTest {
                 .contentType(ContentType.JSON)
                 .body(Map.of("statusType", StatusType.DAY_INTRO))
                 .header("Authorization", "Basic " + basic)
-                .when().patch("/games/status")
+                .when().post("/games/start")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .extract()

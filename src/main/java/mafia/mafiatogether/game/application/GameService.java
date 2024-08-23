@@ -49,7 +49,7 @@ public class GameService {
     }
 
     @Transactional
-    public void modifyStatus(final String code) {
+    public void startGame(final String code) {
         final Lobby lobby = lobbyRepository.findById(code)
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         Game game = Game.create(lobby, Clock.systemDefaultZone().millis());
