@@ -1,6 +1,6 @@
 package mafia.mafiatogether.room.application;
 
-import java.time.Instant;
+import java.time.Clock;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.room.domain.Room;
 import mafia.mafiatogether.room.domain.RoomRepository;
@@ -17,7 +17,8 @@ public class RoomRemoveService {
     @Scheduled(cron = "0 */10 * * * *")
     public void remove() {
         for (Room room : roomRepository.findAll()) {
-            if (Instant.now().getEpochSecond() - room.getLastUpdateTime() > ONE_HOUR) {
+
+            if (Clock.systemDefaultZone().millis() - room.getLastUpdateTime() > ONE_HOUR) {
                 roomRepository.delete(room);
             }
         }
