@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.chat.domain.Chat;
 import mafia.mafiatogether.chat.domain.ChatRepository;
 import mafia.mafiatogether.config.exception.ExceptionCode;
-import mafia.mafiatogether.config.exception.RoomException;
+import mafia.mafiatogether.config.exception.GameException;
 import mafia.mafiatogether.game.application.dto.event.ClearJobTargetEvent;
 import mafia.mafiatogether.game.application.dto.event.ClearVoteEvent;
 import mafia.mafiatogether.game.application.dto.event.DeleteGameEvent;
@@ -41,9 +41,9 @@ public class GameEventListener {
     @EventListener
     public void listenVoteExecuteEvent(final VoteExecuteEvent voteExecuteEvent) {
         final Game game = gameRepository.findById(voteExecuteEvent.getCode())
-                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+                .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         final Vote vote = voteRepository.findById(voteExecuteEvent.getCode())
-                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+                .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         final String target = vote.countVotes();
         game.executeTarget(target);
         gameRepository.save(game);
@@ -52,7 +52,7 @@ public class GameEventListener {
     @EventListener
     public void listenClearVoteEvent(final ClearVoteEvent clearVoteEvent) {
         final Vote vote = voteRepository.findById(clearVoteEvent.getCode())
-                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+                .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         vote.clearVoteTargets();
         voteRepository.save(vote);
     }
@@ -60,9 +60,9 @@ public class GameEventListener {
     @EventListener
     public void listenJobExecuteEvent(final JobExecuteEvent jobExecuteEvent) {
         final Game game = gameRepository.findById(jobExecuteEvent.getCode())
-                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+                .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         final JobTarget jobTarget = jobTargetRepository.findById(jobExecuteEvent.getCode())
-                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+                .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         final String target = jobTarget.findTarget();
         game.executeTarget(target);
         gameRepository.save(game);
@@ -71,7 +71,7 @@ public class GameEventListener {
     @EventListener
     public void listenClearJobTargetEvent(final ClearJobTargetEvent clearJobTargetEvent) {
         final JobTarget jobTarget = jobTargetRepository.findById(clearJobTargetEvent.getCode())
-                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+                .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         jobTarget.clearJobTargets();
         jobTargetRepository.save(jobTarget);
     }
@@ -103,12 +103,12 @@ public class GameEventListener {
     @EventListener
     public void listenAllPlayerVoteEvent(final AllPlayerVotedEvent allPlayerVotedEvent) {
         final Game game = gameRepository.findById(allPlayerVotedEvent.getCode())
-                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+                .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         if (!game.getStatus().getType().equals(StatusType.DAY)) {
             return;
         }
         final Vote vote = voteRepository.findById(allPlayerVotedEvent.getCode())
-                .orElseThrow(() -> new RoomException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
+                .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         if (game.getAlivePlayerCount() == vote.getVotedCount()) {
             game.skipStatus(Clock.systemDefaultZone().millis());
             gameRepository.save(game);

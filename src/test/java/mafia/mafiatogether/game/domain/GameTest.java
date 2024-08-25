@@ -7,8 +7,8 @@ import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
-import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.room.domain.RoomInfo;
+import mafia.mafiatogether.lobby.domain.Lobby;
+import mafia.mafiatogether.lobby.domain.LobbyInfo;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -17,13 +17,13 @@ class GameTest {
     @Test
     void 직업을_배정할_수_있다() {
         //given
-        Room room = Room.create(new RoomInfo(5, 2, 0, 1));
-        room.joinPlayer("A");
-        room.joinPlayer("B");
-        room.joinPlayer("C");
-        room.joinPlayer("D");
-        room.joinPlayer("E");
-        Game game = Game.create(room, Clock.systemDefaultZone().millis());
+        Lobby lobby = Lobby.create(new LobbyInfo(5, 2, 0, 1));
+        lobby.joinPlayer("A");
+        lobby.joinPlayer("B");
+        lobby.joinPlayer("C");
+        lobby.joinPlayer("D");
+        lobby.joinPlayer("E");
+        Game game = Game.create(lobby, Clock.systemDefaultZone().millis());
 
         Player a = game.getPlayer("A");
         Player b = game.getPlayer("B");

@@ -12,7 +12,7 @@ public abstract class Status {
     protected Long startTime;
     protected Long endTime;
 
-    public abstract Status getNextStatus(final Game room, final Long now);
+    public abstract Status getNextStatus(final Game game, final Long now);
 
     public abstract StatusType getType();
 
