@@ -50,7 +50,7 @@ public class JobController {
         ));
     }
 
-    @GetMapping("/jobs/skill/result")
+    @GetMapping("/skill/result")
     public ResponseEntity<JobResultResponse> findNightResult(
             @PlayerInfo final PlayerInfoDto playerInfoDto
     ) {
