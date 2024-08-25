@@ -24,10 +24,14 @@ public class LobbyInfo {
     private final int police;
 
     public static LobbyInfo of(final int total, final int mafia, final int doctor, final int police) {
-        if (total / 2 < mafia || total < 3 || mafia == 0) {
+        if (isInvalidJobBalance(total, mafia)) {
             throw new GameException(ExceptionCode.INVALID_ROOM_INFORMATION);
         }
         return new LobbyInfo(total, mafia, doctor, police);
+    }
+
+    private static boolean isInvalidJobBalance(int total, int mafia) {
+        return total / 2 < mafia || total < 3 || mafia == 0;
     }
 
     public Queue<Job> getRandomJobQueue() {
