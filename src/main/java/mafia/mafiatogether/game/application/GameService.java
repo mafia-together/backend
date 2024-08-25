@@ -52,7 +52,7 @@ public class GameService {
     public void startGame(final String code) {
         final Lobby lobby = lobbyRepository.findById(code)
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
-        Game game = Game.create(lobby, Clock.systemDefaultZone().millis());
+        final Game game = Game.create(lobby, Clock.systemDefaultZone().millis());
         game.distributeRole();
         gameRepository.save(game);
     }
