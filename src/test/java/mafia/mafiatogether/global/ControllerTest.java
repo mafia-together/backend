@@ -8,9 +8,9 @@ import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.PlayerCollection;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
-import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.room.domain.RoomInfo;
-import mafia.mafiatogether.room.domain.RoomRepository;
+import mafia.mafiatogether.lobby.domain.Lobby;
+import mafia.mafiatogether.lobby.domain.LobbyInfo;
+import mafia.mafiatogether.lobby.domain.LobbyRepository;
 import mafia.mafiatogether.vote.domain.VoteRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +29,7 @@ public abstract class ControllerTest {
     private int port;
 
     @Autowired
-    protected RoomRepository roomRepository;
+    protected LobbyRepository lobbyRepository;
 
     @Autowired
     protected GameRepository gameRepository;
@@ -55,24 +55,24 @@ public abstract class ControllerTest {
     }
 
     protected void setRoom() {
-        final Room room = Room.create(CODE, RoomInfo.of(5, 2, 1, 1));
-        room.joinPlayer(PLAYER1_NAME);
-        room.joinPlayer(PLAYER2_NAME);
-        room.joinPlayer(PLAYER3_NAME);
-        room.joinPlayer(PLAYER4_NAME);
-        roomRepository.save(room);
+        final Lobby lobby = Lobby.create(CODE, LobbyInfo.of(5, 2, 1, 1));
+        lobby.joinPlayer(PLAYER1_NAME);
+        lobby.joinPlayer(PLAYER2_NAME);
+        lobby.joinPlayer(PLAYER3_NAME);
+        lobby.joinPlayer(PLAYER4_NAME);
+        lobbyRepository.save(lobby);
     }
 
     protected void setGame() {
-        Room room = roomRepository.findById(CODE).get();
-        room.joinPlayer(PLAYER5_NAME);
-        roomRepository.save(room);
+        Lobby lobby = lobbyRepository.findById(CODE).get();
+        lobby.joinPlayer(PLAYER5_NAME);
+        lobbyRepository.save(lobby);
         String basic = Base64.getEncoder().encodeToString((CODE + ":" + "player1").getBytes());
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .body(Map.of("statusType", StatusType.DAY_INTRO))
                 .header("Authorization", "Basic " + basic)
-                .when().patch("/rooms/status")
+                .when().post("/games/start")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
         final PlayerCollection players = gameRepository.findById(CODE).get().getPlayers();

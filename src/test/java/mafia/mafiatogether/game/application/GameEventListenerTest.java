@@ -9,16 +9,16 @@ import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.global.ControllerTest;
-import mafia.mafiatogether.job.application.PlayerService;
-import mafia.mafiatogether.job.application.dto.request.PlayerExecuteAbilityRequest;
+import mafia.mafiatogether.job.application.JobService;
+import mafia.mafiatogether.job.application.dto.request.JobExecuteAbilityRequest;
 import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobTargetRepository;
 import mafia.mafiatogether.job.domain.PlayerJob;
 import mafia.mafiatogether.job.domain.PlayerJobRepository;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
-import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.room.domain.RoomInfo;
-import mafia.mafiatogether.room.domain.RoomRepository;
+import mafia.mafiatogether.lobby.domain.Lobby;
+import mafia.mafiatogether.lobby.domain.LobbyInfo;
+import mafia.mafiatogether.lobby.domain.LobbyRepository;
 import mafia.mafiatogether.vote.application.VoteService;
 import mafia.mafiatogether.vote.domain.VoteRepository;
 import org.assertj.core.api.Assertions;
@@ -39,10 +39,10 @@ class GameEventListenerTest extends ControllerTest {
     private VoteRepository voteRepository;
 
     @Autowired
-    private RoomRepository roomRepository;
+    private LobbyRepository lobbyRepository;
 
     @Autowired
-    private PlayerService playerService;
+    private JobService jobService;
 
     @Autowired
     private JobTargetRepository jobTargetRepository;
@@ -64,14 +64,14 @@ class GameEventListenerTest extends ControllerTest {
 
     @BeforeEach
     void setTest() {
-        Room room = Room.create(CODE, RoomInfo.of(5, 2, 1, 1));
-        room.joinPlayer(PLAYER1_NAME);
-        room.joinPlayer(PLAYER2_NAME);
-        room.joinPlayer(PLAYER3_NAME);
-        room.joinPlayer(PLAYER4_NAME);
-        room.joinPlayer(PLAYER5_NAME);
-        roomRepository.save(room);
-        game = Game.create(room, Clock.systemDefaultZone().millis());
+        Lobby lobby = Lobby.create(CODE, LobbyInfo.of(5, 2, 1, 1));
+        lobby.joinPlayer(PLAYER1_NAME);
+        lobby.joinPlayer(PLAYER2_NAME);
+        lobby.joinPlayer(PLAYER3_NAME);
+        lobby.joinPlayer(PLAYER4_NAME);
+        lobby.joinPlayer(PLAYER5_NAME);
+        lobbyRepository.save(lobby);
+        game = Game.create(lobby, Clock.systemDefaultZone().millis());
         game.distributeRole();
         gameRepository.save(game);
     }
@@ -114,7 +114,7 @@ class GameEventListenerTest extends ControllerTest {
         gameRepository.save(game);
 
         // when
-        playerService.executeSkill(CODE, mafia, new PlayerExecuteAbilityRequest(target));
+        jobService.executeSkill(CODE, mafia, new JobExecuteAbilityRequest(target));
         game = gameRepository.findById(CODE).get();
         game.skipStatus(Clock.systemDefaultZone().millis()); // DAY_INTRO
         gameRepository.save(game);
@@ -144,8 +144,8 @@ class GameEventListenerTest extends ControllerTest {
         gameRepository.save(game);
 
         // when
-        playerService.executeSkill(CODE, mafia, new PlayerExecuteAbilityRequest(target));
-        playerService.executeSkill(CODE, doctor, new PlayerExecuteAbilityRequest(target));
+        jobService.executeSkill(CODE, mafia, new JobExecuteAbilityRequest(target));
+        jobService.executeSkill(CODE, doctor, new JobExecuteAbilityRequest(target));
         game = gameRepository.findById(CODE).get();
         game.skipStatus(Clock.systemDefaultZone().millis()); // DAY_INTRO
         gameRepository.save(game);
@@ -167,7 +167,7 @@ class GameEventListenerTest extends ControllerTest {
         game.skipStatus(Clock.systemDefaultZone().millis());// NIGHT_INTRO
         game.skipStatus(Clock.systemDefaultZone().millis());// NIGHT
         gameRepository.save(game);
-        playerService.executeSkill(CODE, mafia, new PlayerExecuteAbilityRequest(PLAYER1_NAME));
+        jobService.executeSkill(CODE, mafia, new JobExecuteAbilityRequest(PLAYER1_NAME));
         game.skipStatus(Clock.systemDefaultZone().millis());// DAY_INTRO
         game.skipStatus(Clock.systemDefaultZone().millis());// NOTICE
         gameRepository.save(game);

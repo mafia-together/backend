@@ -14,8 +14,8 @@ import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.global.ControllerTest;
 import mafia.mafiatogether.game.application.dto.response.PlayerResponse;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
-import mafia.mafiatogether.game.application.dto.response.RoomInfoResponse;
-import mafia.mafiatogether.game.application.dto.response.RoomStatusResponse;
+import mafia.mafiatogether.game.application.dto.response.GameInfoResponse;
+import mafia.mafiatogether.game.application.dto.response.GameStatusResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,14 +35,14 @@ class GameControllerTest extends ControllerTest {
         final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
 
         //when
-        final RoomStatusResponse response = RestAssured.given().log().all()
+        final GameStatusResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/rooms/status")
+                .when().get("/games/status")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .as(RoomStatusResponse.class);
+                .as(GameStatusResponse.class);
 
         //then
         Assertions.assertThat(response.statusType()).isEqualTo(StatusType.WAIT);
@@ -55,14 +55,14 @@ class GameControllerTest extends ControllerTest {
         setGame();
 
         //when
-        final RoomStatusResponse response = RestAssured.given().log().all()
+        final GameStatusResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/rooms/status")
+                .when().get("/games/status")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .as(RoomStatusResponse.class);
+                .as(GameStatusResponse.class);
 
         //then
         Assertions.assertThat(response.statusType()).isEqualTo(StatusType.DAY_INTRO);
@@ -88,7 +88,7 @@ class GameControllerTest extends ControllerTest {
                 .contentType(ContentType.JSON)
                 .body(Map.of("statusType", StatusType.DAY_INTRO))
                 .header("Authorization", "Basic " + basic)
-                .when().patch("/rooms/status")
+                .when().post("/games/start")
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .extract()
@@ -104,14 +104,14 @@ class GameControllerTest extends ControllerTest {
         final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
 
         // when
-        final RoomInfoResponse response = RestAssured.given().log().all()
+        final GameInfoResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/rooms/info")
+                .when().get("/games/info")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .as(RoomInfoResponse.class);
+                .as(GameInfoResponse.class);
 
         /// then
         assertSoftly(
@@ -131,14 +131,14 @@ class GameControllerTest extends ControllerTest {
         final String basic = Base64.getEncoder().encodeToString((CODE + ":" + citizen.getName()).getBytes());
 
         // when & then
-        final RoomInfoResponse response = RestAssured.given().log().all()
+        final GameInfoResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/rooms/info")
+                .when().get("/games/info")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .as(RoomInfoResponse.class);
+                .as(GameInfoResponse.class);
 
         PlayerResponse power = response.players()
                 .stream().filter(player -> player.name().equals(citizen.getName()))
@@ -173,14 +173,14 @@ class GameControllerTest extends ControllerTest {
         final String basic = Base64.getEncoder().encodeToString((CODE + ":" + citizen.getName()).getBytes());
 
         // when & then
-        final RoomInfoResponse response = RestAssured.given().log().all()
+        final GameInfoResponse response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/rooms/info")
+                .when().get("/games/info")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .as(RoomInfoResponse.class);
+                .as(GameInfoResponse.class);
 
         assertSoftly(
                 softly -> {
@@ -225,16 +225,16 @@ class GameControllerTest extends ControllerTest {
     }
 
     private long countMafiaResponse(final String basic) {
-        final RoomInfoResponse roomInfoResponse = RestAssured.given().log().all()
+        final GameInfoResponse gameInfoResponse = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/rooms/info")
+                .when().get("/games/info")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .extract()
-                .as(RoomInfoResponse.class);
+                .as(GameInfoResponse.class);
 
-        return roomInfoResponse.players().stream()
+        return gameInfoResponse.players().stream()
                 .filter(response -> response.job() != null && response.job().equals(JobType.MAFIA))
                 .count();
     }

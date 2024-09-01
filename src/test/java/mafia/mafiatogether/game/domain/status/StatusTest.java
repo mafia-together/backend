@@ -18,8 +18,8 @@ import static mafia.mafiatogether.global.Fixture.voteTime;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import mafia.mafiatogether.game.domain.Game;
-import mafia.mafiatogether.room.domain.Room;
-import mafia.mafiatogether.room.domain.RoomInfo;
+import mafia.mafiatogether.lobby.domain.Lobby;
+import mafia.mafiatogether.lobby.domain.LobbyInfo;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,11 +35,11 @@ class StatusTest {
 
     @BeforeEach
     void setRoom() {
-        Room room = Room.create(new RoomInfo(3, 1, 0, 1));
-        room.joinPlayer(PLAYER1);
-        room.joinPlayer(PLAYER2);
-        room.joinPlayer(PLAYER3);
-        game = Game.create(room, dayIntroTime);
+        Lobby lobby = Lobby.create(new LobbyInfo(3, 1, 0, 1));
+        lobby.joinPlayer(PLAYER1);
+        lobby.joinPlayer(PLAYER2);
+        lobby.joinPlayer(PLAYER3);
+        game = Game.create(lobby, dayIntroTime);
         game.distributeRole();
     }
 
