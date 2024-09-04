@@ -1,5 +1,6 @@
 package mafia.mafiatogether.lobby.domain;
 
+import java.time.Clock;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class Lobby {
     private ParticipantCollection participants;
     private LobbyInfo lobbyInfo;
     private Participant master;
+    private Long lastUpdateTime;
 
     public Lobby(){
         this.participants = new ParticipantCollection();
@@ -28,7 +30,8 @@ public class Lobby {
                 code,
                 new ParticipantCollection(),
                 lobbyInfo,
-                Participant.NONE
+                Participant.NONE,
+                Clock.systemDefaultZone().millis()
         );
     }
 
@@ -37,7 +40,8 @@ public class Lobby {
                 null,
                 new ParticipantCollection(),
                 lobbyInfo,
-                Participant.NONE
+                Participant.NONE,
+                Clock.systemDefaultZone().millis()
         );
     }
 
@@ -53,5 +57,9 @@ public class Lobby {
         if (lobbyInfo.getTotal() != participants.size()) {
             throw new GameException(ExceptionCode.NOT_ENOUGH_PLAYER);
         }
+    }
+
+    public void updateLastUpdateTime() {
+        this.lastUpdateTime = Clock.systemDefaultZone().millis();
     }
 }
