@@ -2,8 +2,9 @@ package mafia.mafiatogether.game.ui;
 
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.PlayerInfo;
-import mafia.mafiatogether.game.application.GameService;
 import mafia.mafiatogether.config.PlayerInfoDto;
+import mafia.mafiatogether.game.application.GameService;
+import mafia.mafiatogether.game.application.dto.response.GameExistResponse;
 import mafia.mafiatogether.game.application.dto.response.GameInfoResponse;
 import mafia.mafiatogether.game.application.dto.response.GameResultResponse;
 import mafia.mafiatogether.game.application.dto.response.GameStatusResponse;
@@ -47,5 +48,15 @@ public class GameController {
             @PlayerInfo PlayerInfoDto playerInfoDto
     ) {
         return ResponseEntity.ok(gameService.findGameInfo(playerInfoDto.code(), playerInfoDto.name()));
+    }
+
+
+    @GetMapping("/exist")
+    public ResponseEntity<GameExistResponse> isGameExist(
+            @PlayerInfo final PlayerInfoDto playerInfoDto
+    ) {
+        return ResponseEntity.ok(
+                new GameExistResponse(gameService.isValid(playerInfoDto.code(), playerInfoDto.name()))
+        );
     }
 }

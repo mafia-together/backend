@@ -38,7 +38,7 @@ public class GameService {
     private StatusType checkStatusChanged(final Game game) {
         game.setStatsSnapshot();
         final StatusType statusType = game.getStatusType(Clock.systemDefaultZone().millis());
-        if (game.isDeleted()){
+        if (game.isDeleted()) {
             gameRepository.delete(game);
             return StatusType.WAIT;
         }
@@ -80,5 +80,17 @@ public class GameService {
             throw new GameException(ExceptionCode.GAME_IS_NOT_FINISHED);
         }
         return GameResultResponse.from(game);
+    }
+
+    public boolean isValid(final String code, final String name) {
+        Optional<Lobby> lobby = lobbyRepository.findById(code);
+        Optional<Game> game = gameRepository.findById(code);
+        if (!lobby.isPresent()) {
+            return false;
+        }
+        if (!game.isPresent()) {
+            return lobby.get().isParticipantExist(name);
+        }
+        return game.get().isPlayerExist(name);
     }
 }

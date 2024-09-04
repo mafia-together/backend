@@ -85,4 +85,8 @@ public class PlayerCollection {
         final Player targetPlayer = findByName(target);
         targetPlayer.kill();
     }
+
+    public boolean contains(final String name) {
+        return players.stream().anyMatch(player -> player.getName().equals(name));
+    }
 }

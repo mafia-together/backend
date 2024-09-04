@@ -16,7 +16,7 @@ class VoteControllerTest extends ControllerTest {
 
     @BeforeEach
     void setTest(){
-        setRoom();
+        setLobby();
         setGame();
     }
 
