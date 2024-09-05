@@ -22,6 +22,7 @@ import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobTargetRepository;
 import mafia.mafiatogether.job.domain.PlayerJob;
 import mafia.mafiatogether.job.domain.PlayerJobRepository;
+import mafia.mafiatogether.lobby.application.dto.event.DeleteLobbyEvent;
 import mafia.mafiatogether.lobby.domain.Lobby;
 import mafia.mafiatogether.lobby.domain.LobbyRepository;
 import mafia.mafiatogether.vote.application.dto.event.AllPlayerVotedEvent;
@@ -120,5 +121,15 @@ public class GameEventListener {
             game.skipStatus(Clock.systemDefaultZone().millis());
             gameRepository.save(game);
         }
+    }
+
+    @EventListener
+    public void listenDeleteLobbyEvent(final DeleteLobbyEvent deleteLobbyEvent) {
+        playerJobRepository.deleteById(deleteLobbyEvent.getCode());
+        jobTargetRepository.deleteById(deleteLobbyEvent.getCode());
+        chatRepository.deleteById(deleteLobbyEvent.getCode());
+        voteRepository.deleteById(deleteLobbyEvent.getCode());
+        gameRepository.deleteById(deleteLobbyEvent.getCode());
+        lobbyRepository.deleteById(deleteLobbyEvent.getCode());
     }
 }
