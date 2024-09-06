@@ -1,11 +1,5 @@
 package mafia.mafiatogether.game.application.dto.event;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+public record ClearJobTargetEvent(String code) {
 
-@Getter
-@RequiredArgsConstructor
-public class ClearJobTargetEvent {
-
-    private final String code;
 }

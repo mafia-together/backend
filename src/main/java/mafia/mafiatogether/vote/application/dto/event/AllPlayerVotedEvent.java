@@ -1,11 +1,5 @@
 package mafia.mafiatogether.vote.application.dto.event;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+public record AllPlayerVotedEvent(String code) {
 
-@Getter
-@RequiredArgsConstructor
-public class AllPlayerVotedEvent {
-
-    private final String code;
 }
