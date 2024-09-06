@@ -84,10 +84,10 @@ public class GameService {
 
     public boolean isValid(final String code, final String name) {
         Optional<Lobby> lobby = lobbyRepository.findById(code);
-        Optional<Game> game = gameRepository.findById(code);
         if (!lobby.isPresent()) {
             return false;
         }
+        Optional<Game> game = gameRepository.findById(code);
         if (!game.isPresent()) {
             return lobby.get().isParticipantExist(name);
         }
