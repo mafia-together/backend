@@ -22,6 +22,7 @@ import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobTargetRepository;
 import mafia.mafiatogether.job.domain.PlayerJob;
 import mafia.mafiatogether.job.domain.PlayerJobRepository;
+import mafia.mafiatogether.lobby.application.dto.event.DeleteLobbyEvent;
 import mafia.mafiatogether.lobby.domain.Lobby;
 import mafia.mafiatogether.lobby.domain.LobbyRepository;
 import mafia.mafiatogether.vote.application.dto.event.AllPlayerVotedEvent;
@@ -43,9 +44,9 @@ public class GameEventListener {
 
     @EventListener
     public void listenVoteExecuteEvent(final VoteExecuteEvent voteExecuteEvent) {
-        final Game game = gameRepository.findById(voteExecuteEvent.getCode())
+        final Game game = gameRepository.findById(voteExecuteEvent.code())
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
-        final Vote vote = voteRepository.findById(voteExecuteEvent.getCode())
+        final Vote vote = voteRepository.findById(voteExecuteEvent.code())
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         final String target = vote.countVotes();
         game.executeTarget(target);
@@ -54,7 +55,7 @@ public class GameEventListener {
 
     @EventListener
     public void listenClearVoteEvent(final ClearVoteEvent clearVoteEvent) {
-        final Vote vote = voteRepository.findById(clearVoteEvent.getCode())
+        final Vote vote = voteRepository.findById(clearVoteEvent.code())
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         vote.clearVoteTargets();
         voteRepository.save(vote);
@@ -62,9 +63,9 @@ public class GameEventListener {
 
     @EventListener
     public void listenJobExecuteEvent(final JobExecuteEvent jobExecuteEvent) {
-        final Game game = gameRepository.findById(jobExecuteEvent.getCode())
+        final Game game = gameRepository.findById(jobExecuteEvent.code())
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
-        final JobTarget jobTarget = jobTargetRepository.findById(jobExecuteEvent.getCode())
+        final JobTarget jobTarget = jobTargetRepository.findById(jobExecuteEvent.code())
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         final String target = jobTarget.findTarget();
         game.executeTarget(target);
@@ -73,7 +74,7 @@ public class GameEventListener {
 
     @EventListener
     public void listenClearJobTargetEvent(final ClearJobTargetEvent clearJobTargetEvent) {
-        final JobTarget jobTarget = jobTargetRepository.findById(clearJobTargetEvent.getCode())
+        final JobTarget jobTarget = jobTargetRepository.findById(clearJobTargetEvent.code())
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         jobTarget.clearJobTargets();
         jobTargetRepository.save(jobTarget);
@@ -81,13 +82,13 @@ public class GameEventListener {
 
     @EventListener
     public void listenStartGameEvent(final StartGameEvent startGameEvent) {
-        final PlayerJob playerJob = new PlayerJob(startGameEvent.getCode(), new HashMap<>());
-        for (Player player : startGameEvent.getPlayerCollection().getPlayers()) {
+        final PlayerJob playerJob = new PlayerJob(startGameEvent.code(), new HashMap<>());
+        for (Player player : startGameEvent.playerCollection().getPlayers()) {
             playerJob.add(player.getName(), player.getJob());
         }
-        final Chat chat = new Chat(startGameEvent.getCode(), new ArrayList<>());
-        final Vote vote = new Vote(startGameEvent.getCode(), new HashMap<>());
-        final JobTarget jobTarget = new JobTarget(startGameEvent.getCode(), new HashMap<>());
+        final Chat chat = new Chat(startGameEvent.code(), new ArrayList<>());
+        final Vote vote = new Vote(startGameEvent.code(), new HashMap<>());
+        final JobTarget jobTarget = new JobTarget(startGameEvent.code(), new HashMap<>());
         playerJobRepository.save(playerJob);
         chatRepository.save(chat);
         voteRepository.save(vote);
@@ -96,29 +97,39 @@ public class GameEventListener {
 
     @EventListener
     public void listenDeleteGameEvent(final DeleteGameEvent deleteGameEvent) {
-        playerJobRepository.deleteById(deleteGameEvent.getCode());
-        jobTargetRepository.deleteById(deleteGameEvent.getCode());
-        chatRepository.deleteById(deleteGameEvent.getCode());
-        voteRepository.deleteById(deleteGameEvent.getCode());
-        gameRepository.deleteById(deleteGameEvent.getCode());
+        playerJobRepository.deleteById(deleteGameEvent.code());
+        jobTargetRepository.deleteById(deleteGameEvent.code());
+        chatRepository.deleteById(deleteGameEvent.code());
+        voteRepository.deleteById(deleteGameEvent.code());
+        gameRepository.deleteById(deleteGameEvent.code());
 
-        final Lobby room = lobbyRepository.findById(deleteGameEvent.getCode())
+        final Lobby room = lobbyRepository.findById(deleteGameEvent.code())
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         room.updateLastUpdateTime();
     }
 
     @EventListener
     public void listenAllPlayerVoteEvent(final AllPlayerVotedEvent allPlayerVotedEvent) {
-        final Game game = gameRepository.findById(allPlayerVotedEvent.getCode())
+        final Game game = gameRepository.findById(allPlayerVotedEvent.code())
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         if (!game.getStatus().getType().equals(StatusType.DAY)) {
             return;
         }
-        final Vote vote = voteRepository.findById(allPlayerVotedEvent.getCode())
+        final Vote vote = voteRepository.findById(allPlayerVotedEvent.code())
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         if (game.getAlivePlayerCount() == vote.getVotedCount()) {
             game.skipStatus(Clock.systemDefaultZone().millis());
             gameRepository.save(game);
         }
+    }
+
+    @EventListener
+    public void listenDeleteLobbyEvent(final DeleteLobbyEvent deleteLobbyEvent) {
+        playerJobRepository.deleteById(deleteLobbyEvent.code());
+        jobTargetRepository.deleteById(deleteLobbyEvent.code());
+        chatRepository.deleteById(deleteLobbyEvent.code());
+        voteRepository.deleteById(deleteLobbyEvent.code());
+        gameRepository.deleteById(deleteLobbyEvent.code());
+        lobbyRepository.deleteById(deleteLobbyEvent.code());
     }
 }

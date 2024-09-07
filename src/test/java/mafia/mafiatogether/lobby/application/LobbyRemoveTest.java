@@ -26,10 +26,11 @@ class LobbyRemoveTest {
     void 스케줄러_동작_테스트() {
         Lobby mockLobby = Mockito.mock(Lobby.class);
         Mockito.when(mockLobby.getLastUpdateTime()).thenReturn(Instant.now().getEpochSecond() - 3700);
+        Mockito.when(mockLobby.getCode()).thenReturn("1234567890");
         Mockito.when(lobbyRepository.findAll()).thenReturn(List.of(mockLobby));
 
         lobbyRemoveService.remove();
 
-        verify(lobbyRepository, times(1)).delete(mockLobby);
+        verify(lobbyRepository, times(1)).deleteById(mockLobby.getCode());
     }
 }
