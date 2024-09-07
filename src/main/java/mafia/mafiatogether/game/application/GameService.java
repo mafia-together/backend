@@ -15,6 +15,7 @@ import mafia.mafiatogether.game.domain.SseEmitterRepository;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.lobby.domain.Lobby;
 import mafia.mafiatogether.lobby.domain.LobbyRepository;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -96,5 +97,12 @@ public class GameService {
         );
         sseEmitterRepository.save(code, sseEmitter);
         return sseEmitter;
+    }
+
+    @Scheduled(fixedDelay = 5000L)
+    public void changeStatus(){
+        for (Game game : gameRepository.findAll()) {
+            checkStatusChanged(game);
+        }
     }
 }
