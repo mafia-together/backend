@@ -23,4 +23,9 @@ public class InMemorySseEmitterRepository implements SseEmitterRepository {
         }
         emitters.get(code).add(sseEmitter);
     }
+
+    @Override
+    public List<SseEmitter> get(String code) {
+        return emitters.get(code);
+    }
 }
