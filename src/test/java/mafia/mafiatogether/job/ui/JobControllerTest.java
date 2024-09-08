@@ -8,8 +8,8 @@ import java.util.Base64;
 import java.util.Map;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import mafia.mafiatogether.global.ControllerTest;
-import mafia.mafiatogether.job.domain.PlayerJobRepository;
 import mafia.mafiatogether.job.domain.JobTargetRepository;
+import mafia.mafiatogether.job.domain.PlayerJobRepository;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
@@ -29,7 +29,7 @@ class JobControllerTest extends ControllerTest {
 
     @BeforeEach
     void setTest() {
-        setRoom();
+        setLobby();
         setGame();
     }
 

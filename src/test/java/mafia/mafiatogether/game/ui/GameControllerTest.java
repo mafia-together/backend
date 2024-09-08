@@ -1,6 +1,7 @@
 package mafia.mafiatogether.game.ui;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.hamcrest.Matchers.equalTo;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -8,14 +9,14 @@ import java.util.Base64;
 import java.util.Map;
 import mafia.mafiatogether.config.exception.ErrorResponse;
 import mafia.mafiatogether.config.exception.ExceptionCode;
+import mafia.mafiatogether.game.application.dto.response.GameInfoResponse;
+import mafia.mafiatogether.game.application.dto.response.GameStatusResponse;
+import mafia.mafiatogether.game.application.dto.response.PlayerResponse;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.Player;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.global.ControllerTest;
-import mafia.mafiatogether.game.application.dto.response.PlayerResponse;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
-import mafia.mafiatogether.game.application.dto.response.GameInfoResponse;
-import mafia.mafiatogether.game.application.dto.response.GameStatusResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,8 +26,8 @@ import org.springframework.http.HttpStatus;
 class GameControllerTest extends ControllerTest {
 
     @BeforeEach
-    void setTest(){
-        setRoom();
+    void setTest() {
+        setLobby();
     }
 
     @Test
@@ -99,7 +100,7 @@ class GameControllerTest extends ControllerTest {
     }
 
     @Test
-    void 대기방에서_방장이_방의_정보를_찾는다(){
+    void 대기방에서_방장이_방의_정보를_찾는다() {
         // given
         final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
 
@@ -115,7 +116,7 @@ class GameControllerTest extends ControllerTest {
 
         /// then
         assertSoftly(
-                softly ->{
+                softly -> {
                     softly.assertThat(response.isMaster()).isTrue();
                     softly.assertThat(response.players()).hasSize(4);
                 }
@@ -237,5 +238,86 @@ class GameControllerTest extends ControllerTest {
         return gameInfoResponse.players().stream()
                 .filter(response -> response.job() != null && response.job().equals(JobType.MAFIA))
                 .count();
+    }
+
+    @Test
+    void 게임이_진행되고_있을때_참가한_유저는_유효한지_검증한다() {
+        // given
+        setGame();
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
+
+        // when & then
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Basic " + basic)
+                .when().get("/games/valid")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("valid", equalTo(true));
+    }
+
+    @Test
+    void 로비만_존재하고_게임이_진행되지_않을때_참가한_유저가_유효한지_검증한다() {
+        // given
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
+
+        // when & then
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Basic " + basic)
+                .when().get("/games/valid")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("valid", equalTo(true));
+    }
+
+    @Test
+    void 유저가_요청한_방이_없는지_검증한다() {
+        // given
+        final String code = "123456789fail";
+        final String basic = Base64.getEncoder().encodeToString((code + ":" + PLAYER1_NAME).getBytes());
+
+        // when & then
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Basic " + basic)
+                .when().get("/games/valid")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("valid", equalTo(false));
+    }
+
+    @Test
+    void 유저가_요청한_방에_존재하는지_검증한다() {
+        // given
+        final String invalidPlayer = "invalidPlayer";
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + invalidPlayer).getBytes());
+
+        // when & then
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Basic " + basic)
+                .when().get("/games/valid")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("valid", equalTo(false));
+    }
+
+
+    @Test
+    void 유저가_요청한_게임에_존재하는지_검증한다() {
+        // given
+        setGame();
+        final String invalidPlayer = "invalidPlayer";
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + invalidPlayer).getBytes());
+
+        // when & then
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Basic " + basic)
+                .when().get("/games/valid")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("valid", equalTo(false));
     }
 }

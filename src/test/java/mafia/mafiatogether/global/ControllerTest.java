@@ -54,7 +54,7 @@ public abstract class ControllerTest {
         RestAssured.port = port;
     }
 
-    protected void setRoom() {
+    protected void setLobby() {
         final Lobby lobby = Lobby.create(CODE, LobbyInfo.of(5, 2, 1, 1));
         lobby.joinPlayer(PLAYER1_NAME);
         lobby.joinPlayer(PLAYER2_NAME);
@@ -89,6 +89,7 @@ public abstract class ControllerTest {
                 .findFirst().get()
                 .getName();
     }
+
     @AfterEach
     void clearTest() {
         voteRepository.deleteById(CODE);
