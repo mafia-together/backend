@@ -51,8 +51,8 @@ public class GameController {
     }
 
 
-    @GetMapping("/exist")
-    public ResponseEntity<GameExistResponse> isGameExist(
+    @GetMapping("/valid")
+    public ResponseEntity<GameExistResponse> isValid(
             @PlayerInfo final PlayerInfoDto playerInfoDto
     ) {
         return ResponseEntity.ok(

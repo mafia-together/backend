@@ -250,10 +250,10 @@ class GameControllerTest extends ControllerTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/games/exist")
+                .when().get("/games/valid")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("exist", equalTo(true));
+                .body("valid", equalTo(true));
     }
 
     @Test
@@ -265,10 +265,10 @@ class GameControllerTest extends ControllerTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/games/exist")
+                .when().get("/games/valid")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("exist", equalTo(true));
+                .body("valid", equalTo(true));
     }
 
     @Test
@@ -281,10 +281,10 @@ class GameControllerTest extends ControllerTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/games/exist")
+                .when().get("/games/valid")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("exist", equalTo(false));
+                .body("valid", equalTo(false));
     }
 
     @Test
@@ -297,10 +297,10 @@ class GameControllerTest extends ControllerTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/games/exist")
+                .when().get("/games/valid")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("exist", equalTo(false));
+                .body("valid", equalTo(false));
     }
 
 
@@ -315,9 +315,9 @@ class GameControllerTest extends ControllerTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .when().get("/games/exist")
+                .when().get("/games/valid")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("exist", equalTo(false));
+                .body("valid", equalTo(false));
     }
 }
