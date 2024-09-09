@@ -36,6 +36,7 @@ import mafia.mafiatogether.vote.domain.VoteRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 
 @Component
 @RequiredArgsConstructor
@@ -116,7 +117,7 @@ public class GameEventListener {
     }
 
     @EventListener
-    public void listenAllPlayerVoteEvent(final AllPlayerVotedEvent allPlayerVotedEvent) {
+    public void listenAllPlayerVoteEvent(final AllPlayerVotedEvent allPlayerVotedEvent) throws IOException {
         final Game game = gameRepository.findById(allPlayerVotedEvent.code())
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         if (!game.getStatus().getType().equals(StatusType.DAY)) {
@@ -126,6 +127,7 @@ public class GameEventListener {
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         if (game.getAlivePlayerCount() == vote.getVotedCount()) {
             game.skipStatus(Clock.systemDefaultZone().millis());
+            sendStatusChangeEventToSseClient(allPlayerVotedEvent.code(), game.getStatus().getType());
             gameRepository.save(game);
         }
     }
@@ -142,13 +144,19 @@ public class GameEventListener {
 
     @EventListener
     public void listenGameStatusChangeEvent(final GameStatusChangeEvent gameStatusChangeEvent) throws IOException {
-        List<SseEmitter> emitters = sseEmitterRepository.get(gameStatusChangeEvent.code());
+        sendStatusChangeEventToSseClient(gameStatusChangeEvent.code(), gameStatusChangeEvent.statusType());
+    }
+
+    private void sendStatusChangeEventToSseClient(final String code, final StatusType statusType) throws IOException {
+        List<SseEmitter> emitters = sseEmitterRepository.get(code);
         for (SseEmitter emitter : emitters) {
-            emitter.send(
-                    SseEmitter.event()
-                            .name("gameStatus")
-                            .data(new GameStatusResponse(gameStatusChangeEvent.statusType()))
-            );
+            emitter.send(getSseEvent(statusType));
         }
+    }
+
+    private SseEventBuilder getSseEvent(StatusType statusType) {
+        return SseEmitter.event()
+                .name("gameStatus")
+                .data(new GameStatusResponse(statusType));
     }
 }
