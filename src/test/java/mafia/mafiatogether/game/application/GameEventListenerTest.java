@@ -1,12 +1,15 @@
 package mafia.mafiatogether.game.application;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.mockito.ArgumentMatchers.any;
 
 import java.time.Clock;
+import java.util.List;
 import mafia.mafiatogether.chat.domain.ChatRepository;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.Player;
+import mafia.mafiatogether.game.domain.SseEmitterRepository;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.global.ControllerTest;
 import mafia.mafiatogether.job.application.JobService;
@@ -24,7 +27,9 @@ import mafia.mafiatogether.vote.domain.VoteRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SuppressWarnings("NonAsciiCharacters")
 class GameEventListenerTest extends ControllerTest {
@@ -52,6 +57,9 @@ class GameEventListenerTest extends ControllerTest {
 
     @Autowired
     private ChatRepository chatRepository;
+
+    @MockBean
+    private SseEmitterRepository sseEmitterRepository;
 
     private static final String CODE = "1234567890";
     private static final String PLAYER1_NAME = "player1";
@@ -232,6 +240,7 @@ class GameEventListenerTest extends ControllerTest {
         final String target = PLAYER1_NAME;
         game.skipStatus(Clock.systemDefaultZone().millis()); // NOTICE
         game.skipStatus(Clock.systemDefaultZone().millis()); // DAY
+        Mockito.when(sseEmitterRepository.get(any())).thenReturn(List.of());
         gameRepository.save(game);
 
         // when
@@ -245,5 +254,6 @@ class GameEventListenerTest extends ControllerTest {
         // then
         final StatusType actual = gameRepository.findById(CODE).get().getStatus().getType();
         Assertions.assertThat(actual).isEqualTo(StatusType.VOTE);
+        Mockito.verify(sseEmitterRepository, Mockito.atLeast(1)).get(CODE);
     }
 }

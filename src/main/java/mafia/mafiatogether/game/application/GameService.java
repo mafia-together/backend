@@ -99,7 +99,8 @@ public class GameService {
         return sseEmitter;
     }
 
-    @Scheduled(fixedDelay = 5000L)
+    @Scheduled(fixedDelay = 500L)
+    @Transactional
     public void changeStatus(){
         for (Game game : gameRepository.findAll()) {
             checkStatusChanged(game);
