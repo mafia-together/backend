@@ -36,4 +36,8 @@ public class ParticipantCollection {
             throw new GameException(ExceptionCode.INVALID_NAMES);
         }
     }
+
+    public boolean contains(String name) {
+        return participants.stream().anyMatch(participant -> participant.getName().equals(name));
+    }
 }

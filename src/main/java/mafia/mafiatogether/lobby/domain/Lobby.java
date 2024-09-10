@@ -62,4 +62,8 @@ public class Lobby {
     public void updateLastUpdateTime() {
         this.lastUpdateTime = Clock.systemDefaultZone().millis();
     }
+
+    public boolean isParticipantExist(final String name) {
+        return participants.contains(name);
+    }
 }

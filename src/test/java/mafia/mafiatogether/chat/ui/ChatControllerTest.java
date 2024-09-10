@@ -29,7 +29,7 @@ public class ChatControllerTest extends ControllerTest {
 
     @BeforeEach
     void setTest() {
-        setRoom();
+        setLobby();
         setGame();
 
         Chat chat = new Chat(CODE, new ArrayList<>());

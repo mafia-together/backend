@@ -151,4 +151,8 @@ public class Game extends AbstractAggregateRoot<Game> {
     public boolean isDeleted() {
         return status.getType().equals(StatusType.DELETED);
     }
+
+    public boolean isPlayerExist(final String name) {
+        return players.contains(name);
+    }
 }

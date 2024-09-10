@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.config.PlayerInfo;
 import mafia.mafiatogether.game.application.GameService;
 import mafia.mafiatogether.config.PlayerInfoDto;
+import mafia.mafiatogether.game.application.dto.response.GameExistResponse;
 import mafia.mafiatogether.game.application.dto.response.GameInfoResponse;
 import mafia.mafiatogether.game.application.dto.response.GameResultResponse;
 import mafia.mafiatogether.game.application.dto.response.GameStatusResponse;
@@ -57,5 +58,15 @@ public class GameController {
             @PlayerInfo final PlayerInfoDto playerInfoDto
     ) throws IOException {
         return ResponseEntity.ok(gameService.subscribe(playerInfoDto.code()));
+    }
+
+
+    @GetMapping("/valid")
+    public ResponseEntity<GameExistResponse> isValid(
+            @PlayerInfo final PlayerInfoDto playerInfoDto
+    ) {
+        return ResponseEntity.ok(
+                new GameExistResponse(gameService.isValid(playerInfoDto.code(), playerInfoDto.name()))
+        );
     }
 }
