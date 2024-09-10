@@ -53,9 +53,9 @@ public class GameController {
     }
 
     @GetMapping(path = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter subscribe(
+    public ResponseEntity<SseEmitter> subscribe(
             @PlayerInfo final PlayerInfoDto playerInfoDto
     ) throws IOException {
-        return gameService.subscribe(playerInfoDto.code());
+        return ResponseEntity.ok(gameService.subscribe(playerInfoDto.code()));
     }
 }

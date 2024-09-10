@@ -19,6 +19,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 
 @Service
 @RequiredArgsConstructor
@@ -89,14 +90,16 @@ public class GameService {
 
     public SseEmitter subscribe(final String code) throws IOException {
         SseEmitter sseEmitter = new SseEmitter(43200_000L);
-        sseEmitter.send(
-                SseEmitter.event()
-                        .name("test")
-                        .data("connect")
-                        .reconnectTime(30_000L)
-        );
+        sseEmitter.send(getSseEvent());
         sseEmitterRepository.save(code, sseEmitter);
         return sseEmitter;
+    }
+
+    private SseEventBuilder getSseEvent() {
+        return SseEmitter.event()
+                .name("gameStatus")
+                .data("connect")
+                .reconnectTime(30_000L);
     }
 
     @Scheduled(fixedDelay = 500L)
