@@ -25,6 +25,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEvent
 @RequiredArgsConstructor
 public class GameService {
 
+    private static final String SSE_STATUS = "gameStatus";
+    private static final String SSE_CONNECT_DATA = "connect";
     private final LobbyRepository lobbyRepository;
     private final GameRepository gameRepository;
     private final SseEmitterRepository sseEmitterRepository;
@@ -97,8 +99,8 @@ public class GameService {
 
     private SseEventBuilder getSseEvent() {
         return SseEmitter.event()
-                .name("gameStatus")
-                .data("connect")
+                .name(SSE_STATUS)
+                .data(SSE_CONNECT_DATA)
                 .reconnectTime(30_000L);
     }
 
