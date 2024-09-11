@@ -7,6 +7,7 @@ import lombok.Getter;
 import mafia.mafiatogether.game.application.dto.event.ClearJobTargetEvent;
 import mafia.mafiatogether.game.application.dto.event.ClearVoteEvent;
 import mafia.mafiatogether.game.application.dto.event.DeleteGameEvent;
+import mafia.mafiatogether.game.application.dto.event.GameStatusChangeEvent;
 import mafia.mafiatogether.game.application.dto.event.JobExecuteEvent;
 import mafia.mafiatogether.game.application.dto.event.StartGameEvent;
 import mafia.mafiatogether.game.application.dto.event.VoteExecuteEvent;
@@ -66,6 +67,7 @@ public class Game extends AbstractAggregateRoot<Game> {
     public StatusType getStatusType(final Long now) {
         if (status.isTimeOver(now)) {
             status = status.getNextStatus(this, now);
+            registerEvent(new GameStatusChangeEvent(this.code, status.getType()));
         }
         return status.getType();
     }

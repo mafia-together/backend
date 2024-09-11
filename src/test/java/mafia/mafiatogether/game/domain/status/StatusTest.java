@@ -100,6 +100,5 @@ class StatusTest {
 
         // when & then
         Assertions.assertThat(game.getStatusType(endTime)).isEqualTo(StatusType.END);
-
     }
 }

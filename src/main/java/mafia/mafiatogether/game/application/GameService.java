@@ -1,5 +1,6 @@
 package mafia.mafiatogether.game.application;
 
+import java.io.IOException;
 import java.time.Clock;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -10,18 +11,25 @@ import mafia.mafiatogether.game.application.dto.response.GameResultResponse;
 import mafia.mafiatogether.game.application.dto.response.GameStatusResponse;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.GameRepository;
+import mafia.mafiatogether.game.domain.SseEmitterRepository;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.lobby.domain.Lobby;
 import mafia.mafiatogether.lobby.domain.LobbyRepository;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 
 @Service
 @RequiredArgsConstructor
 public class GameService {
 
+    private static final String SSE_STATUS = "gameStatus";
+    private static final String SSE_CONNECT_DATA = "connect";
     private final LobbyRepository lobbyRepository;
     private final GameRepository gameRepository;
+    private final SseEmitterRepository sseEmitterRepository;
 
     @Transactional
     public GameStatusResponse findStatus(final String code) {
@@ -38,7 +46,7 @@ public class GameService {
     private StatusType checkStatusChanged(final Game game) {
         game.setStatsSnapshot();
         final StatusType statusType = game.getStatusType(Clock.systemDefaultZone().millis());
-        if (game.isDeleted()) {
+        if (game.isDeleted()){
             gameRepository.delete(game);
             return StatusType.WAIT;
         }
@@ -80,6 +88,28 @@ public class GameService {
             throw new GameException(ExceptionCode.GAME_IS_NOT_FINISHED);
         }
         return GameResultResponse.from(game);
+    }
+
+    public SseEmitter subscribe(final String code) throws IOException {
+        SseEmitter sseEmitter = new SseEmitter(43200_000L);
+        sseEmitter.send(getSseEvent());
+        sseEmitterRepository.save(code, sseEmitter);
+        return sseEmitter;
+    }
+
+    private SseEventBuilder getSseEvent() {
+        return SseEmitter.event()
+                .name(SSE_STATUS)
+                .data(SSE_CONNECT_DATA)
+                .reconnectTime(30_000L);
+    }
+
+    @Scheduled(fixedDelay = 500L)
+    @Transactional
+    public void changeStatus(){
+        for (Game game : gameRepository.findAll()) {
+            checkStatusChanged(game);
+        }
     }
 
     public boolean isValid(final String code, final String name) {

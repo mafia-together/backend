@@ -1,8 +1,10 @@
 package mafia.mafiatogether.game.application;
 
+import java.io.IOException;
 import java.time.Clock;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.chat.domain.Chat;
 import mafia.mafiatogether.chat.domain.ChatRepository;
@@ -11,12 +13,15 @@ import mafia.mafiatogether.config.exception.GameException;
 import mafia.mafiatogether.game.application.dto.event.ClearJobTargetEvent;
 import mafia.mafiatogether.game.application.dto.event.ClearVoteEvent;
 import mafia.mafiatogether.game.application.dto.event.DeleteGameEvent;
+import mafia.mafiatogether.game.application.dto.event.GameStatusChangeEvent;
 import mafia.mafiatogether.game.application.dto.event.JobExecuteEvent;
 import mafia.mafiatogether.game.application.dto.event.StartGameEvent;
 import mafia.mafiatogether.game.application.dto.event.VoteExecuteEvent;
+import mafia.mafiatogether.game.application.dto.response.GameStatusResponse;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.Player;
+import mafia.mafiatogether.game.domain.SseEmitterRepository;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobTargetRepository;
@@ -30,6 +35,8 @@ import mafia.mafiatogether.vote.domain.Vote;
 import mafia.mafiatogether.vote.domain.VoteRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 
 @Component
 @RequiredArgsConstructor
@@ -41,6 +48,7 @@ public class GameEventListener {
     private final JobTargetRepository jobTargetRepository;
     private final PlayerJobRepository playerJobRepository;
     private final ChatRepository chatRepository;
+    private final SseEmitterRepository sseEmitterRepository;
 
     @EventListener
     public void listenVoteExecuteEvent(final VoteExecuteEvent voteExecuteEvent) {
@@ -109,7 +117,7 @@ public class GameEventListener {
     }
 
     @EventListener
-    public void listenAllPlayerVoteEvent(final AllPlayerVotedEvent allPlayerVotedEvent) {
+    public void listenAllPlayerVoteEvent(final AllPlayerVotedEvent allPlayerVotedEvent) throws IOException {
         final Game game = gameRepository.findById(allPlayerVotedEvent.code())
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         if (!game.getStatus().getType().equals(StatusType.DAY)) {
@@ -119,6 +127,7 @@ public class GameEventListener {
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         if (game.getAlivePlayerCount() == vote.getVotedCount()) {
             game.skipStatus(Clock.systemDefaultZone().millis());
+            sendStatusChangeEventToSseClient(allPlayerVotedEvent.code(), game.getStatus().getType());
             gameRepository.save(game);
         }
     }
@@ -131,5 +140,23 @@ public class GameEventListener {
         voteRepository.deleteById(deleteLobbyEvent.code());
         gameRepository.deleteById(deleteLobbyEvent.code());
         lobbyRepository.deleteById(deleteLobbyEvent.code());
+    }
+
+    @EventListener
+    public void listenGameStatusChangeEvent(final GameStatusChangeEvent gameStatusChangeEvent) throws IOException {
+        sendStatusChangeEventToSseClient(gameStatusChangeEvent.code(), gameStatusChangeEvent.statusType());
+    }
+
+    private void sendStatusChangeEventToSseClient(final String code, final StatusType statusType) throws IOException {
+        List<SseEmitter> emitters = sseEmitterRepository.get(code);
+        for (SseEmitter emitter : emitters) {
+            emitter.send(getSseEvent(statusType));
+        }
+    }
+
+    private SseEventBuilder getSseEvent(StatusType statusType) {
+        return SseEmitter.event()
+                .name("gameStatus")
+                .data(new GameStatusResponse(statusType));
     }
 }
