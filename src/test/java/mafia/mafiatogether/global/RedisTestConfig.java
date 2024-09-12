@@ -2,6 +2,7 @@ package mafia.mafiatogether.global;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.utility.DockerImageName;
 
 @TestConfiguration
@@ -12,7 +13,8 @@ public class RedisTestConfig {
     static {
         GenericContainer<?> REDIS_CONTAINER = new GenericContainer<>(DockerImageName.parse(REDIS_DOCKER_IMAGE))
                 .withExposedPorts(6379)
-                .withReuse(true);
+                .withReuse(true)
+                .waitingFor(Wait.forListeningPort());
 
         REDIS_CONTAINER.start();
 
