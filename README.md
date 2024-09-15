@@ -32,6 +32,6 @@
 |                          [김동연](https://github.com/waterricecake)                          |                             [송재백](https://github.com/thdwoqor)                             |                             [김재연](https://github.com/kpeel5839)                             |
 
 ### 프론트엔드
-| <img src="https://avatars.githubusercontent.com/u/70828192?v=4" width="130" height="130"> | <img src ="https://avatars.githubusercontent.com/u/25758965?v=4" width="130" height="130"> | <img src ="https://avatars.githubusercontent.com/u/62060956?v=4" width="130" height="130"> |
-|:-----------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------------:|
-|                           [천지윤](https://github.com/cheonjiyun)                            |                           [양문규](https://github.com/moonformeli)                            |                             [이승우](https://github.com/kelvin3476)                              |
+| <img src="https://avatars.githubusercontent.com/u/70828192?v=4" width="130" height="130"> |
+|:-----------------------------------------------------------------------------------------:|
+|                           [천지윤](https://github.com/cheonjiyun)                            |
