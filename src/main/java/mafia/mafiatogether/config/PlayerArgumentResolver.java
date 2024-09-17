@@ -1,7 +1,10 @@
 package mafia.mafiatogether.config;
 
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.Base64;
+
+import mafia.mafiatogether.common.AuthExtractor;
 import mafia.mafiatogether.config.exception.AuthException;
 import mafia.mafiatogether.config.exception.ExceptionCode;
 import org.springframework.core.MethodParameter;
@@ -31,16 +34,7 @@ public class PlayerArgumentResolver implements HandlerMethodArgumentResolver {
             throw new AuthException(ExceptionCode.MISSING_AUTHENTICATION_HEADER);
         }
 
-        String[] token = authorization.split(" ");
-        if (token.length != 2 || !token[0].equals("Basic")) {
-            throw new AuthException(ExceptionCode.INVALID_AUTHENTICATION_FORM);
-        }
-
-        String[] info = new String(Base64.getDecoder().decode(token[1])).split(":");
-        if (info.length != 2) {
-            throw new AuthException(ExceptionCode.INVALID_AUTHENTICATION_FORM);
-        }
-
-        return new PlayerInfoDto(info[0], info[1]);
+        String[] information = AuthExtractor.extractBy(authorization);
+        return new PlayerInfoDto(information[0], information[1]);
     }
 }
