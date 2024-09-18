@@ -13,22 +13,28 @@ public class AuthExtractor {
     private static final String SECURITY_ALGORITHM = "Basic";
     private static final int LENGTH_AFTER_SPLIT_BY_SECURITY_ALGORITHM = 2;
 
-    public static String[] extractBy(String code) {
-        String[] token = code.split(" ");
+    public static String[] extractByAuthorization(String authorization) {
+        String[] token = authorization.split(" ");
 
         if (token.length != LENGTH_AFTER_SPLIT_BY_SECURITY_ALGORITHM
                 || !token[ALGORITHM_INDEX].equals(SECURITY_ALGORITHM)) {
             throw new AuthException(ExceptionCode.INVALID_AUTHENTICATION_FORM);
         }
 
-        String[] information = new String(Base64.getDecoder().decode(token[INFORMATION_INDEX]))
-                .split(":");
+        return decodeByBase64(token[INFORMATION_INDEX]);
+    }
 
+    public static String[] extractByCode(String code) {
+        return decodeByBase64(code);
+    }
+
+    private static String[] decodeByBase64(String code) {
+        String[] information = new String(Base64.getDecoder().decode(code))
+                .split(":");
         if (information.length != INFORMATION_LENGTH) {
             throw new AuthException(ExceptionCode.INVALID_AUTHENTICATION_FORM);
         }
         return information;
     }
-
 
 }

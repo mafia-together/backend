@@ -2,8 +2,6 @@ package mafia.mafiatogether.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 
-import java.util.Base64;
-
 import mafia.mafiatogether.common.AuthExtractor;
 import mafia.mafiatogether.config.exception.AuthException;
 import mafia.mafiatogether.config.exception.ExceptionCode;
@@ -34,7 +32,7 @@ public class PlayerArgumentResolver implements HandlerMethodArgumentResolver {
             throw new AuthException(ExceptionCode.MISSING_AUTHENTICATION_HEADER);
         }
 
-        String[] information = AuthExtractor.extractBy(authorization);
+        String[] information = AuthExtractor.extractByAuthorization(authorization);
         return new PlayerInfoDto(information[0], information[1]);
     }
 }
