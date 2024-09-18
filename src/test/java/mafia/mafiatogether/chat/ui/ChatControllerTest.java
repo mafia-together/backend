@@ -153,7 +153,7 @@ public class ChatControllerTest extends ControllerTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .body(Map.of("contents", "contents"))
+                .body(Map.of("content", "content"))
                 .when().post("/chat")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());

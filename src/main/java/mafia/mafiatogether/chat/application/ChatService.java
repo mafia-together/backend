@@ -43,7 +43,7 @@ public class ChatService {
     public void saveChat(final String code, final String name, final ChatRequest chatRequest) {
         final Chat chat = chatRepository.findById(code)
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
-        final Message message = new Message(name, chatRequest.contents(), Clock.systemDefaultZone().millis());
+        final Message message = new Message(name, chatRequest.content(), Clock.systemDefaultZone().millis());
         chat.saveMessage(message);
         chatRepository.save(chat);
     }
