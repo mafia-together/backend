@@ -90,17 +90,25 @@ public class GameService {
         return GameResultResponse.from(game);
     }
 
+    @Transactional
     public SseEmitter subscribe(final String code) throws IOException {
         SseEmitter sseEmitter = new SseEmitter(43200_000L);
-        sseEmitter.send(getSseEvent());
+        sseEmitter.send(getSseEvent(code));
         sseEmitterRepository.save(code, sseEmitter);
         return sseEmitter;
     }
 
-    private SseEventBuilder getSseEvent() {
+    private SseEventBuilder getSseEvent(final String code) {
+        Optional<Game> game = gameRepository.findById(code);
+        if (game.isPresent()) {
+            return SseEmitter.event()
+                    .name(SSE_STATUS)
+                    .data(new GameStatusResponse(game.get().getStatus().getType()))
+                    .reconnectTime(30_000L);
+        }
         return SseEmitter.event()
                 .name(SSE_STATUS)
-                .data(SSE_CONNECT_DATA)
+                .data(new GameStatusResponse(StatusType.WAIT))
                 .reconnectTime(30_000L);
     }
 
