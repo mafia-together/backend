@@ -23,7 +23,7 @@ public class ChatV2Controller {
 
     private final ChatV2Service chatService;
 
-    @GetMapping("/chat")
+    @GetMapping("/v2/chat")
     public ResponseEntity<List<ChatV2Response>> findAllChat(@PlayerInfo PlayerInfoDto playerInfoDto) {
         return ResponseEntity.ok(chatService.findAllChat(playerInfoDto.code(), playerInfoDto.name()));
     }
