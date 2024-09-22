@@ -30,7 +30,7 @@ public class ChatV2Controller {
 
     @MessageMapping("/chat/{code}/{name}")
     @SendToChatWithRedis("/sub/chat/{code}")
-    public Message chat(
+    public Message createChat(
             @DestinationVariable("code") String code,
             @DestinationVariable("name") String name,
             @Payload ChatRequest request
