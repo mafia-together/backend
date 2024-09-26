@@ -8,7 +8,6 @@ import mafia.mafiatogether.common.exception.ExceptionCode;
 import java.util.Base64;
 
 @UtilityClass
-@NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 public class AuthExtractor {
 
     private static final int ALGORITHM_INDEX = 0;
