@@ -2,6 +2,7 @@ package mafia.mafiatogether.chat.aspect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import mafia.mafiatogether.chat.annotation.SendToChatWithRedis;
 import mafia.mafiatogether.chat.domain.Message;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -29,7 +30,7 @@ public class SendToChatWithRedisService {
         Method method = signature.getMethod();
 
         Map<String, String> parameterToValue = mapParameterAndValue(method.getParameters(), proceedingJoinPoint.getArgs());
-        mafia.mafiatogether.chat.annotation.SendToChatWithRedis sendToChatWithRedisAnnotation = method.getAnnotation(mafia.mafiatogether.chat.annotation.SendToChatWithRedis.class);
+        SendToChatWithRedis sendToChatWithRedisAnnotation = method.getAnnotation(SendToChatWithRedis.class);
         String topic = replacePlaceholders(sendToChatWithRedisAnnotation.value(), parameterToValue);
 
         Message message = (Message) proceedingJoinPoint.proceed();
