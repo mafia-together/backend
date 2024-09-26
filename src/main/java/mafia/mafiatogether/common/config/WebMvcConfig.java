@@ -1,6 +1,8 @@
-package mafia.mafiatogether.config;
+package mafia.mafiatogether.common.config;
 
 import java.util.List;
+
+import mafia.mafiatogether.common.resolver.PlayerArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;

@@ -1,9 +1,9 @@
-package mafia.mafiatogether.common;
+package mafia.mafiatogether.common.util;
 
 import lombok.NoArgsConstructor;
 import lombok.experimental.UtilityClass;
-import mafia.mafiatogether.config.exception.AuthException;
-import mafia.mafiatogether.config.exception.ExceptionCode;
+import mafia.mafiatogether.common.exception.AuthException;
+import mafia.mafiatogether.common.exception.ExceptionCode;
 
 import java.util.Base64;
 

@@ -1,7 +1,8 @@
-package mafia.mafiatogether.config;
+package mafia.mafiatogether.common.config;
 
 
 import lombok.RequiredArgsConstructor;
+import mafia.mafiatogether.common.interceptor.StompChannelInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

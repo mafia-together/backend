@@ -5,8 +5,8 @@ import mafia.mafiatogether.chat.application.dto.ChatV2Response;
 import mafia.mafiatogether.chat.domain.Chat;
 import mafia.mafiatogether.chat.domain.ChatRepository;
 import mafia.mafiatogether.chat.domain.Message;
-import mafia.mafiatogether.config.exception.ExceptionCode;
-import mafia.mafiatogether.config.exception.GameException;
+import mafia.mafiatogether.common.exception.ExceptionCode;
+import mafia.mafiatogether.common.exception.GameException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

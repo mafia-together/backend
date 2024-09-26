@@ -6,7 +6,7 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.Base64;
 import java.util.Map;
-import mafia.mafiatogether.config.exception.ExceptionCode;
+import mafia.mafiatogether.common.exception.ExceptionCode;
 import mafia.mafiatogether.global.ControllerTest;
 import mafia.mafiatogether.job.domain.JobTargetRepository;
 import mafia.mafiatogether.job.domain.PlayerJobRepository;

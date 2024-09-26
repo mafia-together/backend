@@ -1,6 +1,6 @@
-package mafia.mafiatogether.config;
+package mafia.mafiatogether.common.interceptor;
 
-import mafia.mafiatogether.common.AuthExtractor;
+import mafia.mafiatogether.common.util.AuthExtractor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;

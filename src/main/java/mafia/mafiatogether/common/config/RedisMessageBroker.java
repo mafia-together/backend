@@ -1,4 +1,4 @@
-package mafia.mafiatogether.config;
+package mafia.mafiatogether.common.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.connection.Message;

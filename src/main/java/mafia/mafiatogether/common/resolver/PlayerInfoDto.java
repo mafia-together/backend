@@ -1,4 +1,4 @@
-package mafia.mafiatogether.config;
+package mafia.mafiatogether.common.resolver;
 
 public record PlayerInfoDto(
         String code,

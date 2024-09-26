@@ -2,9 +2,9 @@ package mafia.mafiatogether.game.ui;
 
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.config.PlayerInfo;
+import mafia.mafiatogether.common.annotation.PlayerInfo;
 import mafia.mafiatogether.game.application.GameService;
-import mafia.mafiatogether.config.PlayerInfoDto;
+import mafia.mafiatogether.common.resolver.PlayerInfoDto;
 import mafia.mafiatogether.game.application.dto.response.GameExistResponse;
 import mafia.mafiatogether.game.application.dto.response.GameInfoResponse;
 import mafia.mafiatogether.game.application.dto.response.GameResultResponse;

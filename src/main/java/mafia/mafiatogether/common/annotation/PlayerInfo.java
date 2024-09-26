@@ -1,4 +1,4 @@
-package mafia.mafiatogether.config;
+package mafia.mafiatogether.common.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,8 +1,8 @@
 package mafia.mafiatogether.lobby.application;
 
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.config.exception.ExceptionCode;
-import mafia.mafiatogether.config.exception.GameException;
+import mafia.mafiatogether.common.exception.ExceptionCode;
+import mafia.mafiatogether.common.exception.GameException;
 import mafia.mafiatogether.lobby.application.dto.request.LobbyCreateRequest;
 import mafia.mafiatogether.lobby.application.dto.response.LobbyCodeResponse;
 import mafia.mafiatogether.lobby.application.dto.response.LobbyValidateResponse;
