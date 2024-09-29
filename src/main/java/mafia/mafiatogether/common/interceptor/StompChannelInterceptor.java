@@ -1,5 +1,6 @@
 package mafia.mafiatogether.common.interceptor;
 
+import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.util.AuthExtractor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
@@ -12,16 +13,19 @@ import org.springframework.stereotype.Component;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 @Component
 @Configuration
+@RequiredArgsConstructor
 public class StompChannelInterceptor implements ChannelInterceptor {
 
     private static final String SUBSCRIBE_FORMAT = "/sub/chat/%s";
-    private static final String PUBLISHING_FORMAT = "/pub/chat/%s/%s";
-    private static final Map<StompCommand, String> formatMapper = Map.of(
-            StompCommand.SUBSCRIBE, SUBSCRIBE_FORMAT,
-            StompCommand.SEND, PUBLISHING_FORMAT
+    private static final String PUBLISHING_FORMAT = "%s/%s/%s";
+
+    private final Map<StompCommand, Consumer<StompHeaderAccessor>> actionByCommand = Map.of(
+            StompCommand.SUBSCRIBE, this::consumeWhenSubscribe,
+            StompCommand.SEND, this::consumeWhenPublish
     );
 
     @Override
@@ -31,15 +35,19 @@ public class StompChannelInterceptor implements ChannelInterceptor {
             return message;
         }
         StompCommand command = headerAccessor.getCommand();
-        if (command != StompCommand.SUBSCRIBE && command != StompCommand.SEND) {
+        if (!actionByCommand.containsKey(command)) {
             return message;
         }
-        String[] information = getInformation(headerAccessor);
-        headerAccessor.setDestination(String.format(formatMapper.get(command), information[0], information[1]));
+        actionByCommand.get(command).accept(headerAccessor);
         return message;
     }
 
-    private static String[] getInformation(StompHeaderAccessor headerAccessor) {
+    private void consumeWhenSubscribe(StompHeaderAccessor headerAccessor) {
+        String[] information = getInformation(headerAccessor);
+        headerAccessor.setDestination(SUBSCRIBE_FORMAT.formatted(information[0]));
+    }
+
+    private String[] getInformation(StompHeaderAccessor headerAccessor) {
         String destination = headerAccessor.getDestination();
         int lastIndexOfSlash = getLastIndexOfSlash(destination);
         String code = destination.substring(lastIndexOfSlash + 1);
@@ -47,7 +55,7 @@ public class StompChannelInterceptor implements ChannelInterceptor {
         return AuthExtractor.extractByCode(code);
     }
 
-    private static int getLastIndexOfSlash(String destination) {
+    private int getLastIndexOfSlash(String destination) {
         if (destination == null) {
             throw new IllegalArgumentException("Destination이 존재하지 않습니다.");
         }
@@ -59,6 +67,13 @@ public class StompChannelInterceptor implements ChannelInterceptor {
         }
 
         return lastIndexOfSlash;
+    }
+
+    private void consumeWhenPublish(StompHeaderAccessor headerAccessor) {
+        String[] information = getInformation(headerAccessor);
+        String prefixUrl = headerAccessor.getDestination()
+                .substring(0, headerAccessor.getDestination().lastIndexOf('/'));
+        headerAccessor.setDestination(PUBLISHING_FORMAT.formatted(prefixUrl, information[0], information[1]));
     }
 
 }

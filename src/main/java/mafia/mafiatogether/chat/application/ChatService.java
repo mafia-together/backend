@@ -2,6 +2,7 @@ package mafia.mafiatogether.chat.application;
 
 import java.time.Clock;
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.chat.application.dto.request.ChatRequest;
 import mafia.mafiatogether.chat.application.dto.response.ChatResponse;
@@ -43,7 +44,7 @@ public class ChatService {
     public void saveChat(final String code, final String name, final ChatRequest chatRequest) {
         final Chat chat = chatRepository.findById(code)
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
-        final Message message = new Message(name, chatRequest.content(), Clock.systemDefaultZone().millis());
+        final Message message = Message.ofChat(name, chatRequest.content());
         chat.saveMessage(message);
         chatRepository.save(chat);
     }

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Supplier;
 
 @Service
 @RequiredArgsConstructor
@@ -33,10 +34,24 @@ public class ChatV2Service {
     }
 
     @Transactional
-    public Message saveChat(final String name, final String code, final String content) {
+    public Message enter(final String name, final String code) {
+        return saveChat(code, () -> Message.fromEnter(name));
+    }
+
+    @Transactional
+    public Message leave(final String name, final String code) {
+        return saveChat(code, () -> Message.fromLeave(name));
+    }
+
+    @Transactional
+    public Message chat(final String name, final String code, final String content) {
+        return saveChat(code, () -> Message.ofChat(name, content));
+    }
+
+    private Message saveChat(final String code, Supplier<Message> messageFunction) {
         Chat chat = chatRepository.findById(code)
                 .orElseThrow(NoSuchElementException::new);
-        Message message = Message.of(name, content);
+        Message message = messageFunction.get();
         chat.saveMessage(message);
         chatRepository.save(chat);
         return message;

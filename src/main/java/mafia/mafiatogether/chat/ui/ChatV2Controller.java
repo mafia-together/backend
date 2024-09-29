@@ -28,6 +28,24 @@ public class ChatV2Controller {
         return ResponseEntity.ok(chatService.findAllChat(playerInfoDto.code(), playerInfoDto.name()));
     }
 
+    @MessageMapping("/chat/enter/{code}/{name}")
+    @SendToChatWithRedis("/sub/chat/{code}")
+    public Message enterChat(
+            @DestinationVariable("code") String code,
+            @DestinationVariable("name") String name
+    ) {
+        return chatService.enter(name, code);
+    }
+
+    @MessageMapping("/chat/leave/{code}/{name}")
+    @SendToChatWithRedis("/sub/chat/{code}")
+    public Message leaveChat(
+            @DestinationVariable("code") String code,
+            @DestinationVariable("name") String name
+    ) {
+        return chatService.leave(name, code);
+    }
+
     @MessageMapping("/chat/{code}/{name}")
     @SendToChatWithRedis("/sub/chat/{code}")
     public Message createChat(
@@ -35,7 +53,7 @@ public class ChatV2Controller {
             @DestinationVariable("name") String name,
             @Payload ChatRequest request
     ) {
-        return chatService.saveChat(name, code, request.content());
+        return chatService.chat(name, code, request.content());
     }
 
 

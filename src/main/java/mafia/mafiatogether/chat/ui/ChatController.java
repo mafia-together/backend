@@ -1,7 +1,9 @@
 package mafia.mafiatogether.chat.ui;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.annotation.PlayerInfo;
 import mafia.mafiatogether.chat.application.ChatService;
@@ -27,7 +29,6 @@ public class ChatController {
     public ResponseEntity<List<ChatResponse>> findAllChat(@PlayerInfo PlayerInfoDto playerInfoDto) {
         return ResponseEntity.ok(chatService.findAllChat(playerInfoDto.code(), playerInfoDto.name()));
     }
-
 
     @PostMapping
     public ResponseEntity<Void> saveChat(
