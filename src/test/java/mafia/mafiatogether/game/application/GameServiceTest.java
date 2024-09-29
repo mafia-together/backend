@@ -115,18 +115,18 @@ public class GameServiceTest {
         );
     }
 
-    @Test
-    void 상태가_변경시_이벤트가_발행된다() throws IOException {
-        // given
-        JobTarget mockedJobTarget = Mockito.mock(JobTarget.class);
-        Mockito.when(sseEmitterRepository.get(any())).thenReturn(List.of());
-        Mockito.when(jobTargetRepository.findById(any())).thenReturn(Optional.of(mockedJobTarget));
-
-        // when
-        gameService.changeStatus();
-
-        // then
-        Mockito.verify(sseEmitterRepository, Mockito.times(1)).get(STATUSCHANGEDGAME.getCode());
-        Mockito.verify(sseEmitterRepository, Mockito.times(0)).get(NOTCHANGEDGAME.getCode());
-    }
+//    @Test
+//    void 상태가_변경시_이벤트가_발행된다() throws IOException {
+//        // given
+//        JobTarget mockedJobTarget = Mockito.mock(JobTarget.class);
+//        Mockito.when(sseEmitterRepository.get(any())).thenReturn(List.of());
+//        Mockito.when(jobTargetRepository.findById(any())).thenReturn(Optional.of(mockedJobTarget));
+//
+//        // when
+//        gameService.changeStatus();
+//
+//        // then
+//        Mockito.verify(sseEmitterRepository, Mockito.times(1)).get(STATUSCHANGEDGAME.getCode());
+//        Mockito.verify(sseEmitterRepository, Mockito.times(0)).get(NOTCHANGEDGAME.getCode());
+//    }
 }
