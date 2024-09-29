@@ -47,6 +47,18 @@ function sendName() {
     });
 }
 
+function enterRoom() {
+    stompClient.publish({
+        destination: "/pub/chat/enter/aGVsbG86cG93ZXJhc3M=",
+    });
+}
+
+function leaveRoom() {
+    stompClient.publish({
+        destination: "/pub/chat/leave/aGVsbG86cG93ZXJhc3M=",
+    });
+}
+
 function showGreeting(message) {
     console.log('Received: ' + JSON.stringify(message));
     $("#greeting").append("<tr><td>" + JSON.stringify(message) + "</td></tr>");
@@ -57,4 +69,6 @@ $(function () {
     $("#connect").click(() => connect());
     $("#disconnect").click(() => disconnect());
     $("#send").click(() => sendName());
+    $("#enter").click(() => enterRoom());
+    $("#leave").click(() => leaveRoom());
 });
