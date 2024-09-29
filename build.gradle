@@ -26,6 +26,7 @@ dependencies {
     testImplementation 'org.testcontainers:testcontainers'
 
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -36,6 +37,9 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
+
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+
 }
 
 tasks.named('test') {
@@ -46,6 +50,6 @@ processResources.dependsOn('copySecret')
 
 tasks.register('copySecret', Copy) {
     from './backend-submodule'
-    include 'application.yml'
+    include 'application*.yml'
     into './src/main/resources'
 }

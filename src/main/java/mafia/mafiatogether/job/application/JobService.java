@@ -1,9 +1,9 @@
 package mafia.mafiatogether.job.application;
 
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.config.exception.ExceptionCode;
-import mafia.mafiatogether.config.exception.PlayerException;
-import mafia.mafiatogether.config.exception.GameException;
+import mafia.mafiatogether.common.exception.ExceptionCode;
+import mafia.mafiatogether.common.exception.PlayerException;
+import mafia.mafiatogether.common.exception.GameException;
 import mafia.mafiatogether.job.application.dto.request.JobExecuteAbilityRequest;
 import mafia.mafiatogether.job.application.dto.response.JobResponse;
 import mafia.mafiatogether.job.application.dto.response.MafiaTargetResponse;

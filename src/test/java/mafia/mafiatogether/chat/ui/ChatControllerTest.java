@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 @SuppressWarnings("NonAsciiCharacters")
-public class ChatControllerTest extends ControllerTest {
+class ChatControllerTest extends ControllerTest {
 
     @Autowired
     private ChatRepository chatRepository;
@@ -33,11 +33,11 @@ public class ChatControllerTest extends ControllerTest {
         setGame();
 
         Chat chat = new Chat(CODE, new ArrayList<>());
-        chat.saveMessage(new Message(MAFIA1, "contents1", Clock.systemDefaultZone().millis()));
-        chat.saveMessage(new Message(MAFIA2, "contents2", Clock.systemDefaultZone().millis()));
-        chat.saveMessage(new Message(POLICE, "contents3", Clock.systemDefaultZone().millis()));
-        chat.saveMessage(new Message(DOCTOR, "contents4", Clock.systemDefaultZone().millis()));
-        chat.saveMessage(new Message(CITIZEN, "contents5", Clock.systemDefaultZone().millis()));
+        chat.saveMessage(Message.ofChat(MAFIA1, "contents1"));
+        chat.saveMessage(Message.ofChat(MAFIA2, "contents2"));
+        chat.saveMessage(Message.ofChat(POLICE, "contents3"));
+        chat.saveMessage(Message.ofChat(DOCTOR, "contents4"));
+        chat.saveMessage(Message.ofChat(CITIZEN, "contents5"));
         chatRepository.save(chat);
     }
 
@@ -153,7 +153,7 @@ public class ChatControllerTest extends ControllerTest {
         RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Basic " + basic)
-                .body(Map.of("contents", "contents"))
+                .body(Map.of("content", "content"))
                 .when().post("/chat")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());

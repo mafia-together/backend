@@ -1,4 +1,4 @@
-package mafia.mafiatogether.config.exception;
+package mafia.mafiatogether.common.exception;
 
 import lombok.Getter;
 

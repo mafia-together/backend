@@ -1,9 +1,9 @@
 package mafia.mafiatogether.vote.ui;
 
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.config.PlayerInfo;
+import mafia.mafiatogether.common.annotation.PlayerInfo;
 import mafia.mafiatogether.vote.application.VoteService;
-import mafia.mafiatogether.config.PlayerInfoDto;
+import mafia.mafiatogether.common.resolver.PlayerInfoDto;
 import mafia.mafiatogether.vote.application.dto.request.VoteRequest;
 import mafia.mafiatogether.vote.application.dto.response.VoteResultResponse;
 import org.springframework.http.ResponseEntity;

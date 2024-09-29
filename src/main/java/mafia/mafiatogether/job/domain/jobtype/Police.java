@@ -1,8 +1,8 @@
 package mafia.mafiatogether.job.domain.jobtype;
 
 import java.util.Map;
-import mafia.mafiatogether.config.exception.ExceptionCode;
-import mafia.mafiatogether.config.exception.PlayerException;
+import mafia.mafiatogether.common.exception.ExceptionCode;
+import mafia.mafiatogether.common.exception.PlayerException;
 
 public class Police implements Job {
 

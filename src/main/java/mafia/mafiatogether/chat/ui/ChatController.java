@@ -1,13 +1,15 @@
 package mafia.mafiatogether.chat.ui;
 
 import jakarta.validation.Valid;
+
 import java.util.List;
+
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.config.PlayerInfo;
+import mafia.mafiatogether.common.annotation.PlayerInfo;
 import mafia.mafiatogether.chat.application.ChatService;
 import mafia.mafiatogether.chat.application.dto.request.ChatRequest;
 import mafia.mafiatogether.chat.application.dto.response.ChatResponse;
-import mafia.mafiatogether.config.PlayerInfoDto;
+import mafia.mafiatogether.common.resolver.PlayerInfoDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +29,6 @@ public class ChatController {
     public ResponseEntity<List<ChatResponse>> findAllChat(@PlayerInfo PlayerInfoDto playerInfoDto) {
         return ResponseEntity.ok(chatService.findAllChat(playerInfoDto.code(), playerInfoDto.name()));
     }
-
 
     @PostMapping
     public ResponseEntity<Void> saveChat(

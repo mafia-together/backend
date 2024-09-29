@@ -1,8 +1,8 @@
 package mafia.mafiatogether.vote.application;
 
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.config.exception.ExceptionCode;
-import mafia.mafiatogether.config.exception.GameException;
+import mafia.mafiatogether.common.exception.ExceptionCode;
+import mafia.mafiatogether.common.exception.GameException;
 import mafia.mafiatogether.vote.application.dto.event.AllPlayerVotedEvent;
 import mafia.mafiatogether.vote.application.dto.response.VoteResultResponse;
 import mafia.mafiatogether.vote.domain.Vote;

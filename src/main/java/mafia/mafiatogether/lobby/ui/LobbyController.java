@@ -2,8 +2,8 @@ package mafia.mafiatogether.lobby.ui;
 
 import java.util.Base64;
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.config.PlayerInfo;
-import mafia.mafiatogether.config.PlayerInfoDto;
+import mafia.mafiatogether.common.annotation.PlayerInfo;
+import mafia.mafiatogether.common.resolver.PlayerInfoDto;
 import mafia.mafiatogether.lobby.application.LobbyService;
 import mafia.mafiatogether.lobby.application.dto.request.LobbyCreateRequest;
 import mafia.mafiatogether.lobby.application.dto.response.LobbyAuthResponse;

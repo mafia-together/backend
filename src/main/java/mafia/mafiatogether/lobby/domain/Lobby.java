@@ -4,8 +4,8 @@ import java.time.Clock;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import mafia.mafiatogether.config.exception.ExceptionCode;
-import mafia.mafiatogether.config.exception.GameException;
+import mafia.mafiatogether.common.exception.ExceptionCode;
+import mafia.mafiatogether.common.exception.GameException;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 

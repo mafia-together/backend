@@ -3,7 +3,7 @@ package mafia.mafiatogether.job.domain;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Map;
-import mafia.mafiatogether.config.exception.PlayerException;
+import mafia.mafiatogether.common.exception.PlayerException;
 import mafia.mafiatogether.job.domain.jobtype.Citizen;
 import mafia.mafiatogether.job.domain.jobtype.Job;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
