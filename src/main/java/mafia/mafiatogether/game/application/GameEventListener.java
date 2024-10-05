@@ -148,7 +148,7 @@ public class GameEventListener {
     }
 
     private void sendStatusChangeEventToSseClient(final String code, final StatusType statusType) throws IOException {
-        List<SseEmitter> emitters = sseEmitterRepository.get(code);
+        List<SseEmitter> emitters = sseEmitterRepository.findByCode(code);
         for (SseEmitter emitter : emitters) {
             emitter.send(getSseEvent(statusType));
         }

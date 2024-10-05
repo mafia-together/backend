@@ -5,7 +5,7 @@ import static org.awaitility.Awaitility.await;
 import static org.mockito.ArgumentMatchers.any;
 
 import io.restassured.RestAssured;
-import java.io.IOException;
+
 import java.time.Clock;
 import java.time.Duration;
 import java.util.List;
@@ -93,7 +93,7 @@ public class GameServiceTest {
     void 스케쥴러에_의해_방의_시간이_변경된다() {
         // given
         JobTarget mockedJobTarget = Mockito.mock(JobTarget.class);
-        Mockito.when(sseEmitterRepository.get(any())).thenReturn(List.of());
+        Mockito.when(sseEmitterRepository.findByCode(any())).thenReturn(List.of());
         Mockito.when(jobTargetRepository.findById(any())).thenReturn(Optional.of(mockedJobTarget));
 
         // when & then

@@ -8,5 +8,9 @@ public interface SseEmitterRepository {
 
     void save(final String code, final SseEmitter sseEmitter);
 
-    List<SseEmitter> get(final String code);
+    List<SseEmitter> findByCode(final String code);
+
+    void deleteByCode(final String code);
+
+    void deleteByCodeAndEmitter(final String code, final SseEmitter sseEmitter);
 }

@@ -25,7 +25,20 @@ public class InMemorySseEmitterRepository implements SseEmitterRepository {
     }
 
     @Override
-    public List<SseEmitter> get(String code) {
+    public List<SseEmitter> findByCode(String code) {
+        if (!emitters.containsKey(code)) {
+            return new ArrayList<>();
+        }
         return emitters.get(code);
+    }
+
+    @Override
+    public void deleteByCode(String code) {
+        emitters.remove(code);
+    }
+
+    @Override
+    public void deleteByCodeAndEmitter(String code, SseEmitter sseEmitter) {
+        emitters.get(code).remove(sseEmitter);
     }
 }
