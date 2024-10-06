@@ -1,6 +1,7 @@
 package mafia.mafiatogether.game.ui;
 
 import java.io.IOException;
+
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.annotation.PlayerInfo;
 import mafia.mafiatogether.game.application.GameService;
@@ -57,7 +58,7 @@ public class GameController {
     public ResponseEntity<SseEmitter> subscribe(
             @PlayerInfo final PlayerInfoDto playerInfoDto
     ) throws IOException {
-        return ResponseEntity.ok(gameService.subscribe(playerInfoDto.code()));
+        return ResponseEntity.ok(gameService.subscribe(playerInfoDto.code(), playerInfoDto.name()));
     }
 
 
