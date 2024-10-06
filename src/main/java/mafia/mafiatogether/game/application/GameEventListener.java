@@ -1,22 +1,11 @@
 package mafia.mafiatogether.game.application;
 
-import java.io.IOException;
-import java.time.Clock;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.chat.domain.Chat;
 import mafia.mafiatogether.chat.domain.ChatRepository;
 import mafia.mafiatogether.common.exception.ExceptionCode;
 import mafia.mafiatogether.common.exception.GameException;
-import mafia.mafiatogether.game.application.dto.event.ClearJobTargetEvent;
-import mafia.mafiatogether.game.application.dto.event.ClearVoteEvent;
-import mafia.mafiatogether.game.application.dto.event.DeleteGameEvent;
-import mafia.mafiatogether.game.application.dto.event.GameStatusChangeEvent;
-import mafia.mafiatogether.game.application.dto.event.JobExecuteEvent;
-import mafia.mafiatogether.game.application.dto.event.StartGameEvent;
-import mafia.mafiatogether.game.application.dto.event.VoteExecuteEvent;
+import mafia.mafiatogether.game.application.dto.event.*;
 import mafia.mafiatogether.game.application.dto.response.GameStatusResponse;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.GameRepository;
@@ -37,6 +26,12 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
+
+import java.io.IOException;
+import java.time.Clock;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -109,6 +104,7 @@ public class GameEventListener {
         jobTargetRepository.deleteById(deleteGameEvent.code());
         chatRepository.deleteById(deleteGameEvent.code());
         voteRepository.deleteById(deleteGameEvent.code());
+        sseEmitterRepository.deleteByCode(deleteGameEvent.code());
         gameRepository.deleteById(deleteGameEvent.code());
 
         final Lobby room = lobbyRepository.findById(deleteGameEvent.code())
@@ -138,6 +134,7 @@ public class GameEventListener {
         jobTargetRepository.deleteById(deleteLobbyEvent.code());
         chatRepository.deleteById(deleteLobbyEvent.code());
         voteRepository.deleteById(deleteLobbyEvent.code());
+        sseEmitterRepository.deleteByCode(deleteLobbyEvent.code());
         gameRepository.deleteById(deleteLobbyEvent.code());
         lobbyRepository.deleteById(deleteLobbyEvent.code());
     }
