@@ -1,11 +1,10 @@
 package mafia.mafiatogether.game.ui;
 
-import java.io.IOException;
-
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.annotation.PlayerInfo;
-import mafia.mafiatogether.game.application.GameService;
 import mafia.mafiatogether.common.resolver.PlayerInfoDto;
+import mafia.mafiatogether.game.annotation.SseSubscribe;
+import mafia.mafiatogether.game.application.GameService;
 import mafia.mafiatogether.game.application.dto.response.GameExistResponse;
 import mafia.mafiatogether.game.application.dto.response.GameInfoResponse;
 import mafia.mafiatogether.game.application.dto.response.GameResultResponse;
@@ -55,12 +54,10 @@ public class GameController {
     }
 
     @GetMapping(path = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<SseEmitter> subscribe(
-            @PlayerInfo final PlayerInfoDto playerInfoDto
-    ) throws IOException {
-        return ResponseEntity.ok(gameService.subscribe(playerInfoDto.code(), playerInfoDto.name()));
+    @SseSubscribe
+    public ResponseEntity<SseEmitter> subscribe(@PlayerInfo final PlayerInfoDto playerInfoDto) {
+        return ResponseEntity.ok(new SseEmitter());
     }
-
 
     @GetMapping("/valid")
     public ResponseEntity<GameExistResponse> isValid(
