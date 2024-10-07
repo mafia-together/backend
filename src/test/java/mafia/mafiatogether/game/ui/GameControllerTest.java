@@ -1,12 +1,7 @@
 package mafia.mafiatogether.game.ui;
 
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-import static org.hamcrest.Matchers.equalTo;
-
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import java.util.Base64;
-import java.util.Map;
 import mafia.mafiatogether.common.exception.ErrorResponse;
 import mafia.mafiatogether.common.exception.ExceptionCode;
 import mafia.mafiatogether.game.application.dto.response.GameInfoResponse;
@@ -21,6 +16,12 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+
+import java.util.Base64;
+import java.util.Map;
+
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.hamcrest.Matchers.equalTo;
 
 @SuppressWarnings("NonAsciiCharacters")
 class GameControllerTest extends ControllerTest {

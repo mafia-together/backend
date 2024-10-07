@@ -2,8 +2,6 @@ package mafia.mafiatogether.global;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import java.util.Base64;
-import java.util.Map;
 import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.PlayerCollection;
 import mafia.mafiatogether.game.domain.status.StatusType;
@@ -13,20 +11,13 @@ import mafia.mafiatogether.lobby.domain.LobbyInfo;
 import mafia.mafiatogether.lobby.domain.LobbyRepository;
 import mafia.mafiatogether.vote.domain.VoteRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 
-@Import(RedisTestConfig.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public abstract class ControllerTest {
+import java.util.Base64;
+import java.util.Map;
 
-    @LocalServerPort
-    private int port;
+public abstract class ControllerTest extends RedisTestContainerSpringBootTest{
 
     @Autowired
     protected LobbyRepository lobbyRepository;
@@ -49,10 +40,6 @@ public abstract class ControllerTest {
     protected String POLICE;
     protected String CITIZEN;
 
-    @BeforeEach
-    void setPort() {
-        RestAssured.port = port;
-    }
 
     protected void setLobby() {
         final Lobby lobby = Lobby.create(CODE, LobbyInfo.of(5, 2, 1, 1));
