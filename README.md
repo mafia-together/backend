@@ -22,7 +22,7 @@
 
 ## 실시간 통신
 ---
-![실시간 통신](https://github.com/user-attachments/assets/cfed3048-214b-495a-a8f7-2dcd1428db1c)
+![실시간 통신](https://github.com/user-attachments/assets/3fe666b1-a8dc-4254-a330-4100d610b2da)
 
 ## 멤버
 
