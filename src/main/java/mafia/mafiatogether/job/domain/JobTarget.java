@@ -25,7 +25,7 @@ public class JobTarget {
     public String findTarget() {
         final String mafiaTarget = findJobTargetBy(JobType.MAFIA);
         final String doctorTarget = findJobTargetBy(JobType.DOCTOR);
-        if (mafiaTarget.equals(doctorTarget)) {
+        if (mafiaTarget == null || mafiaTarget.equals(doctorTarget)) {
             return null;
         }
         return mafiaTarget;
