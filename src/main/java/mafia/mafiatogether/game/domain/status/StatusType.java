@@ -12,4 +12,5 @@ public enum StatusType {
     NIGHT,
     END,
     DELETED
+
 }

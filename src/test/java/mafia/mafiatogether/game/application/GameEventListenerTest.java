@@ -240,7 +240,7 @@ class GameEventListenerTest extends ControllerTest {
         final String target = PLAYER1_NAME;
         game.skipStatus(Clock.systemDefaultZone().millis()); // NOTICE
         game.skipStatus(Clock.systemDefaultZone().millis()); // DAY
-        Mockito.when(sseEmitterRepository.get(any())).thenReturn(List.of());
+        Mockito.when(sseEmitterRepository.findByCode(any())).thenReturn(List.of());
         gameRepository.save(game);
 
         // when
@@ -254,6 +254,6 @@ class GameEventListenerTest extends ControllerTest {
         // then
         final StatusType actual = gameRepository.findById(CODE).get().getStatus().getType();
         Assertions.assertThat(actual).isEqualTo(StatusType.VOTE);
-        Mockito.verify(sseEmitterRepository, Mockito.atLeast(1)).get(CODE);
+        Mockito.verify(sseEmitterRepository, Mockito.atLeast(1)).findByCode(CODE);
     }
 }

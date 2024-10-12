@@ -4,6 +4,8 @@ import org.springframework.boot.test.context.TestConfiguration;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import java.time.Duration;
+
 @TestConfiguration
 public class RedisTestConfig {
 
@@ -12,11 +14,12 @@ public class RedisTestConfig {
     static {
         GenericContainer<?> REDIS_CONTAINER = new GenericContainer<>(DockerImageName.parse(REDIS_DOCKER_IMAGE))
                 .withExposedPorts(6379)
+                .withStartupTimeout(Duration.ofSeconds(60))
                 .withReuse(true);
 
         REDIS_CONTAINER.start();
 
-        System.setProperty("spring.redis.host", REDIS_CONTAINER.getHost());
-        System.setProperty("spring.redis.port", REDIS_CONTAINER.getMappedPort(6379).toString());
+        System.setProperty("spring.data.redis.host", REDIS_CONTAINER.getHost());
+        System.setProperty("spring.data.redis.port", REDIS_CONTAINER.getMappedPort(6379).toString());
     }
 }
