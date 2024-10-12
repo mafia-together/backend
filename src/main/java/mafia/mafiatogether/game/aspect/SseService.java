@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.annotation.PlayerInfo;
 import mafia.mafiatogether.common.exception.AuthException;
 import mafia.mafiatogether.common.exception.ExceptionCode;
+import mafia.mafiatogether.common.resolver.PlayerInfoDto;
 import mafia.mafiatogether.game.application.dto.response.GameStatusResponse;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.GameRepository;
@@ -45,8 +46,9 @@ public class SseService {
         String[] codeAndName = new String[2];
         for (int i = 0; i < parameterAnnotations.length; i++) {
             if (hasPlayerInfo(parameterAnnotations[i])) {
-                codeAndName[0] = args[i].toString();
-                codeAndName[1] = args[i].toString();
+                PlayerInfoDto playerInfoDto = (PlayerInfoDto) args[i];
+                codeAndName[0] = playerInfoDto.code();
+                codeAndName[1] = playerInfoDto.name();
                 break;
             }
         }
