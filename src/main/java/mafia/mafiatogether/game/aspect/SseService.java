@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.annotation.PlayerInfo;
 import mafia.mafiatogether.common.exception.AuthException;
 import mafia.mafiatogether.common.exception.ExceptionCode;
-import mafia.mafiatogether.common.resolver.PlayerInfoDto;
 import mafia.mafiatogether.game.application.dto.response.GameStatusResponse;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.GameRepository;
@@ -21,6 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Aspect
@@ -36,7 +36,6 @@ public class SseService {
 
     @Around("@annotation(mafia.mafiatogether.game.annotation.SseSubscribe)")
     public ResponseEntity<SseEmitter> subscribe(final ProceedingJoinPoint joinPoint) throws Throwable {
-
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
 
@@ -45,27 +44,24 @@ public class SseService {
 
         String[] codeAndName = new String[2];
         for (int i = 0; i < parameterAnnotations.length; i++) {
-            findCodeOrName(parameterAnnotations[i], args[i], codeAndName);
+            if (hasPlayerInfo(parameterAnnotations[i])) {
+                codeAndName[0] = args[i].toString();
+                codeAndName[1] = args[i].toString();
+                break;
+            }
         }
 
-        String code = codeAndName[0];
-        String name = codeAndName[1];
-        SseEmitter sseEmitter = createSseEmitter(code, name);
-        sseEmitterRepository.save(code, name, sseEmitter);
+        if (codeAndName[0] == null || codeAndName[1] == null) {
+            throw new AuthException(ExceptionCode.INVALID_AUTHENTICATION_FORM);
+        }
+
+        SseEmitter sseEmitter = createSseEmitter(codeAndName[0], codeAndName[1]);
+        sseEmitterRepository.save(codeAndName[0], codeAndName[1], sseEmitter);
         return ResponseEntity.ok(sseEmitter);
     }
 
-    private void findCodeOrName(Annotation[] annotations, Object argument, String[] codeAndName) {
-        for (Annotation annotation : annotations) {
-            if (!(annotation instanceof PlayerInfo)) {
-                continue;
-            }
-            PlayerInfoDto playerInfoDto = (PlayerInfoDto) argument;
-            codeAndName[0] = playerInfoDto.code();
-            codeAndName[1] = playerInfoDto.name();
-            return;
-        }
-        throw new AuthException(ExceptionCode.INVALID_AUTHENTICATION_FORM);
+    private boolean hasPlayerInfo(Annotation[] annotations) {
+        return Arrays.stream(annotations).anyMatch(PlayerInfo.class::isInstance);
     }
 
     private SseEmitter createSseEmitter(String code, String name) throws IOException {

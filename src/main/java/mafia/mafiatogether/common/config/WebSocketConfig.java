@@ -19,7 +19,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/stomp");
+        registry.addEndpoint("/stomp")
+                .setAllowedOrigins(
+                        "https://dev.mafia-together.com",
+                        "https://mafia-together.com",
+                        "http://localhost:5173",
+                        "https://localhost:5173"
+                );
     }
 
     @Override
