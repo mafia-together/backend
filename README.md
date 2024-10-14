@@ -13,7 +13,8 @@
 
 ## 기술 스택
 ---
-![Skill](https://github.com/user-attachments/assets/f5f2bf5a-8249-4d88-b8d2-aff91a79fc76)
+![Skill](https://github.com/user-attachments/assets/4695beb1-2ff3-4649-b6ee-80c67900a2a9)
+
 
 ## 인프라 아키텍쳐
 ---
