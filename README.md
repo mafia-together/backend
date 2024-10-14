@@ -13,12 +13,12 @@
 
 ## 기술 스택
 ---
-![Skill](https://github.com/user-attachments/assets/e5b18101-c81d-4c54-9001-e9d5772c4c5f)
-
+![Skill](https://github.com/user-attachments/assets/f5f2bf5a-8249-4d88-b8d2-aff91a79fc76)
 
 ## 인프라 아키텍쳐
 ---
-![infra-architecture](https://github.com/user-attachments/assets/e7db379d-8218-47f1-995c-9fa7efd4ce38)
+![infra-architecture](https://github.com/user-attachments/assets/ffc7e50e-a9b1-4168-9969-42f554551790)
+
 
 ## 실시간 통신
 ---
