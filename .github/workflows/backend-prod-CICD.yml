@@ -35,9 +35,7 @@ jobs:
         run: ./gradlew build
 
       - name: 빌드 파일 deploy 파일로 이동
-        run: |
-          cp -f build/libs/*.jar /home/ubuntu/deploy/
-          cd /home/ubuntu/deploy
+        run: cp -f build/libs/*.jar /home/ubuntu/deploy/
 
       - name: Docker login
         uses: docker/login-action@v2
@@ -47,6 +45,7 @@ jobs:
 
       - name: Build and push to DockerHub
         run: |
+          cd /home/ubuntu/deploy
           docker build --tag ${{secrets.DOCKER_USERNAME}}/${{secrets.DOCKER_USERNAME}} .
           docker push ${{secrets.DOCKER_USERNAME}}/${{secrets.DOCKER_USERNAME}}:latest
 
