@@ -50,7 +50,7 @@ jobs:
                   "url": "https://github.com/pknu-wap/WAPP/blob/main/image/icon.png?raw=true",
                   "icon_url": "${{ github.event.pull_request.user.avatar_url }}"
                 },
-                "title": "배포 성공 ~ 파워 엉덩이 확인하자 ~ 🥰🥰 \n#${{ github.event.pull_request.number }} : ${{ github.event.pull_request.title }}",
+                "title": "테스트 성공 ~ 파워 엉덩이 확인하자 ~ 🥰🥰 \n#${{ github.event.pull_request.number }} : ${{ github.event.pull_request.title }}",
                 "color": 10478271,
                 "description": "${{ github.event.pull_request.html_url }}",
                 "fields": [
@@ -83,7 +83,7 @@ jobs:
                   "url": "https://github.com/pknu-wap/WAPP/blob/main/image/icon.png?raw=true",
                   "icon_url": "${{ github.event.pull_request.user.avatar_url }}"
                 },
-                "title": "배포 실패... 달리 엉덩이 가져와 \n#${{ github.event.pull_request.number }} : ${{ github.event.pull_request.title }}",
+                "title": "테스트 실패... 달리 엉덩이 가져와 \n#${{ github.event.pull_request.number }} : ${{ github.event.pull_request.title }}",
                 "color": 13458524,
                 "description": "${{ github.event.pull_request.html_url }}",
                 "fields": [
