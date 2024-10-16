@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mafia.mafiatogether.common.application.ErrorNotificationService;
+import mafia.mafiatogether.common.application.dto.ErrorDiscordMessageRequest;
 import mafia.mafiatogether.common.exception.ErrorResponse.FieldErrorResponse;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -29,6 +29,7 @@ public class GlobalExceptionHandler {
 
     private final Environment environment;
     private final ErrorNotificationService errorNotificationService;
+    private static final String LOCAL_PROFILE_NAME = "local";
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> Exception(Exception e, HttpServletRequest request) {
@@ -105,65 +106,27 @@ public class GlobalExceptionHandler {
     }
 
     private void notifyException(boolean isError, HttpServletRequest request, Exception exception) {
-        if (Arrays.asList(environment.getActiveProfiles()).contains("local")) {
+        if (Arrays.asList(environment.getActiveProfiles()).contains(LOCAL_PROFILE_NAME)) {
             return;
         }
-
-        StringBuilder headersBuilder = new StringBuilder();
-        Enumeration<String> headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String headerName = headerNames.nextElement();
-            headersBuilder.append(headerName)
-                    .append(": ")
-                    .append(request.getHeader(headerName))
-                    .append("\n");
-        }
-        String headers = headersBuilder.toString();
-
-        StringBuilder parametersBuilder = new StringBuilder();
-        Enumeration<String> parameterNames = request.getParameterNames();
-        while (parameterNames.hasMoreElements()) {
-            String paramName = parameterNames.nextElement();
-            parametersBuilder.append(paramName)
-                    .append(": ")
-                    .append(request.getParameter(paramName))
-                    .append("\n");
-        }
-        String parameters = parametersBuilder.toString();
-
-        String fullStackTrace = exception.toString() + "\n";
-        for (StackTraceElement element : exception.getStackTrace()) {
-            fullStackTrace += element.toString() + "\n";
-        }
-        if (fullStackTrace.length() > 3000) {
-            fullStackTrace = fullStackTrace.substring(0, 3000);
-        }
+        String headers = getInformationFromHeader(request);
+        String parameters = getInformationFromParameter(request);
+        String fullStackTrace = getFullStackTrace(exception);
+        ErrorDiscordMessageRequest errorDiscordMessageRequest = new ErrorDiscordMessageRequest(
+                environment.getActiveProfiles(),
+                request.getRequestURI(),
+                request.getMethod(),
+                request.getRemoteAddr(),
+                request.getRemoteUser(),
+                headers,
+                parameters,
+                exception
+        );
 
         errorNotificationService.notifyError(
                 isError,
-                "### 🕖 발생 시간\n" +
-                        LocalDateTime.now() + "\n" +
-                        "### Profile\n" +
-                        Arrays.toString(environment.getActiveProfiles()) + "\n" +
-                        "### 📎 요청 URI\n" +
-                        request.getRequestURI() + " (" + request.getMethod() + ")\n" +
-                        "### 🛠 요청자 정보\n" +
-                        "- IP: " + request.getRemoteAddr() + "\n" +
-                        "- 사용자: " + (request.getRemoteUser() != null ? request.getRemoteUser() : "Unknown") + "\n" +
-                        "- 헤더:\n" +
-                        "```\n" +
-                        headers +
-                        "```\n" +
-                        "- 요청 파라미터:\n" +
-                        "```\n" +
-                        parameters +
-                        "```\n" +
-                        "### ✅ 예외 정보\n" +
-                        "- 예외 클래스: " + exception.getClass().getCanonicalName() + "\n" +
-                        "- 예외 메시지: " + (exception.getMessage() != null ? exception.getMessage() : "No message") + "\n" +
-                        "- 발생 위치: " + extractExceptionSource(exception) + "\n"
+                errorDiscordMessageRequest
         );
-
         errorNotificationService.notifyError(
                 isError,
                 "### 🗂 스택 트레이스 (부분)\n" +
@@ -173,12 +136,42 @@ public class GlobalExceptionHandler {
         );
     }
 
-    private String extractExceptionSource(Exception exception) {
-        StackTraceElement[] stackTrace = exception.getStackTrace();
-        if (stackTrace.length > 0) {
-            return stackTrace[0].toString();
+    private String getInformationFromHeader(HttpServletRequest request) {
+        StringBuilder headersBuilder = new StringBuilder();
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            headersBuilder.append(headerName)
+                    .append(": ")
+                    .append(request.getHeader(headerName))
+                    .append("\n");
         }
-        return "Unknown Source";
+        return headersBuilder.toString();
+    }
+
+    private String getInformationFromParameter(HttpServletRequest request) {
+        StringBuilder parametersBuilder = new StringBuilder();
+        Enumeration<String> parameterNames = request.getParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            String paramName = parameterNames.nextElement();
+            parametersBuilder.append(paramName)
+                    .append(": ")
+                    .append(request.getParameter(paramName))
+                    .append("\n");
+        }
+        return parametersBuilder.toString();
+    }
+
+    private String getFullStackTrace(Exception exception) {
+        int restrictionMessageLengthOfDiscord = 3000;
+        StringBuilder fullStackTrace = new StringBuilder(exception.toString() + "\n");
+
+        for (StackTraceElement element : exception.getStackTrace()) {
+            fullStackTrace.append(element.toString()).append("\n");
+        }
+
+        int stackTraceLength = Math.min(fullStackTrace.length(), restrictionMessageLengthOfDiscord);
+        return fullStackTrace.substring(0, stackTraceLength);
     }
 
 }

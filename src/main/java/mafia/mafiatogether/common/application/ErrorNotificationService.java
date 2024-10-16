@@ -1,6 +1,7 @@
 package mafia.mafiatogether.common.application;
 
 import lombok.RequiredArgsConstructor;
+import mafia.mafiatogether.common.application.dto.ErrorDiscordMessageRequest;
 import mafia.mafiatogether.common.domain.DiscordMessage;
 import mafia.mafiatogether.common.domain.ErrorNotificationClient;
 import mafia.mafiatogether.common.domain.WarningNotificationClient;
@@ -21,5 +22,15 @@ public class ErrorNotificationService {
 
         warningNotificationClient.notifyWarning(DiscordMessage.createWarningDiscordMessage(exceptionMessage));
     }
+
+    public void notifyError(boolean isError, ErrorDiscordMessageRequest errorDiscordMessageRequest) {
+        if (isError) {
+            errorNotificationClient.notifyError(DiscordMessage.createErrorDiscordMessage(errorDiscordMessageRequest.toErrorMessage()));
+            return;
+        }
+
+        warningNotificationClient.notifyWarning(DiscordMessage.createWarningDiscordMessage(errorDiscordMessageRequest.toErrorMessage()));
+    }
+
 
 }
