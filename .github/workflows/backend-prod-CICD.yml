@@ -2,7 +2,7 @@ name: Prod CI/CD
 
 on:
   push:
-    branches: [prod]
+    branches: [ prod ]
 
 permissions:
   contents: read
@@ -58,3 +58,70 @@ jobs:
           script: |
             cd ~/deploy
             sh deploy.sh
+
+      - name: 성공 메시지 전송
+        if: ${{ success() }}
+        uses: Ilshidur/action-discord@0.3.2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_GITHUB_WEBHOOK }}
+          DISCORD_USERNAME: Mafia-Together-BOT
+          DISCORD_AVATAR: https://i.namu.wiki/i/vMYV9DNseNCfKzaPIDshk7eG_7pAZm8BG6c2I_s6XXwyreDbpu3A1nDRUpbqvycQrRvgbSJeg15iXSSiGK5xyw.webp
+          DISCORD_EMBEDS: |
+            [
+              {
+                "author": {
+                  "name": "${{ github.event.pull_request.user.login }}",
+                  "url": "https://github.com/pknu-wap/WAPP/blob/main/image/icon.png?raw=true",
+                  "icon_url": "${{ github.event.pull_request.user.avatar_url }}"
+                },
+                "title": "배포 성공 ~ 파워 엉덩이 확인하자 ~ 🥰🥰 \n#${{ github.event.pull_request.number }} : ${{ github.event.pull_request.title }}",
+                "color": 10478271,
+                "description": "${{ github.event.pull_request.html_url }}",
+                "fields": [
+                  {
+                    "name": "Base Branch",
+                    "value": "${{ github.base_ref }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Compare Branch",
+                    "value": "${{ github.head_ref }}",
+                    "inline": true
+                  }
+                ]
+              }
+            ]
+
+      - name: 실패 메시지 전송
+        if: ${{ failure() }}
+        uses: Ilshidur/action-discord@0.3.2
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_GITHUB_WEBHOOK }}
+          DISCORD_USERNAME: Mafia-Together-BOT
+          DISCORD_AVATAR: https://i.namu.wiki/i/vMYV9DNseNCfKzaPIDshk7eG_7pAZm8BG6c2I_s6XXwyreDbpu3A1nDRUpbqvycQrRvgbSJeg15iXSSiGK5xyw.webp
+          DISCORD_EMBEDS: |
+            [
+              {
+                "author": {
+                  "name": "${{ github.event.pull_request.user.login }}",
+                  "url": "https://github.com/pknu-wap/WAPP/blob/main/image/icon.png?raw=true",
+                  "icon_url": "${{ github.event.pull_request.user.avatar_url }}"
+                },
+                "title": "배포 실패... 달리 엉덩이 가져와 \n#${{ github.event.pull_request.number }} : ${{ github.event.pull_request.title }}",
+                "color": 13458524,
+                "description": "${{ github.event.pull_request.html_url }}",
+                "fields": [
+                  {
+                    "name": "Base Branch",
+                    "value": "${{ github.base_ref }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Compare Branch",
+                    "value": "${{ github.head_ref }}",
+                    "inline": true
+                  }
+                ]
+              }
+            ]
+
