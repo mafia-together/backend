@@ -99,11 +99,12 @@ public class GameEventListener {
     }
 
     @EventListener
-    public void listenDeleteGameEvent(final DeleteGameEvent deleteGameEvent) {
+    public void listenDeleteGameEvent(final DeleteGameEvent deleteGameEvent) throws IOException {
         playerJobRepository.deleteById(deleteGameEvent.code());
         jobTargetRepository.deleteById(deleteGameEvent.code());
         chatRepository.deleteById(deleteGameEvent.code());
         voteRepository.deleteById(deleteGameEvent.code());
+        sendStatusChangeEventToSseClient(deleteGameEvent.code(), StatusType.WAIT);
         sseEmitterRepository.deleteByCode(deleteGameEvent.code());
         gameRepository.deleteById(deleteGameEvent.code());
 
