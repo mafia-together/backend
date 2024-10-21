@@ -9,6 +9,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.redisson.RedissonMultiLock;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
@@ -32,11 +33,12 @@ public class RedisTransactionAspect {
     public Object lock(final ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         final String[] keys = getRedisLockKey(proceedingJoinPoint);
         final RLock[] locks = getRLocks(keys);
+        final RedissonMultiLock multiLock = new RedissonMultiLock(locks);
 
         boolean isLocked;
 
         try {
-            isLocked = tryLockAll(locks);
+            isLocked = multiLock.tryLock(WAIT_TIME, LEASE_TIME, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             throw new ServerException(ExceptionCode.GETTING_LOCK_FAIL_EXCEPTION);
         }
@@ -48,7 +50,7 @@ public class RedisTransactionAspect {
         try {
             return proceedingJoinPoint.proceed();
         } finally {
-            unlockAll(locks);
+            multiLock.unlock();
         }
     }
 
@@ -81,21 +83,6 @@ public class RedisTransactionAspect {
             rLocks[i] = redissonClient.getLock(keys[i]);
         }
         return rLocks;
-    }
-
-    private boolean tryLockAll(final RLock[] rLocks) throws InterruptedException {
-        for (RLock rLock : rLocks) {
-            if(!rLock.tryLock(WAIT_TIME, LEASE_TIME, TimeUnit.SECONDS)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private void unlockAll(final RLock[] rLocks) {
-        for (RLock rLock : rLocks) {
-            rLock.unlock();
-        }
     }
 
     private boolean hasTarget(Annotation[] annotations) {
