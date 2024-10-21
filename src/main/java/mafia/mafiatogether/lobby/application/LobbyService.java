@@ -1,6 +1,8 @@
 package mafia.mafiatogether.lobby.application;
 
 import lombok.RequiredArgsConstructor;
+import mafia.mafiatogether.common.annotation.RedisLock;
+import mafia.mafiatogether.common.annotation.RedisLockTarget;
 import mafia.mafiatogether.common.exception.ExceptionCode;
 import mafia.mafiatogether.common.exception.GameException;
 import mafia.mafiatogether.lobby.application.dto.request.LobbyCreateRequest;
@@ -22,7 +24,7 @@ public class LobbyService {
     @Transactional
     public LobbyCodeResponse create(final LobbyCreateRequest request) {
         String code = CodeGenerator.generate();
-        while (lobbyRepository.existsById(code)){
+        while (lobbyRepository.existsById(code)) {
             code = CodeGenerator.generate();
         }
         final LobbyInfo lobbyInfo = LobbyInfo.of(request.total(), request.mafia(), request.doctor(), request.police());
@@ -32,7 +34,8 @@ public class LobbyService {
     }
 
     @Transactional
-    public void join(final String code, final String name) {
+    @RedisLock(key = "lobby")
+    public void join(@RedisLockTarget final String code, final String name) {
         final Lobby lobby = lobbyRepository.findById(code)
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         lobby.joinPlayer(name);
