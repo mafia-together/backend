@@ -20,7 +20,6 @@ public class RedisLockTestLobbyService {
         Thread.sleep(50);
         final Lobby lobby = lobbyRepository.findById(code)
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
-        System.out.println("Wait and Input");
         lobby.joinPlayer(name);
         lobbyRepository.save(lobby);
     }
