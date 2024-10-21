@@ -18,7 +18,6 @@ import mafia.mafiatogether.lobby.application.dto.response.LobbyCodeResponse;
 import mafia.mafiatogether.lobby.domain.Lobby;
 import mafia.mafiatogether.lobby.domain.LobbyInfo;
 import mafia.mafiatogether.lobby.domain.LobbyRepository;
-import mafia.mafiatogether.lobby.domain.Participant;
 import org.assertj.core.api.Assertions;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.AfterEach;
@@ -245,10 +244,6 @@ class LobbyControllerTest extends ControllerTest {
         countDownLatch.await();
 
         final Lobby actual = lobbyRepository.findById(CODE).get();
-        System.out.println(actual.getParticipants().size());
-        for (Participant name : lobby.getParticipants().getParticipants()) {
-            System.out.println(name.getName());
-        }
         Assertions.assertThat(actual.isParticipantExist(expect)).isTrue();
     }
 }
