@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class RedisTransactionAspect {
+public class RedisLockAspect {
 
     private static final String LOCK_KEY_PREFIX = "mafiatogether:lock:";
     public static final int WAIT_TIME = 5;
