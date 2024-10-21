@@ -30,7 +30,10 @@ public enum ExceptionCode {
 
     NOT_FOUND_REQUEST(300, "HttpServletRequest를 찾을 수 없습니다."),
     MISSING_AUTHENTICATION_HEADER(301, "인증 헤더가 없습니다."),
-    INVALID_AUTHENTICATION_FORM(302, "올바른 인증 형식이 아닙니다.");
+    INVALID_AUTHENTICATION_FORM(302, "올바른 인증 형식이 아닙니다."),
+
+    LOCK_CODE_EXCEPTION(501, "RedisLockTarget 파라미터를 찾을 수 없습니다."),
+    GETTING_LOCK_FAIL_EXCEPTION(502, "레디스 락을 얻는데 실패하였습니다.");
 
     private final int code;
     private final String message;
