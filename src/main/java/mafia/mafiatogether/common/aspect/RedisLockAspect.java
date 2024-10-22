@@ -25,8 +25,8 @@ import java.util.concurrent.TimeUnit;
 public class RedisLockAspect {
 
     private static final String LOCK_KEY_PREFIX = "mafiatogether:lock:";
-    public static final int WAIT_TIME = 5;
-    public static final int LEASE_TIME = 15;
+    private static final int WAIT_TIME = 5;
+    private static final int LEASE_TIME = 15;
     private final RedissonClient redissonClient;
 
     @Around("@annotation(mafia.mafiatogether.common.annotation.RedisLock)")
