@@ -8,7 +8,7 @@ import java.lang.annotation.*;
  * 또한 이 Lock이 어노테이션이 없는 대상은 해당 자원에 접근할 수 있습니다.
  * 이 어노테이션은 이 어노테이션을 사용하는 메서드끼리만의 자원 접근을 막을 수 있습니다.
  * <p>
- * 이 어노테이션을 사용하는 메서드는 꼭 @RedisLockTarget을 사용하여 잠금 대상을 지정해주어야 합니다.
+ * 이 어노테이션을 사용하는 메서드는 꼭 {@link mafia.mafiatogether.common.annotation.RedisLockTarget}을 사용하여 잠금 대상을 지정해주어야 합니다.
  * <p>
  * 작성자: waterricecake
  * <p>
