@@ -6,7 +6,9 @@ import mafia.mafiatogether.common.exception.ExceptionCode;
 import mafia.mafiatogether.common.exception.GameException;
 import mafia.mafiatogether.lobby.domain.Lobby;
 import mafia.mafiatogether.lobby.domain.LobbyRepository;
+import org.springframework.boot.test.context.TestComponent;
 
+@TestComponent
 class RedisLockTestLobbyService {
 
     private final LobbyRepository lobbyRepository;

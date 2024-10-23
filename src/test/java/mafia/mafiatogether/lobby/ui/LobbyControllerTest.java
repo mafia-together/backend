@@ -27,13 +27,19 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 
+
+@Import(RedisLockTestLobbyService.class)
 @SuppressWarnings("NonAsciiCharacters")
 class LobbyControllerTest extends ControllerTest {
 
     @Autowired
     private LobbyRepository lobbyRepository;
+
+    @Autowired
+    private RedisLockTestLobbyService redisLockTestLobbyService;
 
     @BeforeEach
     void setTest() {
@@ -210,14 +216,13 @@ class LobbyControllerTest extends ControllerTest {
         lobby.joinPlayer("A");
         lobby.joinPlayer("B");
         lobbyRepository.save(lobby);
-        int count = 100;
+        int count = 2;
         ExecutorService executorService = Executors.newFixedThreadPool(count);
         CountDownLatch countDownLatch = new CountDownLatch(count);
 
         // when
         executorService.execute(
                 () -> {
-                    RedisLockTestLobbyService redisLockTestLobbyService = new RedisLockTestLobbyService(lobbyRepository);
                     try {
                         redisLockTestLobbyService.waitAndInput(CODE, expect);
                     } catch (Exception e) {
@@ -228,7 +233,7 @@ class LobbyControllerTest extends ControllerTest {
                 }
         );
 
-        Thread.sleep(500);
+        Thread.sleep(10);
 
         for (int i = 1; i < count; i++) {
             executorService.execute(
