@@ -8,10 +8,8 @@ import java.lang.annotation.*;
  * 또한 이 Lock이 어노테이션이 없는 대상은 해당 자원에 접근할 수 있습니다.
  * 이 어노테이션은 이 어노테이션을 사용하는 메서드끼리만의 자원 접근을 막을 수 있습니다.
  * <p>
- * 이 어노테이션을 사용하는 메서드는 꼭 {@link mafia.mafiatogether.common.annotation.RedisLockTarget}을 사용하여 잠금 대상을 지정해주어야 합니다.
- * <p>
  * 작성자: waterricecake
- * <p>
+ * </p>
  * 수정일시 : 20241021
  */
 @Target(ElementType.METHOD)
@@ -23,10 +21,13 @@ public @interface RedisLock {
      * <pre>
      *  ex) @RedisLock(key = "lobby") 를 사용할 경우 키는 "mafiatogether:lock:lobby"가 완성됩니다. 이후 뒤는 랜덤한 값(code)를 사용하여 유니크하게 유지합니다.
      * </pre>
+     * @exception mafia.mafiatogether.common.exception.ServerException if {@link mafia.mafiatogether.common.annotation.RedisLockTarget} not exists
      * <p>
      * 작성자: waterricecake
+     * </p>
      * <p>
      * 수정일시 : 20241021
+     * </p>
      */
     String[] key();
 }
