@@ -2,9 +2,14 @@ package mafia.mafiatogether.lobby.ui;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Stream;
+
 import mafia.mafiatogether.common.exception.ErrorResponse;
 import mafia.mafiatogether.common.exception.ExceptionCode;
 import mafia.mafiatogether.global.ControllerTest;
@@ -22,22 +27,28 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpStatus;
 
+
+@Import(RedisLockTestLobbyService.class)
 @SuppressWarnings("NonAsciiCharacters")
 class LobbyControllerTest extends ControllerTest {
 
     @Autowired
     private LobbyRepository lobbyRepository;
 
+    @Autowired
+    private RedisLockTestLobbyService redisLockTestLobbyService;
+
     @BeforeEach
-    void setTest(){
-        final Lobby lobby = Lobby.create(CODE, LobbyInfo.of(3,1,1,1));
+    void setTest() {
+        final Lobby lobby = Lobby.create(CODE, LobbyInfo.of(3, 1, 1, 1));
         lobbyRepository.save(lobby);
     }
 
     @AfterEach
-    void clearTest(){
+    void clearTest() {
         lobbyRepository.deleteById(CODE);
     }
 
@@ -195,5 +206,49 @@ class LobbyControllerTest extends ControllerTest {
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("exist", Matchers.equalTo(true));
+    }
+
+    @Test
+    void 방_한자리_남았을때_동시접근시_최초1인만_입장할_수_있다() throws InterruptedException {
+        // given
+        String expect = "C";
+        Lobby lobby = lobbyRepository.findById(CODE).get();
+        lobby.joinPlayer("A");
+        lobby.joinPlayer("B");
+        lobbyRepository.save(lobby);
+        int count = 2;
+        ExecutorService executorService = Executors.newFixedThreadPool(count);
+        CountDownLatch countDownLatch = new CountDownLatch(count);
+
+        // when
+        executorService.execute(
+                () -> {
+                    try {
+                        redisLockTestLobbyService.waitAndInput(CODE, expect);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    } finally {
+                        countDownLatch.countDown();
+                    }
+                }
+        );
+
+        Thread.sleep(10);
+
+        for (int i = 1; i < count; i++) {
+            executorService.execute(
+                    () -> {
+                        RestAssured.given().log().all()
+                                .contentType(ContentType.JSON)
+                                .when().get("/lobbies?code=" + CODE + "&name=power")
+                                .then().log().all();
+                        countDownLatch.countDown();
+                    }
+            );
+        }
+        countDownLatch.await();
+
+        final Lobby actual = lobbyRepository.findById(CODE).get();
+        Assertions.assertThat(actual.isParticipantExist(expect)).isTrue();
     }
 }
