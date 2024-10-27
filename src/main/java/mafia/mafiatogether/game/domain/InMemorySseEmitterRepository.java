@@ -26,11 +26,19 @@ public class InMemorySseEmitterRepository implements SseEmitterRepository {
     }
 
     @Override
-    public List<SseEmitter> findByCode(String code) {
+    public List<SseEmitter> findByCode(String code) { // TODO : 이거를 Name 이랑 Mapping해서 반환하는 것은 어떠신가요?
         if (!emitters.containsKey(code)) {
             return new ArrayList<>();
         }
         return emitters.get(code).values().stream().toList();
+    }
+
+    @Override
+    public SseEmitter findByCodeAndName(String code, String name) {
+        if (!emitters.containsKey(code) || !emitters.get(code).containsKey(name)) {
+            throw new IllegalArgumentException("sse emitter of user not found");
+        }
+        return emitters.get(code).get(name);
     }
 
     @Override
