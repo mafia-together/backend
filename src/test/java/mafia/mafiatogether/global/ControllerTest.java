@@ -6,18 +6,20 @@ import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.PlayerCollection;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
+import mafia.mafiatogether.lobby.application.LobbyEventListener;
 import mafia.mafiatogether.lobby.domain.Lobby;
 import mafia.mafiatogether.lobby.domain.LobbyInfo;
 import mafia.mafiatogether.lobby.domain.LobbyRepository;
 import mafia.mafiatogether.vote.domain.VoteRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 
 import java.util.Base64;
 import java.util.Map;
 
-public abstract class ControllerTest extends RedisTestContainerSpringBootTest{
+public abstract class ControllerTest extends RedisTestContainerSpringBootTest {
 
     @Autowired
     protected LobbyRepository lobbyRepository;
@@ -27,6 +29,9 @@ public abstract class ControllerTest extends RedisTestContainerSpringBootTest{
 
     @Autowired
     protected VoteRepository voteRepository;
+
+    @MockBean
+    protected LobbyEventListener lobbyEventListener;
 
     protected final static String CODE = "1234567890";
     protected final static String PLAYER1_NAME = "player1";
