@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 
 public record ChatV2Response(
         String name,
-        String contents,
+        String content,
         MessageType messageType,
         Timestamp timestamp,
         Boolean isOwner
@@ -20,7 +20,7 @@ public record ChatV2Response(
     ) {
         return new ChatV2Response(
                 message.getName(),
-                message.getContents(),
+                message.getContent(),
                 message.getMessageType(),
                 new Timestamp(message.getTimestamp()),
                 isOwner
