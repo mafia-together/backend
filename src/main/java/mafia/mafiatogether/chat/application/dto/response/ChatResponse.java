@@ -1,12 +1,13 @@
 package mafia.mafiatogether.chat.application.dto.response;
 
 import java.sql.Timestamp;
+
 import mafia.mafiatogether.chat.domain.Message;
 import mafia.mafiatogether.job.domain.jobtype.JobType;
 
 public record ChatResponse(
         String name,
-        String contents,
+        String content,
         Timestamp timestamp,
         Boolean isOwner,
         JobType job
@@ -21,7 +22,7 @@ public record ChatResponse(
     ) {
         return new ChatResponse(
                 message.getName(),
-                message.getContents(),
+                message.getContent(),
                 new Timestamp(message.getTimestamp()),
                 isOwner,
                 filteringMafia(isOwner, isMafia, jobType)
