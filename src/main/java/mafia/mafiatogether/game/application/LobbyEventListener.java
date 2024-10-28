@@ -1,4 +1,4 @@
-package mafia.mafiatogether.lobby.application;
+package mafia.mafiatogether.game.application;
 
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.game.domain.SseEmitterRepository;
