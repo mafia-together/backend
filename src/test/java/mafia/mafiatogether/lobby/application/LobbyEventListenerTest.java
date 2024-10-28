@@ -1,5 +1,6 @@
 package mafia.mafiatogether.lobby.application;
 
+import mafia.mafiatogether.game.application.LobbyEventListener;
 import mafia.mafiatogether.game.domain.SseEmitterRepository;
 import mafia.mafiatogether.lobby.application.dto.event.ParticipantJoinEvent;
 import mafia.mafiatogether.lobby.domain.Lobby;
@@ -18,6 +19,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
+@SuppressWarnings("NonAsciiCharacters")
 @ExtendWith(MockitoExtension.class)
 class LobbyEventListenerTest {
 

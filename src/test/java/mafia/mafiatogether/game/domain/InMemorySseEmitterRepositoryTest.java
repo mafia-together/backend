@@ -1,5 +1,6 @@
 package mafia.mafiatogether.game.domain;
 
+import mafia.mafiatogether.common.exception.ServerException;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
+@SuppressWarnings("NonAsciiCharacters")
 class InMemorySseEmitterRepositoryTest {
 
     private InMemorySseEmitterRepository inMemorySseEmitterRepository;
@@ -39,7 +41,7 @@ class InMemorySseEmitterRepositoryTest {
         ThrowingCallable actual = () -> inMemorySseEmitterRepository.findByCodeAndName("code", "name");
 
         // then
-        assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(actual).isInstanceOf(ServerException.class);
     }
 
     @Test
@@ -52,7 +54,7 @@ class InMemorySseEmitterRepositoryTest {
         ThrowingCallable actual = () -> inMemorySseEmitterRepository.findByCodeAndName("code", "name");
 
         // then
-        assertThatThrownBy(actual).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(actual).isInstanceOf(ServerException.class);
     }
 
 }
