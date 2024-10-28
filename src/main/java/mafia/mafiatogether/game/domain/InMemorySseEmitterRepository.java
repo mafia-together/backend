@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import mafia.mafiatogether.common.exception.ExceptionCode;
+import mafia.mafiatogether.common.exception.ServerException;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -26,7 +28,7 @@ public class InMemorySseEmitterRepository implements SseEmitterRepository {
     }
 
     @Override
-    public List<SseEmitter> findByCode(String code) { // TODO : 이거를 Name 이랑 Mapping해서 반환하는 것은 어떠신가요?
+    public List<SseEmitter> findByCode(String code) {
         if (!emitters.containsKey(code)) {
             return new ArrayList<>();
         }
@@ -36,7 +38,7 @@ public class InMemorySseEmitterRepository implements SseEmitterRepository {
     @Override
     public SseEmitter findByCodeAndName(String code, String name) {
         if (!emitters.containsKey(code) || !emitters.get(code).containsKey(name)) {
-            throw new IllegalArgumentException("sse emitter of user not found");
+            throw new ServerException(ExceptionCode.INVALID_PLAYER);
         }
         return emitters.get(code).get(name);
     }
