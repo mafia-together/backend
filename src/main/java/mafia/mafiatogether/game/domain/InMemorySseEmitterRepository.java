@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import mafia.mafiatogether.common.exception.ExceptionCode;
+import mafia.mafiatogether.common.exception.ServerException;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -31,6 +33,14 @@ public class InMemorySseEmitterRepository implements SseEmitterRepository {
             return new ArrayList<>();
         }
         return emitters.get(code).values().stream().toList();
+    }
+
+    @Override
+    public SseEmitter findByCodeAndName(String code, String name) {
+        if (!emitters.containsKey(code) || !emitters.get(code).containsKey(name)) {
+            throw new ServerException(ExceptionCode.INVALID_PLAYER);
+        }
+        return emitters.get(code).get(name);
     }
 
     @Override
