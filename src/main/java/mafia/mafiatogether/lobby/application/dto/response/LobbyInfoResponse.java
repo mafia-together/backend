@@ -14,7 +14,7 @@ public record LobbyInfoResponse(
     public static LobbyInfoResponse of(Lobby lobby, String myName) {
         return new LobbyInfoResponse(
                 lobby.getLobbyInfo().getTotal(),
-                lobby.getMaster().getName().equals(myName),
+                lobby.isMaster(myName),
                 myName,
                 lobby.getParticipants()
                         .getParticipants()

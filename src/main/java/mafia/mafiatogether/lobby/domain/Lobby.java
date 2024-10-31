@@ -70,4 +70,9 @@ public class Lobby extends AbstractAggregateRoot<Lobby> {
     public boolean isParticipantExist(final String name) {
         return participants.contains(name);
     }
+
+    public boolean isMaster(String myName) {
+        return master.getName()
+                .equals(myName);
+    }
 }
