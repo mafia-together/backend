@@ -48,4 +48,8 @@ public class SseEventPublisher {
         SseEmitter.SseEventBuilder eventBuilder = getSseEventBuilder(eventName, event);
         publishSseEvent(sseEmitter, eventBuilder);
     }
+
+    public void disconnectSseByCode(final String code) {
+        sseEmitterRepository.deleteByCode(code);
+    }
 }

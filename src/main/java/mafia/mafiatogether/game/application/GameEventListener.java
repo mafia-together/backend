@@ -11,7 +11,6 @@ import mafia.mafiatogether.game.application.dto.response.GameStatusResponse;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.Player;
-import mafia.mafiatogether.common.domain.SseEmitterRepository;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.job.domain.JobTarget;
 import mafia.mafiatogether.job.domain.JobTargetRepository;
@@ -26,7 +25,6 @@ import mafia.mafiatogether.vote.domain.VoteRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
 import java.time.Clock;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +40,6 @@ public class GameEventListener {
     private final JobTargetRepository jobTargetRepository;
     private final PlayerJobRepository playerJobRepository;
     private final ChatRepository chatRepository;
-    private final SseEmitterRepository sseEmitterRepository;
     private final SseEventPublisher sseEventPublisher;
 
     @EventListener
@@ -100,15 +97,16 @@ public class GameEventListener {
 
     @EventListener
     public void listenDeleteGameEvent(final DeleteGameEvent deleteGameEvent) {
-        playerJobRepository.deleteById(deleteGameEvent.code());
-        jobTargetRepository.deleteById(deleteGameEvent.code());
-        chatRepository.deleteById(deleteGameEvent.code());
-        voteRepository.deleteById(deleteGameEvent.code());
-        sendStatusChangeEventToSseClient(deleteGameEvent.code(), StatusType.WAIT);
-        sseEmitterRepository.deleteByCode(deleteGameEvent.code());
-        gameRepository.deleteById(deleteGameEvent.code());
+        final String code = deleteGameEvent.code();
+        playerJobRepository.deleteById(code);
+        jobTargetRepository.deleteById(code);
+        chatRepository.deleteById(code);
+        voteRepository.deleteById(code);
+        sendStatusChangeEventToSseClient(code, StatusType.WAIT);
+        sseEventPublisher.disconnectSseByCode(code);
+        gameRepository.deleteById(code);
 
-        final Lobby room = lobbyRepository.findById(deleteGameEvent.code())
+        final Lobby room = lobbyRepository.findById(code)
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         room.updateLastUpdateTime();
     }
@@ -131,17 +129,18 @@ public class GameEventListener {
 
     @EventListener
     public void listenDeleteLobbyEvent(final DeleteLobbyEvent deleteLobbyEvent) {
-        playerJobRepository.deleteById(deleteLobbyEvent.code());
-        jobTargetRepository.deleteById(deleteLobbyEvent.code());
-        chatRepository.deleteById(deleteLobbyEvent.code());
-        voteRepository.deleteById(deleteLobbyEvent.code());
-        sseEmitterRepository.deleteByCode(deleteLobbyEvent.code());
-        gameRepository.deleteById(deleteLobbyEvent.code());
-        lobbyRepository.deleteById(deleteLobbyEvent.code());
+        final String code = deleteLobbyEvent.code();
+        playerJobRepository.deleteById(code);
+        jobTargetRepository.deleteById(code);
+        chatRepository.deleteById(code);
+        voteRepository.deleteById(code);
+        sseEventPublisher.disconnectSseByCode(code);
+        gameRepository.deleteById(code);
+        lobbyRepository.deleteById(code);
     }
 
     @EventListener
-    public void listenGameStatusChangeEvent(final GameStatusChangeEvent gameStatusChangeEvent) throws IOException {
+    public void listenGameStatusChangeEvent(final GameStatusChangeEvent gameStatusChangeEvent) {
         sendStatusChangeEventToSseClient(gameStatusChangeEvent.code(), gameStatusChangeEvent.statusType());
     }
 
