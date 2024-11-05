@@ -21,16 +21,28 @@ public class LobbyEventListener {
     private final SseEmitterRepository sseEmitterRepository;
 
     @EventListener
-    public void handleJoinEvent(final ParticipantJoinEvent participantJoinEvent) throws IOException {
+    public void handleJoinEvent(final ParticipantJoinEvent participantJoinEvent) {
         Lobby lobby = participantJoinEvent.lobby();
-        String roomCode = lobby.getCode();
+        String ignoreName = participantJoinEvent.name();
         List<Participant> participants = lobby.getParticipants()
                 .getParticipants();
 
         for (Participant participant : participants) {
             String eachParticipantName = participant.getName();
-            SseEmitter sseEmitter = sseEmitterRepository.findByCodeAndName(roomCode, eachParticipantName);
-            sseEmitter.send(getSseEvent(lobby, eachParticipantName));
+            sendEvent(lobby, eachParticipantName, ignoreName);
+        }
+    }
+
+    private void sendEvent(Lobby lobby, String participantName, String ignoreName) {
+        if (participantName.equals(ignoreName)) {
+            return;
+        }
+        String code = lobby.getCode();
+        SseEmitter sseEmitter = sseEmitterRepository.findByCodeAndName(code, participantName);
+        try {
+            sseEmitter.send(getSseEvent(lobby, participantName));
+        } catch (IOException e) {
+            sseEmitter.completeWithError(e);
         }
     }
 

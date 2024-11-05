@@ -44,7 +44,7 @@ class LobbyEventListenerTest {
         given(sseEmitterRepository.findByCodeAndName(roomCode, nameOfPlayer2)).willReturn(sseEmitters.get(1));
 
         // when
-        lobbyEventListener.handleJoinEvent(new ParticipantJoinEvent(lobby));
+        lobbyEventListener.handleJoinEvent(new ParticipantJoinEvent(lobby, "newParticipant"));
 
         // then
         verify(sseEmitterRepository).findByCodeAndName(roomCode, nameOfPlayer1);

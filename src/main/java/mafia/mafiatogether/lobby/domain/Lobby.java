@@ -54,7 +54,7 @@ public class Lobby extends AbstractAggregateRoot<Lobby> {
         if (master.equals(Participant.NONE)) {
             master = participant;
         }
-        registerEvent(new ParticipantJoinEvent(this));
+        registerEvent(new ParticipantJoinEvent(this, name));
     }
 
     public void validateToStart() {
