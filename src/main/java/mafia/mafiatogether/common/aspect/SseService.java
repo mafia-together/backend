@@ -1,20 +1,15 @@
-package mafia.mafiatogether.game.aspect;
+package mafia.mafiatogether.common.aspect;
 
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.annotation.PlayerInfo;
 import mafia.mafiatogether.common.exception.AuthException;
 import mafia.mafiatogether.common.exception.ExceptionCode;
 import mafia.mafiatogether.common.resolver.PlayerInfoDto;
-import mafia.mafiatogether.game.application.dto.response.GameStatusResponse;
-import mafia.mafiatogether.game.domain.Game;
-import mafia.mafiatogether.game.domain.GameRepository;
-import mafia.mafiatogether.game.domain.SseEmitterRepository;
-import mafia.mafiatogether.game.domain.status.StatusType;
+import mafia.mafiatogether.common.domain.SseEmitterRepository;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -22,21 +17,18 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Optional;
 
 @Aspect
 @Component
 @RequiredArgsConstructor
 public class SseService {
 
-    private static final String SSE_STATUS = "gameStatus";
     public static final long HOURS_12 = 43200_000L;
     public static final long SECOND_30 = 30_000L;
     private final SseEmitterRepository sseEmitterRepository;
-    private final GameRepository gameRepository;
 
-    @Around("@annotation(mafia.mafiatogether.game.annotation.SseSubscribe)")
-    public ResponseEntity<SseEmitter> subscribe(final ProceedingJoinPoint joinPoint) throws Throwable {
+    @Around("@annotation(mafia.mafiatogether.common.annotation.SseSubscribe)")
+    public Object subscribe(final ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
         Method method = methodSignature.getMethod();
 
@@ -57,33 +49,28 @@ public class SseService {
             throw new AuthException(ExceptionCode.INVALID_AUTHENTICATION_FORM);
         }
 
-        SseEmitter sseEmitter = createSseEmitter(codeAndName[0], codeAndName[1]);
-        sseEmitterRepository.save(codeAndName[0], codeAndName[1], sseEmitter);
-        return ResponseEntity.ok(sseEmitter);
+        final String code = codeAndName[0];
+        final String name = codeAndName[1];
+
+        SseEmitter sseEmitter = (SseEmitter) joinPoint.proceed();
+        sseEmitterRepository.save(code, name, sseEmitter);
+        sseEmitter.onCompletion(() -> sseEmitterRepository.deleteByCodeAndEmitter(code, name));
+        sseEmitter.onTimeout(sseEmitter::complete);
+
+        return sseEmitter;
     }
 
     private boolean hasPlayerInfo(Annotation[] annotations) {
         return Arrays.stream(annotations).anyMatch(PlayerInfo.class::isInstance);
     }
 
-    private SseEmitter createSseEmitter(String code, String name) throws IOException {
+    public static SseEmitter getSseEmitter(final String name, final Object event) throws IOException {
         SseEmitter sseEmitter = new SseEmitter(HOURS_12);
-        sseEmitter.send(getSseEvent(code));
-        sseEmitter.onCompletion(() -> sseEmitterRepository.deleteByCodeAndEmitter(code, name));
-        sseEmitter.onTimeout(sseEmitter::complete);
-        return sseEmitter;
-    }
-
-    private SseEmitter.SseEventBuilder getSseEvent(final String code) {
-        Optional<Game> game = gameRepository.findById(code);
-        return game.map(value -> getSseEventBuilder(value.getStatus().getType()))
-                .orElseGet(() -> getSseEventBuilder(StatusType.WAIT));
-    }
-
-    private static SseEmitter.SseEventBuilder getSseEventBuilder(final StatusType statusType) {
-        return SseEmitter.event()
-                .name(SSE_STATUS)
-                .data(new GameStatusResponse(statusType))
+        SseEmitter.SseEventBuilder sseEventBuilder = SseEmitter.event()
+                .name(name)
+                .data(event)
                 .reconnectTime(SECOND_30);
+        sseEmitter.send(sseEventBuilder);
+        return sseEmitter;
     }
 }

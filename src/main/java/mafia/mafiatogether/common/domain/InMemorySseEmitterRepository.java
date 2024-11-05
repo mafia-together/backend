@@ -1,4 +1,4 @@
-package mafia.mafiatogether.game.domain;
+package mafia.mafiatogether.common.domain;
 
 import java.util.ArrayList;
 import java.util.List;

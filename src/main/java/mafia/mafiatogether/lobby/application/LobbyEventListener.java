@@ -1,7 +1,7 @@
-package mafia.mafiatogether.game.application;
+package mafia.mafiatogether.lobby.application;
 
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.game.domain.SseEmitterRepository;
+import mafia.mafiatogether.common.domain.SseEmitterRepository;
 import mafia.mafiatogether.lobby.application.dto.event.ParticipantJoinEvent;
 import mafia.mafiatogether.lobby.application.dto.response.LobbyInfoResponse;
 import mafia.mafiatogether.lobby.domain.Lobby;

@@ -3,7 +3,7 @@ package mafia.mafiatogether.game.application;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.PlayerCollection;
-import mafia.mafiatogether.game.domain.SseEmitterRepository;
+import mafia.mafiatogether.common.domain.SseEmitterRepository;
 import mafia.mafiatogether.game.domain.status.DayIntroStatus;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.global.RedisTestContainerSpringBootTest;
