@@ -2,6 +2,7 @@ package mafia.mafiatogether.common.aspect;
 
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.annotation.PlayerInfo;
+import mafia.mafiatogether.common.application.SseEventPublisher;
 import mafia.mafiatogether.common.exception.AuthException;
 import mafia.mafiatogether.common.exception.ExceptionCode;
 import mafia.mafiatogether.common.resolver.PlayerInfoDto;
@@ -21,10 +22,9 @@ import java.util.Arrays;
 @Aspect
 @Component
 @RequiredArgsConstructor
-public class SseService {
+public class SseAspect {
 
     public static final long HOURS_12 = 43200_000L;
-    public static final long SECOND_30 = 30_000L;
     private final SseEmitterRepository sseEmitterRepository;
 
     @Around("@annotation(mafia.mafiatogether.common.annotation.SseSubscribe)")
@@ -66,10 +66,7 @@ public class SseService {
 
     public static SseEmitter getSseEmitter(final String name, final Object event) throws IOException {
         SseEmitter sseEmitter = new SseEmitter(HOURS_12);
-        SseEmitter.SseEventBuilder sseEventBuilder = SseEmitter.event()
-                .name(name)
-                .data(event)
-                .reconnectTime(SECOND_30);
+        SseEmitter.SseEventBuilder sseEventBuilder = SseEventPublisher.getSseEventBuilder(name, event);
         sseEmitter.send(sseEventBuilder);
         return sseEmitter;
     }

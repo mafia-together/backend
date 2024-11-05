@@ -1,6 +1,6 @@
 package mafia.mafiatogether.lobby.application;
 
-import mafia.mafiatogether.common.domain.SseEmitterRepository;
+import mafia.mafiatogether.common.application.SseEventPublisher;
 import mafia.mafiatogether.lobby.application.dto.event.ParticipantJoinEvent;
 import mafia.mafiatogether.lobby.domain.Lobby;
 import mafia.mafiatogether.lobby.domain.LobbyInfo;
@@ -9,14 +9,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("NonAsciiCharacters")
 @ExtendWith(MockitoExtension.class)
@@ -26,30 +21,27 @@ class LobbyEventListenerTest {
     private LobbyEventListener lobbyEventListener;
 
     @Mock
-    private SseEmitterRepository sseEmitterRepository;
+    private SseEventPublisher sseEventPublisher;
 
     @Test
     void 새로운_유저가_접속하면_각각의_유저에게_SSE_Event를_발송합니다() throws Exception {
         // given
-        List<SseEmitter> sseEmitters = List.of(mock(SseEmitter.class), mock(SseEmitter.class));
         LobbyInfo lobbyInfo = LobbyInfo.of(3, 1, 1, 1);
         String roomCode = "code";
         String nameOfPlayer1 = "name1";
         String nameOfPlayer2 = "name2";
+        final String newPlayer = "newPlayer";
+        String eventName = "lobbyInfo";
         Lobby lobby = Lobby.create(roomCode, lobbyInfo);
         lobby.joinPlayer(nameOfPlayer1);
         lobby.joinPlayer(nameOfPlayer2);
-        given(sseEmitterRepository.findByCodeAndName(roomCode, nameOfPlayer1)).willReturn(sseEmitters.get(0));
-        given(sseEmitterRepository.findByCodeAndName(roomCode, nameOfPlayer2)).willReturn(sseEmitters.get(1));
 
         // when
-        lobbyEventListener.handleJoinEvent(new ParticipantJoinEvent(lobby, "newParticipant"));
+        lobbyEventListener.handleJoinEvent(new ParticipantJoinEvent(lobby, newPlayer));
 
         // then
-        verify(sseEmitterRepository).findByCodeAndName(roomCode, nameOfPlayer1);
-        verify(sseEmitterRepository).findByCodeAndName(roomCode, nameOfPlayer2);
-        verify(sseEmitters.get(0)).send(any(SseEmitter.SseEventBuilder.class));
-        verify(sseEmitters.get(1)).send(any(SseEmitter.SseEventBuilder.class));
+        verify(sseEventPublisher).publishEventByCodeAndName(eq(roomCode), eq(nameOfPlayer1), eq(eventName), any());
+        verify(sseEventPublisher).publishEventByCodeAndName(eq(roomCode), eq(nameOfPlayer2), eq(eventName), any());
+        verify(sseEventPublisher, times(0)).publishEventByCodeAndName(eq(roomCode), eq(newPlayer), eq(eventName), any());
     }
-
 }

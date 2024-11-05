@@ -3,6 +3,7 @@ package mafia.mafiatogether.game.application;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.chat.domain.Chat;
 import mafia.mafiatogether.chat.domain.ChatRepository;
+import mafia.mafiatogether.common.application.SseEventPublisher;
 import mafia.mafiatogether.common.exception.ExceptionCode;
 import mafia.mafiatogether.common.exception.GameException;
 import mafia.mafiatogether.game.application.dto.event.*;
@@ -24,19 +25,17 @@ import mafia.mafiatogether.vote.domain.Vote;
 import mafia.mafiatogether.vote.domain.VoteRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 
 import java.io.IOException;
 import java.time.Clock;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class GameEventListener {
 
+    private static final String GAME_STATUS_EVENT_NAME = "gameStatus";
     private final GameRepository gameRepository;
     private final VoteRepository voteRepository;
     private final LobbyRepository lobbyRepository;
@@ -44,6 +43,7 @@ public class GameEventListener {
     private final PlayerJobRepository playerJobRepository;
     private final ChatRepository chatRepository;
     private final SseEmitterRepository sseEmitterRepository;
+    private final SseEventPublisher sseEventPublisher;
 
     @EventListener
     public void listenVoteExecuteEvent(final VoteExecuteEvent voteExecuteEvent) {
@@ -99,7 +99,7 @@ public class GameEventListener {
     }
 
     @EventListener
-    public void listenDeleteGameEvent(final DeleteGameEvent deleteGameEvent) throws IOException {
+    public void listenDeleteGameEvent(final DeleteGameEvent deleteGameEvent) {
         playerJobRepository.deleteById(deleteGameEvent.code());
         jobTargetRepository.deleteById(deleteGameEvent.code());
         chatRepository.deleteById(deleteGameEvent.code());
@@ -114,7 +114,7 @@ public class GameEventListener {
     }
 
     @EventListener
-    public void listenAllPlayerVoteEvent(final AllPlayerVotedEvent allPlayerVotedEvent) throws IOException {
+    public void listenAllPlayerVoteEvent(final AllPlayerVotedEvent allPlayerVotedEvent) {
         final Game game = gameRepository.findById(allPlayerVotedEvent.code())
                 .orElseThrow(() -> new GameException(ExceptionCode.INVALID_NOT_FOUND_ROOM_CODE));
         if (!game.getStatus().getType().equals(StatusType.DAY)) {
@@ -145,17 +145,8 @@ public class GameEventListener {
         sendStatusChangeEventToSseClient(gameStatusChangeEvent.code(), gameStatusChangeEvent.statusType());
     }
 
-    private void sendStatusChangeEventToSseClient(final String code, final StatusType statusType) throws IOException {
-        List<SseEmitter> emitters = sseEmitterRepository.findByCode(code);
-        for (SseEmitter emitter : emitters) {
-            emitter.send(getSseEvent(statusType));
-        }
+    private void sendStatusChangeEventToSseClient(final String code, final StatusType statusType) {
+        final GameStatusResponse gameStatusResponse = new GameStatusResponse(statusType);
+        sseEventPublisher.publishEventToAllSseClient(code, GAME_STATUS_EVENT_NAME, gameStatusResponse);
     }
-
-    private SseEventBuilder getSseEvent(StatusType statusType) {
-        return SseEmitter.event()
-                .name("gameStatus")
-                .data(new GameStatusResponse(statusType));
-    }
-
 }

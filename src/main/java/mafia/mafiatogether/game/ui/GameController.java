@@ -2,7 +2,7 @@ package mafia.mafiatogether.game.ui;
 
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.annotation.PlayerInfo;
-import mafia.mafiatogether.common.aspect.SseService;
+import mafia.mafiatogether.common.aspect.SseAspect;
 import mafia.mafiatogether.common.resolver.PlayerInfoDto;
 import mafia.mafiatogether.common.annotation.SseSubscribe;
 import mafia.mafiatogether.game.application.GameService;
@@ -61,7 +61,7 @@ public class GameController {
     @GetMapping(path = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter subscribe(@PlayerInfo final PlayerInfoDto playerInfoDto) throws IOException {
         GameStatusResponse gameStatusResponse = gameService.findStatus(playerInfoDto.code());
-        return SseService.getSseEmitter(SSE_STATUS, gameStatusResponse);
+        return SseAspect.getSseEmitter(SSE_STATUS, gameStatusResponse);
     }
 
     @GetMapping("/valid")
