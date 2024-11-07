@@ -18,8 +18,6 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class SseEventPublisherTest {
 
-
-
     @InjectMocks
     private SseEventPublisher sseEventPublisher;
 
@@ -31,20 +29,19 @@ class SseEventPublisherTest {
     private SseEmitter SSE_EMITTER_1;
     private SseEmitter SSE_EMITTER_2;
     private SseEmitter SSE_EMITTER_3;
-    private List<SseEmitter> SSEEMITTERS;
 
     @BeforeEach
     void setSseEmitters() {
         SSE_EMITTER_1 = mock(SseEmitter.class);
         SSE_EMITTER_2 = mock(SseEmitter.class);
         SSE_EMITTER_3 = mock(SseEmitter.class);
-        SSEEMITTERS = List.of(SSE_EMITTER_1, SSE_EMITTER_2, SSE_EMITTER_3);
     }
 
     @Test
     void 모든_구독자에게_같은_이벤트를_발행한다() throws IOException {
         // given
-        when(sseEmitterSession.findByCode(CODE)).thenReturn(SSEEMITTERS);
+        List<SseEmitter> sseEmitters = List.of(SSE_EMITTER_1, SSE_EMITTER_2, SSE_EMITTER_3);
+        when(sseEmitterSession.findByCode(CODE)).thenReturn(sseEmitters);
         String event = "event";
 
         // when

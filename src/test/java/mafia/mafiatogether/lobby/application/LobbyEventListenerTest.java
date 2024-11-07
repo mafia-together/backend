@@ -24,7 +24,7 @@ class LobbyEventListenerTest {
     private SseEventPublisher sseEventPublisher;
 
     @Test
-    void 새로운_유저가_접속하면_각각의_유저에게_SSE_Event를_발송합니다() throws Exception {
+    void 새로운_유저가_접속하면_각각의_유저에게_SSE_Event를_발송합니다(){
         // given
         LobbyInfo lobbyInfo = LobbyInfo.of(3, 1, 1, 1);
         String roomCode = "code";
