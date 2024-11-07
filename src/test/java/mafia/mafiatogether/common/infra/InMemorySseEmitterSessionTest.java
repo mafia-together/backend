@@ -1,6 +1,5 @@
-package mafia.mafiatogether.game.domain;
+package mafia.mafiatogether.common.infra;
 
-import mafia.mafiatogether.common.infra.InMemorySseEmitterSession;
 import mafia.mafiatogether.common.exception.ServerException;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
