@@ -13,6 +13,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
+
 
 import java.io.IOException;
 import java.lang.annotation.Annotation;
@@ -29,13 +31,13 @@ public class SseAspect {
 
     @Around("@annotation(mafia.mafiatogether.common.annotation.SseSubscribe)")
     public Object subscribe(final ProceedingJoinPoint joinPoint) throws Throwable {
-        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
-        Method method = methodSignature.getMethod();
+        final MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        final Method method = methodSignature.getMethod();
 
-        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-        Object[] args = joinPoint.getArgs();
+        final Annotation[][] parameterAnnotations = method.getParameterAnnotations();
+        final Object[] args = joinPoint.getArgs();
 
-        String[] codeAndName = new String[2];
+        final String[] codeAndName = new String[2];
         for (int i = 0; i < parameterAnnotations.length; i++) {
             if (hasPlayerInfo(parameterAnnotations[i])) {
                 PlayerInfoDto playerInfoDto = (PlayerInfoDto) args[i];
@@ -52,7 +54,7 @@ public class SseAspect {
         final String code = codeAndName[0];
         final String name = codeAndName[1];
 
-        SseEmitter sseEmitter = (SseEmitter) joinPoint.proceed();
+        final SseEmitter sseEmitter = (SseEmitter) joinPoint.proceed();
         sseEmitterSession.save(code, name, sseEmitter);
         sseEmitter.onCompletion(() -> sseEmitterSession.deleteByCodeAndEmitter(code, name));
         sseEmitter.onTimeout(sseEmitter::complete);
@@ -60,13 +62,13 @@ public class SseAspect {
         return sseEmitter;
     }
 
-    private boolean hasPlayerInfo(Annotation[] annotations) {
+    private boolean hasPlayerInfo(final Annotation[] annotations) {
         return Arrays.stream(annotations).anyMatch(PlayerInfo.class::isInstance);
     }
 
     public static SseEmitter getSseEmitter(final String name, final Object event) throws IOException {
-        SseEmitter sseEmitter = new SseEmitter(HOURS_12);
-        SseEmitter.SseEventBuilder sseEventBuilder = SseEventPublisher.getSseEventBuilder(name, event);
+        final SseEmitter sseEmitter = new SseEmitter(HOURS_12);
+        SseEventBuilder sseEventBuilder = SseEventPublisher.getSseEventBuilder(name, event);
         sseEmitter.send(sseEventBuilder);
         return sseEmitter;
     }

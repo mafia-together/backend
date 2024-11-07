@@ -29,7 +29,7 @@ public class InMemorySseEmitterSession implements SseEmitterSession {
     }
 
     @Override
-    public List<SseEmitter> findByCode(String code) {
+    public List<SseEmitter> findByCode(final String code) {
         if (!emitters.containsKey(code)) {
             return new ArrayList<>();
         }
@@ -37,7 +37,7 @@ public class InMemorySseEmitterSession implements SseEmitterSession {
     }
 
     @Override
-    public SseEmitter findByCodeAndName(String code, String name) {
+    public SseEmitter findByCodeAndName(final String code, final String name) {
         if (!emitters.containsKey(code) || !emitters.get(code).containsKey(name)) {
             throw new ServerException(ExceptionCode.INVALID_PLAYER);
         }
@@ -45,12 +45,12 @@ public class InMemorySseEmitterSession implements SseEmitterSession {
     }
 
     @Override
-    public void deleteByCode(String code) {
+    public void deleteByCode(final String code) {
         emitters.remove(code);
     }
 
     @Override
-    public void deleteByCodeAndEmitter(String code, final String name) {
+    public void deleteByCodeAndEmitter(final String code, final String name) {
         if (!emitters.containsKey(code)) {
             return;
         }

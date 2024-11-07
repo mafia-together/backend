@@ -12,7 +12,7 @@ import static org.mockito.Mockito.mock;
 public class SseAspectTestService {
 
     @SseSubscribe
-    public SseEmitter subscribe(@PlayerInfo PlayerInfoDto playerInfoDto){
+    public SseEmitter subscribe(@PlayerInfo final PlayerInfoDto playerInfoDto){
         return mock(SseEmitter.class);
     }
 }

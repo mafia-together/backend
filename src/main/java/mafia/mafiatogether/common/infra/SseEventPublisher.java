@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.domain.SseEmitterSession;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,12 +19,12 @@ public class SseEventPublisher {
     public void publishEventToAllSseClient(final String code, final String eventName, final Object event) {
         List<SseEmitter> emitters = sseEmitterSession.findByCode(code);
         for (SseEmitter emitter : emitters) {
-            SseEmitter.SseEventBuilder builder = getSseEventBuilder(eventName, event);
+            SseEventBuilder builder = getSseEventBuilder(eventName, event);
             publishSseEvent(emitter, builder);
         }
     }
 
-    private void publishSseEvent(final SseEmitter emitter, final SseEmitter.SseEventBuilder eventBuilder) {
+    private void publishSseEvent(final SseEmitter emitter, final SseEventBuilder eventBuilder) {
         try {
             emitter.send(eventBuilder);
         } catch (IOException e) {
@@ -31,7 +32,7 @@ public class SseEventPublisher {
         }
     }
 
-    public static SseEmitter.SseEventBuilder getSseEventBuilder(final String eventName, final Object event) {
+    public static SseEventBuilder getSseEventBuilder(final String eventName, final Object event) {
         return SseEmitter.event()
                 .name(eventName)
                 .data(event)
@@ -45,7 +46,7 @@ public class SseEventPublisher {
             final Object event
     ) {
         SseEmitter sseEmitter = sseEmitterSession.findByCodeAndName(code, participantName);
-        SseEmitter.SseEventBuilder eventBuilder = getSseEventBuilder(eventName, event);
+        SseEventBuilder eventBuilder = getSseEventBuilder(eventName, event);
         publishSseEvent(sseEmitter, eventBuilder);
     }
 
