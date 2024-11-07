@@ -1,6 +1,6 @@
 package mafia.mafiatogether.lobby.application;
 
-import mafia.mafiatogether.common.application.SseEventPublisher;
+import mafia.mafiatogether.common.infra.SseEventPublisher;
 import mafia.mafiatogether.lobby.application.dto.event.ParticipantJoinEvent;
 import mafia.mafiatogether.lobby.domain.Lobby;
 import mafia.mafiatogether.lobby.domain.LobbyInfo;

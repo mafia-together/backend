@@ -1,21 +1,22 @@
-package mafia.mafiatogether.common.domain;
+package mafia.mafiatogether.common.infra;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import mafia.mafiatogether.common.domain.SseEmitterSession;
 import mafia.mafiatogether.common.exception.ExceptionCode;
 import mafia.mafiatogether.common.exception.ServerException;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-@Repository
-public class InMemorySseEmitterRepository implements SseEmitterRepository {
+@Component
+public class InMemorySseEmitterSession implements SseEmitterSession {
 
     private final Map<String, Map<String, SseEmitter>> emitters;
 
-    public InMemorySseEmitterRepository() {
+    public InMemorySseEmitterSession() {
         this.emitters = new ConcurrentHashMap<>();
     }
 

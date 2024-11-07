@@ -2,11 +2,11 @@ package mafia.mafiatogether.common.aspect;
 
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.annotation.PlayerInfo;
-import mafia.mafiatogether.common.application.SseEventPublisher;
+import mafia.mafiatogether.common.infra.SseEventPublisher;
 import mafia.mafiatogether.common.exception.AuthException;
 import mafia.mafiatogether.common.exception.ExceptionCode;
 import mafia.mafiatogether.common.resolver.PlayerInfoDto;
-import mafia.mafiatogether.common.domain.SseEmitterRepository;
+import mafia.mafiatogether.common.domain.SseEmitterSession;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -25,7 +25,7 @@ import java.util.Arrays;
 public class SseAspect {
 
     public static final long HOURS_12 = 43200_000L;
-    private final SseEmitterRepository sseEmitterRepository;
+    private final SseEmitterSession sseEmitterSession;
 
     @Around("@annotation(mafia.mafiatogether.common.annotation.SseSubscribe)")
     public Object subscribe(final ProceedingJoinPoint joinPoint) throws Throwable {
@@ -53,8 +53,8 @@ public class SseAspect {
         final String name = codeAndName[1];
 
         SseEmitter sseEmitter = (SseEmitter) joinPoint.proceed();
-        sseEmitterRepository.save(code, name, sseEmitter);
-        sseEmitter.onCompletion(() -> sseEmitterRepository.deleteByCodeAndEmitter(code, name));
+        sseEmitterSession.save(code, name, sseEmitter);
+        sseEmitter.onCompletion(() -> sseEmitterSession.deleteByCodeAndEmitter(code, name));
         sseEmitter.onTimeout(sseEmitter::complete);
 
         return sseEmitter;

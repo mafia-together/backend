@@ -1,6 +1,6 @@
 package mafia.mafiatogether.game.domain;
 
-import mafia.mafiatogether.common.domain.InMemorySseEmitterRepository;
+import mafia.mafiatogether.common.infra.InMemorySseEmitterSession;
 import mafia.mafiatogether.common.exception.ServerException;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,13 +12,13 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
 @SuppressWarnings("NonAsciiCharacters")
-class InMemorySseEmitterRepositoryTest {
+class InMemorySseEmitterSessionTest {
 
-    private InMemorySseEmitterRepository inMemorySseEmitterRepository;
+    private InMemorySseEmitterSession inMemorySseEmitterSession;
 
     @BeforeEach
     void setUp() {
-        inMemorySseEmitterRepository = new InMemorySseEmitterRepository();
+        inMemorySseEmitterSession = new InMemorySseEmitterSession();
     }
 
     @Test
@@ -26,11 +26,11 @@ class InMemorySseEmitterRepositoryTest {
         // given
         SseEmitter sseEmitter = mock(SseEmitter.class);
         SseEmitter findOutSseEmitter = mock(SseEmitter.class);
-        inMemorySseEmitterRepository.save("code", "name", sseEmitter);
-        inMemorySseEmitterRepository.save("code", "name2", findOutSseEmitter);
+        inMemorySseEmitterSession.save("code", "name", sseEmitter);
+        inMemorySseEmitterSession.save("code", "name2", findOutSseEmitter);
 
         // when
-        SseEmitter actual = inMemorySseEmitterRepository.findByCodeAndName("code", "name2");
+        SseEmitter actual = inMemorySseEmitterSession.findByCodeAndName("code", "name2");
 
         // given
         assertThat(actual).isEqualTo(findOutSseEmitter);
@@ -39,7 +39,7 @@ class InMemorySseEmitterRepositoryTest {
     @Test
     void 존재하지_않는_코드를_입력하면_예외가_발생합니다() {
         // givne when
-        ThrowingCallable actual = () -> inMemorySseEmitterRepository.findByCodeAndName("code", "name");
+        ThrowingCallable actual = () -> inMemorySseEmitterSession.findByCodeAndName("code", "name");
 
         // then
         assertThatThrownBy(actual).isInstanceOf(ServerException.class);
@@ -49,10 +49,10 @@ class InMemorySseEmitterRepositoryTest {
     void 존재하지_않는_유저를_입력하면_예외가_발생합니다() {
         // givne
         SseEmitter sseEmitter = mock(SseEmitter.class);
-        inMemorySseEmitterRepository.save("code", "name2", sseEmitter);
+        inMemorySseEmitterSession.save("code", "name2", sseEmitter);
 
         // when
-        ThrowingCallable actual = () -> inMemorySseEmitterRepository.findByCodeAndName("code", "name");
+        ThrowingCallable actual = () -> inMemorySseEmitterSession.findByCodeAndName("code", "name");
 
         // then
         assertThatThrownBy(actual).isInstanceOf(ServerException.class);

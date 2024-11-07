@@ -9,7 +9,7 @@ import mafia.mafiatogether.chat.domain.ChatRepository;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.Player;
-import mafia.mafiatogether.common.domain.SseEmitterRepository;
+import mafia.mafiatogether.common.domain.SseEmitterSession;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.global.ControllerTest;
 import mafia.mafiatogether.job.application.JobService;
@@ -59,7 +59,7 @@ class GameEventListenerTest extends ControllerTest {
     private ChatRepository chatRepository;
 
     @MockBean
-    private SseEmitterRepository sseEmitterRepository;
+    private SseEmitterSession sseEmitterSession;
 
     private static final String CODE = "1234567890";
     private static final String PLAYER1_NAME = "player1";
@@ -240,7 +240,7 @@ class GameEventListenerTest extends ControllerTest {
         final String target = PLAYER1_NAME;
         game.skipStatus(Clock.systemDefaultZone().millis()); // NOTICE
         game.skipStatus(Clock.systemDefaultZone().millis()); // DAY
-        Mockito.when(sseEmitterRepository.findByCode(any())).thenReturn(List.of());
+        Mockito.when(sseEmitterSession.findByCode(any())).thenReturn(List.of());
         gameRepository.save(game);
 
         // when
@@ -254,6 +254,6 @@ class GameEventListenerTest extends ControllerTest {
         // then
         final StatusType actual = gameRepository.findById(CODE).get().getStatus().getType();
         Assertions.assertThat(actual).isEqualTo(StatusType.VOTE);
-        Mockito.verify(sseEmitterRepository, Mockito.atLeast(1)).findByCode(CODE);
+        Mockito.verify(sseEmitterSession, Mockito.atLeast(1)).findByCode(CODE);
     }
 }

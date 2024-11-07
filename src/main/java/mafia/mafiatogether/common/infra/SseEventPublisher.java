@@ -1,7 +1,7 @@
-package mafia.mafiatogether.common.application;
+package mafia.mafiatogether.common.infra;
 
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.common.domain.SseEmitterRepository;
+import mafia.mafiatogether.common.domain.SseEmitterSession;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -13,10 +13,10 @@ import java.util.List;
 public class SseEventPublisher {
 
     public static final long SECOND_30 = 30_000L;
-    private final SseEmitterRepository sseEmitterRepository;
+    private final SseEmitterSession sseEmitterSession;
 
     public void publishEventToAllSseClient(final String code, final String eventName, final Object event) {
-        List<SseEmitter> emitters = sseEmitterRepository.findByCode(code);
+        List<SseEmitter> emitters = sseEmitterSession.findByCode(code);
         for (SseEmitter emitter : emitters) {
             SseEmitter.SseEventBuilder builder = getSseEventBuilder(eventName, event);
             publishSseEvent(emitter, builder);
@@ -44,12 +44,12 @@ public class SseEventPublisher {
             final String eventName,
             final Object event
     ) {
-        SseEmitter sseEmitter = sseEmitterRepository.findByCodeAndName(code, participantName);
+        SseEmitter sseEmitter = sseEmitterSession.findByCodeAndName(code, participantName);
         SseEmitter.SseEventBuilder eventBuilder = getSseEventBuilder(eventName, event);
         publishSseEvent(sseEmitter, eventBuilder);
     }
 
     public void disconnectSseByCode(final String code) {
-        sseEmitterRepository.deleteByCode(code);
+        sseEmitterSession.deleteByCode(code);
     }
 }

@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-public interface SseEmitterRepository {
+public interface SseEmitterSession {
 
     void save(final String code, final String name, final SseEmitter sseEmitter);
 

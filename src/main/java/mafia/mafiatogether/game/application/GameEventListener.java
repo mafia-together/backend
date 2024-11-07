@@ -3,7 +3,7 @@ package mafia.mafiatogether.game.application;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.chat.domain.Chat;
 import mafia.mafiatogether.chat.domain.ChatRepository;
-import mafia.mafiatogether.common.application.SseEventPublisher;
+import mafia.mafiatogether.common.infra.SseEventPublisher;
 import mafia.mafiatogether.common.exception.ExceptionCode;
 import mafia.mafiatogether.common.exception.GameException;
 import mafia.mafiatogether.game.application.dto.event.*;

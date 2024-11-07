@@ -3,7 +3,7 @@ package mafia.mafiatogether.game.application;
 import mafia.mafiatogether.game.domain.Game;
 import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.PlayerCollection;
-import mafia.mafiatogether.common.domain.SseEmitterRepository;
+import mafia.mafiatogether.common.domain.SseEmitterSession;
 import mafia.mafiatogether.game.domain.status.DayIntroStatus;
 import mafia.mafiatogether.game.domain.status.StatusType;
 import mafia.mafiatogether.global.RedisTestContainerSpringBootTest;
@@ -39,7 +39,7 @@ public class GameServiceTest extends RedisTestContainerSpringBootTest {
     private GameService gameService;
 
     @MockBean
-    private SseEmitterRepository sseEmitterRepository;
+    private SseEmitterSession sseEmitterSession;
 
     @MockBean
     private JobTargetRepository jobTargetRepository;
@@ -77,7 +77,7 @@ public class GameServiceTest extends RedisTestContainerSpringBootTest {
     void 스케쥴러에_의해_방의_시간이_변경된다() {
         // given
         JobTarget mockedJobTarget = Mockito.mock(JobTarget.class);
-        Mockito.when(sseEmitterRepository.findByCode(any())).thenReturn(List.of());
+        Mockito.when(sseEmitterSession.findByCode(any())).thenReturn(List.of());
         Mockito.when(jobTargetRepository.findById(any())).thenReturn(Optional.of(mockedJobTarget));
 
         // when & then
@@ -99,14 +99,14 @@ public class GameServiceTest extends RedisTestContainerSpringBootTest {
     void 상태가_변경시_이벤트가_발행된다() throws IOException {
         // given
         JobTarget mockedJobTarget = Mockito.mock(JobTarget.class);
-        Mockito.when(sseEmitterRepository.findByCode(any())).thenReturn(List.of());
+        Mockito.when(sseEmitterSession.findByCode(any())).thenReturn(List.of());
         Mockito.when(jobTargetRepository.findById(any())).thenReturn(Optional.of(mockedJobTarget));
 
         // when
         gameService.changeStatus();
 
         // then
-        Mockito.verify(sseEmitterRepository, Mockito.times(1)).findByCode(STATUSCHANGEDGAME.getCode());
-        Mockito.verify(sseEmitterRepository, Mockito.times(0)).findByCode(NOTCHANGEDGAME.getCode());
+        Mockito.verify(sseEmitterSession, Mockito.times(1)).findByCode(STATUSCHANGEDGAME.getCode());
+        Mockito.verify(sseEmitterSession, Mockito.times(0)).findByCode(NOTCHANGEDGAME.getCode());
     }
 }
