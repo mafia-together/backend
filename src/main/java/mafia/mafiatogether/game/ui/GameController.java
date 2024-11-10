@@ -8,7 +8,6 @@ import mafia.mafiatogether.game.application.GameService;
 import mafia.mafiatogether.game.application.dto.response.GameExistResponse;
 import mafia.mafiatogether.game.application.dto.response.GameInfoResponse;
 import mafia.mafiatogether.game.application.dto.response.GameResultResponse;
-import mafia.mafiatogether.game.application.dto.response.GameStatusResponse;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,13 +22,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 public class GameController {
 
     private final GameService gameService;
-
-    @GetMapping("/status")
-    public ResponseEntity<GameStatusResponse> findStatus(
-            @PlayerInfo final PlayerInfoDto playerInfoDto
-    ) {
-        return ResponseEntity.ok(gameService.findStatus(playerInfoDto.code()));
-    }
 
     @PostMapping("/start")
     public ResponseEntity<Void> startGame(
