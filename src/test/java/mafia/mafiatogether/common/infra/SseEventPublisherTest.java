@@ -45,7 +45,7 @@ class SseEventPublisherTest {
         String event = "event";
 
         // when
-        sseEventPublisher.publishEventToAllSseClient(CODE, EVENT_NAME, event);
+        sseEventPublisher.publishEventByCode(CODE, EVENT_NAME, event);
 
         // then
         verify(SSE_EMITTER_1).send(any(SseEmitter.SseEventBuilder.class));

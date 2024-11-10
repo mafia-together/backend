@@ -13,10 +13,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SseEventPublisher {
 
-    public static final long SECOND_30 = 30_000L;
+    private static final long HOURS_12 = 43200_000L;
+    private static final long SECOND_30 = 30_000L;
     private final SseEmitterSession sseEmitterSession;
 
-    public void publishEventToAllSseClient(final String code, final String eventName, final Object event) {
+    public void publishEventByCode(final String code, final String eventName, final Object event) {
         List<SseEmitter> emitters = sseEmitterSession.findByCode(code);
         for (SseEmitter emitter : emitters) {
             SseEventBuilder builder = getSseEventBuilder(eventName, event);
@@ -52,5 +53,13 @@ public class SseEventPublisher {
 
     public void disconnectSseByCode(final String code) {
         sseEmitterSession.deleteByCode(code);
+    }
+
+
+    public static SseEmitter getSseEmitter(final String name, final Object event) throws IOException {
+        final SseEmitter sseEmitter = new SseEmitter(HOURS_12);
+        SseEventBuilder sseEventBuilder = SseEventPublisher.getSseEventBuilder(name, event);
+        sseEmitter.send(sseEventBuilder);
+        return sseEmitter;
     }
 }

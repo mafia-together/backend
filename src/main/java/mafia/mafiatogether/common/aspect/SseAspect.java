@@ -2,7 +2,6 @@ package mafia.mafiatogether.common.aspect;
 
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.annotation.PlayerInfo;
-import mafia.mafiatogether.common.infra.SseEventPublisher;
 import mafia.mafiatogether.common.exception.AuthException;
 import mafia.mafiatogether.common.exception.ExceptionCode;
 import mafia.mafiatogether.common.resolver.PlayerInfoDto;
@@ -13,10 +12,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter.SseEventBuilder;
 
-
-import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -26,7 +22,6 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public class SseAspect {
 
-    public static final long HOURS_12 = 43200_000L;
     private final SseEmitterSession sseEmitterSession;
 
     @Around("@annotation(mafia.mafiatogether.common.annotation.SseSubscribe)")
@@ -64,12 +59,5 @@ public class SseAspect {
 
     private boolean hasPlayerInfo(final Annotation[] annotations) {
         return Arrays.stream(annotations).anyMatch(PlayerInfo.class::isInstance);
-    }
-
-    public static SseEmitter getSseEmitter(final String name, final Object event) throws IOException {
-        final SseEmitter sseEmitter = new SseEmitter(HOURS_12);
-        SseEventBuilder sseEventBuilder = SseEventPublisher.getSseEventBuilder(name, event);
-        sseEmitter.send(sseEventBuilder);
-        return sseEmitter;
     }
 }

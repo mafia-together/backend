@@ -146,6 +146,6 @@ public class GameEventListener {
 
     private void sendStatusChangeEventToSseClient(final String code, final StatusType statusType) {
         final GameStatusResponse gameStatusResponse = new GameStatusResponse(statusType);
-        sseEventPublisher.publishEventToAllSseClient(code, GAME_STATUS_EVENT_NAME, gameStatusResponse);
+        sseEventPublisher.publishEventByCode(code, GAME_STATUS_EVENT_NAME, gameStatusResponse);
     }
 }
