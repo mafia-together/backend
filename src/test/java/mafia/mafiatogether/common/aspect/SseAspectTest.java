@@ -2,43 +2,58 @@ package mafia.mafiatogether.common.aspect;
 
 import mafia.mafiatogether.common.domain.SseEmitterSession;
 import mafia.mafiatogether.common.resolver.PlayerInfoDto;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.lang.reflect.Method;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
-@Import(SseAspectTestService.class)
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("NonAsciiCharacters")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class SseAspectTest {
 
-    @Autowired
-    private SseAspectTestService sseAspectTestService;
+    @InjectMocks
+    private SseAspect sseAspect;
 
-    @MockBean
+    @Mock
     private SseEmitterSession sseEmitterSession;
 
     @Test
-    void SSE_구독을_한다(){
+    void SSE_구독을_한다() throws Throwable {
         // given
         final String code = "code";
         final String name = "name";
-        final PlayerInfoDto playerInfoDto = new PlayerInfoDto(code, name);
+        PlayerInfoDto playerInfoDto = new PlayerInfoDto(code, name);
+
+        ProceedingJoinPoint joinPoint = mock(ProceedingJoinPoint.class);
+        MethodSignature methodSignature = mock(MethodSignature.class);
+        Method method = SseAspectTestService.class.getDeclaredMethod("subscribe", PlayerInfoDto.class);
+
+        given(joinPoint.getSignature()).willReturn(methodSignature);
+        given(methodSignature.getMethod()).willReturn(method);
+        given(joinPoint.getArgs()).willReturn(new Object[]{playerInfoDto});
+
+        SseEmitter sseEmitter = mock(SseEmitter.class);
+        given(joinPoint.proceed()).willReturn(sseEmitter);
 
         // when
-        final SseEmitter actual = sseAspectTestService.subscribe(playerInfoDto);
+        SseEmitter actual = (SseEmitter) sseAspect.subscribe(joinPoint);
 
         // then
-        verify(sseEmitterSession).save(code, name, actual);
-        verify(actual).onCompletion(any());
-        verify(actual).onTimeout(any());
+        verify(sseEmitterSession).save(code, name, sseEmitter);
+        assertThat(actual).isEqualTo(sseEmitter);
+        verify(sseEmitter).onCompletion(any());
+        verify(sseEmitter).onTimeout(any());
     }
 }
