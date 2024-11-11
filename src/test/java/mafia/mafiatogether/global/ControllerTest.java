@@ -2,7 +2,7 @@ package mafia.mafiatogether.global;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import mafia.mafiatogether.game.application.LobbyEventListener;
+import mafia.mafiatogether.lobby.application.LobbyEventListener;
 import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.PlayerCollection;
 import mafia.mafiatogether.game.domain.status.StatusType;

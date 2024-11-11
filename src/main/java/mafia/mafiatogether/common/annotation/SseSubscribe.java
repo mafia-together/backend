@@ -1,4 +1,4 @@
-package mafia.mafiatogether.game.annotation;
+package mafia.mafiatogether.common.annotation;
 import java.lang.annotation.*;
 
 @Target({ElementType.METHOD})
