@@ -48,6 +48,8 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
+    testImplementation 'org.mockito:mockito-core:5.10.0'
 }
 
 tasks.named('test') {
