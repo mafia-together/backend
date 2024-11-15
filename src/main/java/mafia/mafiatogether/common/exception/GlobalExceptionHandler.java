@@ -1,6 +1,10 @@
 package mafia.mafiatogether.common.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mafia.mafiatogether.common.application.ErrorNotificationService;
@@ -16,11 +20,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 @Slf4j
 @RestControllerAdvice
@@ -30,6 +30,16 @@ public class GlobalExceptionHandler {
     private final Environment environment;
     private final ErrorNotificationService errorNotificationService;
     private static final String LOCAL_PROFILE_NAME = "local";
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoHandlerFoundException() {
+        final ErrorResponse errorResponse = ErrorResponse.create(
+                ExceptionCode.NO_STATIC_RESOURCE.getCode(),
+                "리소스를 찾을 수 없습니다."
+        );
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    }
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<ErrorResponse> Exception(Exception e, HttpServletRequest request) {
