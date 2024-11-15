@@ -9,7 +9,6 @@ permissions:
 
 jobs:
   build:
-    if: contains(github.event.pull_request.labels.*.name, 'Backend')
     runs-on: ubuntu-22.04
     permissions:
       pull-requests: write
