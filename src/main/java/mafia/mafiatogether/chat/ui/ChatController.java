@@ -1,41 +1,60 @@
 package mafia.mafiatogether.chat.ui;
 
-import jakarta.validation.Valid;
-
-import java.util.List;
-
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.common.annotation.PlayerInfo;
+import mafia.mafiatogether.chat.annotation.SendToChatWithRedis;
 import mafia.mafiatogether.chat.application.ChatService;
 import mafia.mafiatogether.chat.application.dto.request.ChatRequest;
 import mafia.mafiatogether.chat.application.dto.response.ChatResponse;
+import mafia.mafiatogether.chat.domain.Message;
+import mafia.mafiatogether.common.annotation.PlayerInfo;
 import mafia.mafiatogether.common.resolver.PlayerInfoDto;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+import java.util.List;
+
+@Controller
 @RequiredArgsConstructor
-@RequestMapping("/chat")
 public class ChatController {
 
     private final ChatService chatService;
 
-    @GetMapping
+    @GetMapping("/chat")
     public ResponseEntity<List<ChatResponse>> findAllChat(@PlayerInfo PlayerInfoDto playerInfoDto) {
         return ResponseEntity.ok(chatService.findAllChat(playerInfoDto.code(), playerInfoDto.name()));
     }
 
-    @PostMapping
-    public ResponseEntity<Void> saveChat(
-            @PlayerInfo PlayerInfoDto playerInfoDto,
-            @Valid @RequestBody ChatRequest request
+    @MessageMapping("/chat/enter/{code}/{name}")
+    @SendToChatWithRedis("/sub/chat/{code}")
+    public Message enterChat(
+            @DestinationVariable("code") String code,
+            @DestinationVariable("name") String name
     ) {
-        chatService.saveChat(playerInfoDto.code(), playerInfoDto.name(), request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return chatService.enter(name, code);
     }
+
+    @MessageMapping("/chat/leave/{code}/{name}")
+    @SendToChatWithRedis("/sub/chat/{code}")
+    public Message leaveChat(
+            @DestinationVariable("code") String code,
+            @DestinationVariable("name") String name
+    ) {
+        return chatService.leave(name, code);
+    }
+
+    @MessageMapping("/chat/{code}/{name}")
+    @SendToChatWithRedis("/sub/chat/{code}")
+    public Message createChat(
+            @DestinationVariable("code") String code,
+            @DestinationVariable("name") String name,
+            @Payload ChatRequest request
+    ) {
+        return chatService.chat(name, code, request.content());
+    }
+
+
 }
