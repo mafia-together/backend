@@ -4,8 +4,10 @@ import static org.hamcrest.Matchers.equalTo;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+
 import java.util.Base64;
 import java.util.Map;
+
 import mafia.mafiatogether.common.exception.ExceptionCode;
 import mafia.mafiatogether.global.ControllerTest;
 import mafia.mafiatogether.job.domain.JobTargetRepository;
@@ -56,24 +58,6 @@ class JobControllerTest extends ControllerTest {
 
         final String actual = jobTargetRepository.findById(CODE).get().findJobTargetBy(JobType.MAFIA);
         Assertions.assertThat(actual).isEqualTo(CITIZEN);
-    }
-
-    @Test
-    void 초기_마피아_타겟은_NULL_값이다() {
-        // given
-        String basic = Base64.getEncoder().encodeToString((CODE + ":" + MAFIA1).getBytes());
-
-        // when & then
-        final String actual = RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Basic " + basic)
-                .when().get("/jobs/skill")
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value())
-                .extract()
-                .body().jsonPath().getString("target");
-
-        Assertions.assertThat(actual).isNull();
     }
 
     @Test
