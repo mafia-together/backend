@@ -1,12 +1,14 @@
 const stompClient = new StompJs.Client({
-    brokerURL: 'ws://localhost:8080/stomp'
+    brokerURL: 'ws://localhost:8080/stomp',
 });
 
 stompClient.onConnect = (frame) => {
     setConnected(true);
     console.log('Connected: ' + frame);
-    stompClient.subscribe('/sub/chat/aGVsbG86cG93ZXJhc3M=', (greeting) => {
+    stompClient.subscribe('/sub/chat/hello', (greeting) => {
         showGreeting(JSON.parse(greeting.body));
+    },{
+        Authorization: 'Basic aGVsbG86cG93ZXJhc3M=',
     });
 };
 
@@ -42,20 +44,29 @@ function disconnect() {
 
 function sendName() {
     stompClient.publish({
-        destination: "/pub/chat/aGVsbG86cG93ZXJhc3M=",
-        body: JSON.stringify({'content': $("#name").val()})
+        destination: "/pub/chat/hello",
+        body: JSON.stringify({'content': $("#name").val()}),
+        headers: {
+            Authorization: 'Basic aGVsbG86cG93ZXJhc3M=',
+        },
     });
 }
 
 function enterRoom() {
     stompClient.publish({
-        destination: "/pub/chat/enter/aGVsbG86cG93ZXJhc3M=",
+        destination: "/pub/chat/hello/enter",
+        headers: {
+            Authorization: 'Basic aGVsbG86cG93ZXJhc3M=',
+        },
     });
 }
 
 function leaveRoom() {
     stompClient.publish({
-        destination: "/pub/chat/leave/aGVsbG86cG93ZXJhc3M=",
+        destination: "/pub/chat/hello/leave",
+        headers: {
+            Authorization: 'Basic aGVsbG86cG93ZXJhc3M=',
+        },
     });
 }
 

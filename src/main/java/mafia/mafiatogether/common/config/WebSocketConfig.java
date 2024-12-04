@@ -1,11 +1,16 @@
 package mafia.mafiatogether.common.config;
 
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.common.interceptor.StompChannelInterceptor;
+import mafia.mafiatogether.chat.ui.WebsocketPlayerArgumentResolver;
+import mafia.mafiatogether.common.interceptor.ChatInterceptor;
+import mafia.mafiatogether.common.interceptor.PathMatcherInterceptor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
@@ -15,7 +20,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final StompChannelInterceptor stompChannelInterceptor;
+    private final ChatInterceptor chatInterceptor;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -35,8 +40,17 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
 
     @Override
+    public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.add(new WebsocketPlayerArgumentResolver());
+    }
+
+    @Override
     public void configureClientInboundChannel(ChannelRegistration registry) {
-        registry.interceptors(stompChannelInterceptor);
+        registry.interceptors(
+                new PathMatcherInterceptor(new ChatInterceptor())
+                        .includePathPattern("/chat/**", StompCommand.SUBSCRIBE)
+                        .includePathPattern("/chat/**", StompCommand.SEND)
+        );
     }
 
 }

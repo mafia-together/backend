@@ -1,5 +1,6 @@
 package mafia.mafiatogether.chat.ui;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.chat.annotation.SendToChatWithRedis;
 import mafia.mafiatogether.chat.application.ChatService;
@@ -15,8 +16,6 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import java.util.List;
-
 @Controller
 @RequiredArgsConstructor
 public class ChatController {
@@ -28,33 +27,32 @@ public class ChatController {
         return ResponseEntity.ok(chatService.findAllChat(playerInfoDto.code(), playerInfoDto.name()));
     }
 
-    @MessageMapping("/chat/enter/{code}/{name}")
+    @MessageMapping("/chat/{code}/enter")
     @SendToChatWithRedis("/sub/chat/{code}")
     public Message enterChat(
             @DestinationVariable("code") String code,
-            @DestinationVariable("name") String name
+            @PlayerInfo PlayerInfoDto playerInfoDto
     ) {
-        return chatService.enter(name, code);
+        return chatService.enter(playerInfoDto.name(), code);
     }
 
-    @MessageMapping("/chat/leave/{code}/{name}")
-    @SendToChatWithRedis("/sub/chat/{code}")
-    public Message leaveChat(
-            @DestinationVariable("code") String code,
-            @DestinationVariable("name") String name
-    ) {
-        return chatService.leave(name, code);
-    }
-
-    @MessageMapping("/chat/{code}/{name}")
+    @MessageMapping("/chat/{code}")
     @SendToChatWithRedis("/sub/chat/{code}")
     public Message createChat(
             @DestinationVariable("code") String code,
-            @DestinationVariable("name") String name,
+            @PlayerInfo PlayerInfoDto playerInfoDto,
             @Payload ChatRequest request
     ) {
-        return chatService.chat(name, code, request.content());
+        return chatService.chat(playerInfoDto.name(), code, request.content());
     }
 
+    @MessageMapping("/chat/{code}/leave")
+    @SendToChatWithRedis("/sub/chat/{code}")
+    public Message leaveChat(
+            @DestinationVariable("code") String code,
+            @PlayerInfo PlayerInfoDto playerInfoDto
+    ) {
+        return chatService.leave(playerInfoDto.name(), code);
+    }
 
 }
