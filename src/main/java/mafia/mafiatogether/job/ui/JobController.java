@@ -2,6 +2,7 @@ package mafia.mafiatogether.job.ui;
 
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.chat.annotation.SendToChatWithRedis;
+import mafia.mafiatogether.chat.domain.Message;
 import mafia.mafiatogether.common.annotation.PlayerInfo;
 import mafia.mafiatogether.common.resolver.PlayerInfoDto;
 import mafia.mafiatogether.job.application.JobService;
@@ -33,12 +34,13 @@ public class JobController {
 
     @MessageMapping("/skill/{code}/{name}")
     @SendToChatWithRedis("/sub/mafia/{code}")
-    public JobExecuteAbilityResponse executeSkill(
+    public Message executeSkill(
             @DestinationVariable("code") String code,
             @DestinationVariable("name") String name,
             @Payload JobExecuteAbilityRequest request
     ) {
-        return jobService.executeSkill(code, name, request);
+        JobExecuteAbilityResponse response = jobService.executeSkill(code, name, request);
+        return Message.ofChat(response.job(), response.result());
     }
 
     @PostMapping("/skill")
