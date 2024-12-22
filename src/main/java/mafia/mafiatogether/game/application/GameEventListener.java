@@ -103,7 +103,6 @@ public class GameEventListener {
         chatRepository.deleteById(code);
         voteRepository.deleteById(code);
         sendStatusChangeEventToSseClient(code, StatusType.WAIT);
-        sseEventPublisher.disconnectSseByCode(code);
         gameRepository.deleteById(code);
 
         final Lobby room = lobbyRepository.findById(code)
