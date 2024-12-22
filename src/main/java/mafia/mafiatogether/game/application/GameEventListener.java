@@ -140,6 +140,9 @@ public class GameEventListener {
 
     @EventListener
     public void listenGameStatusChangeEvent(final GameStatusChangeEvent gameStatusChangeEvent) {
+        if (gameStatusChangeEvent.statusType().equals(StatusType.DELETED)) {
+            return;
+        }
         sendStatusChangeEventToSseClient(gameStatusChangeEvent.code(), gameStatusChangeEvent.statusType());
     }
 
