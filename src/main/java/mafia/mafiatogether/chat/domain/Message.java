@@ -17,7 +17,7 @@ public class Message {
     private static final String LEAVE_MESSAGE_FORMAT = "%s님이 퇴장하셨습니다.";
 
     private String name;
-    private String content;
+    private String contents;
     private MessageType messageType;
     private long timestamp;
 
