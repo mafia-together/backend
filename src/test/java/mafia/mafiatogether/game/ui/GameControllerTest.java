@@ -32,6 +32,45 @@ class GameControllerTest extends ControllerTest {
     }
 
     @Test
+    void 대기방을_상태를_확인할_수_있다() {
+        //given
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
+
+        //when
+        final GameStatusResponse response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Basic " + basic)
+                .when().get("/games/status")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(GameStatusResponse.class);
+
+        //then
+        Assertions.assertThat(response.statusType()).isEqualTo(StatusType.WAIT);
+    }
+
+    @Test
+    void 게임의_상태를_확인할_수_있다() {
+        //given
+        final String basic = Base64.getEncoder().encodeToString((CODE + ":" + PLAYER1_NAME).getBytes());
+        setGame();
+
+        //when
+        final GameStatusResponse response = RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Basic " + basic)
+                .when().get("/games/status")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(GameStatusResponse.class);
+
+        //then
+        Assertions.assertThat(response.statusType()).isEqualTo(StatusType.DAY_INTRO);
+    }
+
+    @Test
     void 방을_상태를_변경할_수_있다() {
         //given & when
         setGame();

@@ -1,46 +1,39 @@
 package mafia.mafiatogether.lobby.application;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.time.Instant;
 import java.util.List;
-
-import mafia.mafiatogether.lobby.application.dto.event.DeleteLobbyEvent;
 import mafia.mafiatogether.lobby.domain.Lobby;
 import mafia.mafiatogether.lobby.domain.LobbyRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
 
+@SpringBootTest
 @SuppressWarnings("NonAsciiCharacters")
-@ExtendWith(MockitoExtension.class)
+@TestPropertySource(properties = {"application.scheduling-enable=false"})
 class LobbyRemoveTest {
 
-    @Mock
+    @MockBean
     private LobbyRepository lobbyRepository;
 
-    @Mock
-    private ApplicationEventPublisher applicationEventPublisher;
-
-    @InjectMocks
+    @Autowired
     private LobbyRemoveService lobbyRemoveService;
 
     @Test
     void 스케줄러_동작_테스트() {
         Lobby mockLobby = Mockito.mock(Lobby.class);
-        given(mockLobby.getLastUpdateTime()).willReturn(Instant.now().getEpochSecond() - 3700);
-        given(mockLobby.getCode()).willReturn("1234567890");
-        given(lobbyRepository.findAll()).willReturn(List.of(mockLobby));
+        Mockito.when(mockLobby.getLastUpdateTime()).thenReturn(Instant.now().getEpochSecond() - 3700);
+        Mockito.when(mockLobby.getCode()).thenReturn("1234567890");
+        Mockito.when(lobbyRepository.findAll()).thenReturn(List.of(mockLobby));
 
         lobbyRemoveService.remove();
 
-        verify(applicationEventPublisher, times(1)).publishEvent(any(DeleteLobbyEvent.class));
+        verify(lobbyRepository, times(1)).deleteById(mockLobby.getCode());
     }
 }

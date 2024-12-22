@@ -1,8 +1,5 @@
 package mafia.mafiatogether.common.interceptor;
 
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.util.AuthExtractor;
 import org.springframework.context.annotation.Configuration;
@@ -14,12 +11,16 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Consumer;
+
 @Component
 @Configuration
 @RequiredArgsConstructor
 public class StompChannelInterceptor implements ChannelInterceptor {
 
-    private static final String SUBSCRIBE_FORMAT = "%s/%s";
+    private static final String SUBSCRIBE_FORMAT = "/sub/chat/%s";
     private static final String PUBLISHING_FORMAT = "%s/%s/%s";
 
     private final Map<StompCommand, Consumer<StompHeaderAccessor>> actionByCommand = Map.of(
@@ -43,9 +44,7 @@ public class StompChannelInterceptor implements ChannelInterceptor {
 
     private void consumeWhenSubscribe(StompHeaderAccessor headerAccessor) {
         String[] information = getInformation(headerAccessor);
-        String prefixUrl = headerAccessor.getDestination()
-                .substring(0, headerAccessor.getDestination().lastIndexOf('/'));
-        headerAccessor.setDestination(SUBSCRIBE_FORMAT.formatted(prefixUrl, information[0]));
+        headerAccessor.setDestination(SUBSCRIBE_FORMAT.formatted(information[0]));
     }
 
     private String[] getInformation(StompHeaderAccessor headerAccessor) {
