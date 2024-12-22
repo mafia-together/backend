@@ -103,7 +103,6 @@ public class GameEventListener {
         chatRepository.deleteById(code);
         voteRepository.deleteById(code);
         sendStatusChangeEventToSseClient(code, StatusType.WAIT);
-        sseEventPublisher.disconnectSseByCode(code);
         gameRepository.deleteById(code);
 
         final Lobby room = lobbyRepository.findById(code)
@@ -141,6 +140,9 @@ public class GameEventListener {
 
     @EventListener
     public void listenGameStatusChangeEvent(final GameStatusChangeEvent gameStatusChangeEvent) {
+        if (gameStatusChangeEvent.statusType().equals(StatusType.DELETED)) {
+            return;
+        }
         sendStatusChangeEventToSseClient(gameStatusChangeEvent.code(), gameStatusChangeEvent.statusType());
     }
 
