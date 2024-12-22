@@ -2,8 +2,9 @@ package mafia.mafiatogether.game.ui;
 
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.annotation.PlayerInfo;
+import mafia.mafiatogether.common.infra.SseEventPublisher;
 import mafia.mafiatogether.common.resolver.PlayerInfoDto;
-import mafia.mafiatogether.game.annotation.SseSubscribe;
+import mafia.mafiatogether.common.annotation.SseSubscribe;
 import mafia.mafiatogether.game.application.GameService;
 import mafia.mafiatogether.game.application.dto.response.GameExistResponse;
 import mafia.mafiatogether.game.application.dto.response.GameInfoResponse;
@@ -17,19 +18,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import java.io.IOException;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/games")
 public class GameController {
 
     private final GameService gameService;
-
-    @GetMapping("/status")
-    public ResponseEntity<GameStatusResponse> findStatus(
-            @PlayerInfo final PlayerInfoDto playerInfoDto
-    ) {
-        return ResponseEntity.ok(gameService.findStatus(playerInfoDto.code()));
-    }
+    private static final String SSE_STATUS = "gameStatus";
 
     @PostMapping("/start")
     public ResponseEntity<Void> startGame(
@@ -53,10 +50,11 @@ public class GameController {
         return ResponseEntity.ok(gameService.findGameInfo(playerInfoDto.code(), playerInfoDto.name()));
     }
 
-    @GetMapping(path = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @SseSubscribe
-    public ResponseEntity<SseEmitter> subscribe(@PlayerInfo final PlayerInfoDto playerInfoDto) {
-        return ResponseEntity.ok(new SseEmitter());
+    @GetMapping(path = "/subscribe", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public SseEmitter subscribe(@PlayerInfo final PlayerInfoDto playerInfoDto) throws IOException {
+        GameStatusResponse gameStatusResponse = gameService.findStatus(playerInfoDto.code());
+        return SseEventPublisher.getSseEmitter(SSE_STATUS, gameStatusResponse);
     }
 
     @GetMapping("/valid")

@@ -2,6 +2,7 @@ package mafia.mafiatogether.global;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import mafia.mafiatogether.lobby.application.LobbyEventListener;
 import mafia.mafiatogether.game.domain.GameRepository;
 import mafia.mafiatogether.game.domain.PlayerCollection;
 import mafia.mafiatogether.game.domain.status.StatusType;
@@ -12,12 +13,13 @@ import mafia.mafiatogether.lobby.domain.LobbyRepository;
 import mafia.mafiatogether.vote.domain.VoteRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 
 import java.util.Base64;
 import java.util.Map;
 
-public abstract class ControllerTest extends RedisTestContainerSpringBootTest{
+public abstract class ControllerTest extends RedisTestContainerSpringBootTest {
 
     @Autowired
     protected LobbyRepository lobbyRepository;
@@ -28,12 +30,15 @@ public abstract class ControllerTest extends RedisTestContainerSpringBootTest{
     @Autowired
     protected VoteRepository voteRepository;
 
-    protected final static String CODE = "1234567890";
-    protected final static String PLAYER1_NAME = "player1";
-    protected final static String PLAYER2_NAME = "player2";
-    protected final static String PLAYER3_NAME = "player3";
-    protected final static String PLAYER4_NAME = "player4";
-    protected final static String PLAYER5_NAME = "player5";
+    @MockBean
+    protected LobbyEventListener lobbyEventListener;
+
+    protected static final String CODE = "1234567890";
+    protected static final String PLAYER1_NAME = "player1";
+    protected static final String PLAYER2_NAME = "player2";
+    protected static final String PLAYER3_NAME = "player3";
+    protected static final String PLAYER4_NAME = "player4";
+    protected static final String PLAYER5_NAME = "player5";
     protected String MAFIA1;
     protected String MAFIA2;
     protected String DOCTOR;

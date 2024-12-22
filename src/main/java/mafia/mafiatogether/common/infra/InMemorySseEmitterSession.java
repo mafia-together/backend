@@ -1,19 +1,22 @@
-package mafia.mafiatogether.game.domain;
+package mafia.mafiatogether.common.infra;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import org.springframework.stereotype.Repository;
+import mafia.mafiatogether.common.domain.SseEmitterSession;
+import mafia.mafiatogether.common.exception.ExceptionCode;
+import mafia.mafiatogether.common.exception.ServerException;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-@Repository
-public class InMemorySseEmitterRepository implements SseEmitterRepository {
+@Component
+public class InMemorySseEmitterSession implements SseEmitterSession {
 
     private final Map<String, Map<String, SseEmitter>> emitters;
 
-    public InMemorySseEmitterRepository() {
+    public InMemorySseEmitterSession() {
         this.emitters = new ConcurrentHashMap<>();
     }
 
@@ -26,7 +29,7 @@ public class InMemorySseEmitterRepository implements SseEmitterRepository {
     }
 
     @Override
-    public List<SseEmitter> findByCode(String code) {
+    public List<SseEmitter> findByCode(final String code) {
         if (!emitters.containsKey(code)) {
             return new ArrayList<>();
         }
@@ -34,12 +37,20 @@ public class InMemorySseEmitterRepository implements SseEmitterRepository {
     }
 
     @Override
-    public void deleteByCode(String code) {
+    public SseEmitter findByCodeAndName(final String code, final String name) {
+        if (!emitters.containsKey(code) || !emitters.get(code).containsKey(name)) {
+            throw new ServerException(ExceptionCode.INVALID_PLAYER);
+        }
+        return emitters.get(code).get(name);
+    }
+
+    @Override
+    public void deleteByCode(final String code) {
         emitters.remove(code);
     }
 
     @Override
-    public void deleteByCodeAndEmitter(String code, final String name) {
+    public void deleteByCodeAndEmitter(final String code, final String name) {
         if (!emitters.containsKey(code)) {
             return;
         }
