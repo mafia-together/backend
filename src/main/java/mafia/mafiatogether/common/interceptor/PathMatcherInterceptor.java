@@ -15,55 +15,56 @@ public class PathMatcherInterceptor implements ChannelInterceptor {
 
     private final ChannelInterceptor channelInterceptor;
     private final PathMatcher pathMatcher;
-    private final List<StompMapping> includePathPattern;
-    private final List<StompMapping> excludePathPattern;
+    private final List<StompMapping> includePathPatterns;
+    private final List<StompMapping> excludePathPatterns;
 
-    public PathMatcherInterceptor(
-            final ChannelInterceptor channelInterceptor
-    ) {
+    public PathMatcherInterceptor(final ChannelInterceptor channelInterceptor) {
         this.channelInterceptor = channelInterceptor;
         this.pathMatcher = new AntPathMatcher();
-        this.includePathPattern = new ArrayList<>();
-        this.excludePathPattern = new ArrayList<>();
+        this.includePathPatterns = new ArrayList<>();
+        this.excludePathPatterns = new ArrayList<>();
     }
-
 
     @Override
     public Message<?> preSend(final Message<?> message, final MessageChannel channel) {
         StompHeaderAccessor headerAccessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
-        if (
+        if (headerAccessor != null &&
                 headerAccessor.getDestination() != null &&
-                        notIncludedPath(headerAccessor.getDestination(), headerAccessor.getCommand())
-        ) {
+                shouldIntercept(headerAccessor.getDestination(), headerAccessor.getCommand())) {
             return channelInterceptor.preSend(message, channel);
         }
 
         return ChannelInterceptor.super.preSend(message, channel);
     }
 
-    private boolean notIncludedPath(String destination, StompCommand command) {
-        boolean excludePattern = excludePathPattern.stream()
-                .anyMatch(stompMapping -> anyMatchPathPattern(destination, command, stompMapping));
+    private boolean shouldIntercept(String destination, StompCommand command) {
+        boolean isExcluded = excludePathPatterns.stream()
+                .anyMatch(stompMapping -> matchesPathAndCommand(destination, command, stompMapping));
 
-        boolean includePattern = includePathPattern.stream()
-                .anyMatch(stompMapping -> anyMatchPathPattern(destination, command, stompMapping));
+        boolean isIncluded = includePathPatterns.stream()
+                .anyMatch(stompMapping -> matchesPathAndCommand(destination, command, stompMapping));
 
-        return excludePattern || !includePattern;
+        System.out.println("##");
+        System.out.println("##");
+        System.out.println(isExcluded);
+        System.out.println(isIncluded);
+
+        return isIncluded && !isExcluded;
     }
 
-    private boolean anyMatchPathPattern(String destination, StompCommand command, StompMapping stompMapping) {
-        return pathMatcher.match(destination, stompMapping.destination()) &&
+    private boolean matchesPathAndCommand(String destination, StompCommand command, StompMapping stompMapping) {
+        return pathMatcher.match(stompMapping.destination(), destination) &&
                 stompMapping.command() == command;
     }
 
-    public PathMatcherInterceptor includePathPattern(String targetPath, StompCommand pathMethod) {
-        this.includePathPattern.add(new StompMapping(targetPath, pathMethod));
+    public PathMatcherInterceptor includePathPattern(String targetPath, StompCommand command) {
+        this.includePathPatterns.add(new StompMapping(targetPath, command));
         return this;
     }
 
-    public PathMatcherInterceptor excludePathPattern(String targetPath, StompCommand pathMethod) {
-        this.excludePathPattern.add(new StompMapping(targetPath, pathMethod));
+    public PathMatcherInterceptor excludePathPattern(String targetPath, StompCommand command) {
+        this.excludePathPatterns.add(new StompMapping(targetPath, command));
         return this;
     }
 

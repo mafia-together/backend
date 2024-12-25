@@ -1,8 +1,10 @@
 package mafia.mafiatogether.job.ui;
 
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Base64;
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.chat.annotation.SendToChatWithRedis;
-import mafia.mafiatogether.chat.domain.Message;
 import mafia.mafiatogether.common.annotation.PlayerInfo;
 import mafia.mafiatogether.common.resolver.PlayerInfoDto;
 import mafia.mafiatogether.job.application.JobService;
@@ -10,8 +12,8 @@ import mafia.mafiatogether.job.application.dto.request.JobExecuteAbilityRequest;
 import mafia.mafiatogether.job.application.dto.response.JobExecuteAbilityResponse;
 import mafia.mafiatogether.job.application.dto.response.JobResponse;
 import mafia.mafiatogether.job.application.dto.response.JobResultResponse;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +27,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/jobs")
 public class JobController {
 
+    private final StringRedisTemplate stringRedisTemplate;
+    private final ObjectMapper objectMapper;
     private final JobService jobService;
 
     @GetMapping("/my")
@@ -32,15 +36,20 @@ public class JobController {
         return ResponseEntity.ok(jobService.getPlayerJob(playerInfoDto.code(), playerInfoDto.name()));
     }
 
-    @MessageMapping("/skill/{code}/{name}")
-    @SendToChatWithRedis("/sub/mafia/{code}")
-    public Message executeSkill(
-            @DestinationVariable("code") String code,
-            @DestinationVariable("name") String name,
+    @MessageMapping("/jobs/skill")
+    public void executeWebSocketSkill(
+            @PlayerInfo PlayerInfoDto playerInfoDto,
             @Payload JobExecuteAbilityRequest request
-    ) {
-        JobExecuteAbilityResponse response = jobService.executeSkill(code, name, request);
-        return Message.ofChat(response.job(), response.result());
+    ) throws JsonProcessingException {
+        JobExecuteAbilityResponse response = jobService.executeSkill(playerInfoDto.code(), playerInfoDto.name(),
+                request);
+        String auth = Base64.getEncoder()
+                .encodeToString((playerInfoDto.code() + ":" + playerInfoDto.name()).getBytes());
+
+        stringRedisTemplate.convertAndSend(
+                String.format("/sub/job/skill/%s/%s", response.job().toLowerCase(), auth),
+                objectMapper.writeValueAsString(response)
+        );
     }
 
     @PostMapping("/skill")
