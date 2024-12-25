@@ -21,6 +21,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @Slf4j
 @RestControllerAdvice
@@ -31,7 +32,7 @@ public class GlobalExceptionHandler {
     private final ErrorNotificationService errorNotificationService;
     private static final String LOCAL_PROFILE_NAME = "local";
 
-    @ExceptionHandler(NoHandlerFoundException.class)
+    @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class})
     public ResponseEntity<ErrorResponse> handleNoHandlerFoundException() {
         final ErrorResponse errorResponse = ErrorResponse.create(
                 ExceptionCode.NO_STATIC_RESOURCE.getCode(),
