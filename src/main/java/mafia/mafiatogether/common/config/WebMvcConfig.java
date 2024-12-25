@@ -1,5 +1,6 @@
 package mafia.mafiatogether.common.config;
 
+import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.resolver.PlayerArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -10,11 +11,14 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.util.List;
 
 @Configuration
+@RequiredArgsConstructor
 public class WebMvcConfig implements WebMvcConfigurer {
+
+    private final PlayerArgumentResolver playerArgumentResolver;
 
     @Override
     public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new PlayerArgumentResolver());
+        resolvers.add(playerArgumentResolver);
     }
 
     @Override

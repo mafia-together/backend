@@ -20,6 +20,7 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final ChatInterceptor chatInterceptor;
+    private final WebsocketPlayerArgumentResolver websocketPlayerArgumentResolver;
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -34,7 +35,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(new WebsocketPlayerArgumentResolver());
+        argumentResolvers.add(websocketPlayerArgumentResolver);
     }
 
     @Override

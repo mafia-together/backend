@@ -1,17 +1,22 @@
 package mafia.mafiatogether.common.resolver;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.annotation.PlayerInfo;
 import mafia.mafiatogether.common.exception.AuthException;
 import mafia.mafiatogether.common.exception.ExceptionCode;
-import mafia.mafiatogether.common.util.AuthExtractor;
 import org.springframework.core.MethodParameter;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+@Component
+@RequiredArgsConstructor
 public class PlayerArgumentResolver implements HandlerMethodArgumentResolver {
+
+    private final BasicAuthResolver basicAuthResolver;
 
     @Override
     public boolean supportsParameter(final MethodParameter parameter) {
@@ -22,17 +27,12 @@ public class PlayerArgumentResolver implements HandlerMethodArgumentResolver {
     public PlayerInfoDto resolveArgument(final MethodParameter parameter, final ModelAndViewContainer mavContainer,
                                          final NativeWebRequest webRequest, final WebDataBinderFactory binderFactory) {
         HttpServletRequest httpServletRequest = webRequest.getNativeRequest(HttpServletRequest.class);
-
         if (httpServletRequest == null) {
             throw new AuthException(ExceptionCode.NOT_FOUND_REQUEST);
         }
 
         String authorization = httpServletRequest.getHeader("Authorization");
-        if (authorization == null) {
-            throw new AuthException(ExceptionCode.MISSING_AUTHENTICATION_HEADER);
-        }
-
-        String[] information = AuthExtractor.extractByAuthorization(authorization);
+        String[] information = basicAuthResolver.resolve(authorization);
         return new PlayerInfoDto(information[0], information[1]);
     }
 }

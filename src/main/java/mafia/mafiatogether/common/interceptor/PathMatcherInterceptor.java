@@ -45,11 +45,6 @@ public class PathMatcherInterceptor implements ChannelInterceptor {
         boolean isIncluded = includePathPatterns.stream()
                 .anyMatch(stompMapping -> matchesPathAndCommand(destination, command, stompMapping));
 
-        System.out.println("##");
-        System.out.println("##");
-        System.out.println(isExcluded);
-        System.out.println(isIncluded);
-
         return isIncluded && !isExcluded;
     }
 
