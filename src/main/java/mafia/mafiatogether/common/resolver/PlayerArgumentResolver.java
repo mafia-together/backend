@@ -1,11 +1,10 @@
 package mafia.mafiatogether.common.resolver;
 
 import jakarta.servlet.http.HttpServletRequest;
-
-import mafia.mafiatogether.common.util.AuthExtractor;
 import mafia.mafiatogether.common.annotation.PlayerInfo;
 import mafia.mafiatogether.common.exception.AuthException;
 import mafia.mafiatogether.common.exception.ExceptionCode;
+import mafia.mafiatogether.common.util.AuthExtractor;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;

@@ -27,32 +27,32 @@ public class ChatController {
         return ResponseEntity.ok(chatService.findAllChat(playerInfoDto.code(), playerInfoDto.name()));
     }
 
-    @MessageMapping("/chat/{code}/enter")
+    @MessageMapping("/chat/enter/{code}/{name}")
     @SendToChatWithRedis("/sub/chat/{code}")
     public Message enterChat(
             @DestinationVariable("code") String code,
-            @PlayerInfo PlayerInfoDto playerInfoDto
+            @DestinationVariable("name") String name
     ) {
-        return chatService.enter(playerInfoDto.name(), code);
+        return chatService.enter(name, code);
     }
 
-    @MessageMapping("/chat/{code}")
-    @SendToChatWithRedis("/sub/chat/{code}")
-    public Message createChat(
-            @DestinationVariable("code") String code,
-            @PlayerInfo PlayerInfoDto playerInfoDto,
-            @Payload ChatRequest request
-    ) {
-        return chatService.chat(playerInfoDto.name(), code, request.content());
-    }
-
-    @MessageMapping("/chat/{code}/leave")
+    @MessageMapping("/chat/leave/{code}/{name}")
     @SendToChatWithRedis("/sub/chat/{code}")
     public Message leaveChat(
             @DestinationVariable("code") String code,
-            @PlayerInfo PlayerInfoDto playerInfoDto
+            @DestinationVariable("name") String name
     ) {
-        return chatService.leave(playerInfoDto.name(), code);
+        return chatService.leave(name, code);
+    }
+
+    @MessageMapping("/chat/{code}/{name}")
+    @SendToChatWithRedis("/sub/chat/{code}")
+    public Message createChat(
+            @DestinationVariable("code") String code,
+            @DestinationVariable("name") String name,
+            @Payload ChatRequest request
+    ) {
+        return chatService.chat(name, code, request.content());
     }
 
 }

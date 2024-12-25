@@ -1,13 +1,10 @@
 package mafia.mafiatogether.common.config;
 
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.chat.ui.WebsocketPlayerArgumentResolver;
 import mafia.mafiatogether.common.interceptor.ChatInterceptor;
 import mafia.mafiatogether.common.interceptor.PathMatcherInterceptor;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -40,16 +37,12 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     }
 
     @Override
-    public void addArgumentResolvers(final List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(new WebsocketPlayerArgumentResolver());
-    }
-
-    @Override
     public void configureClientInboundChannel(ChannelRegistration registry) {
         registry.interceptors(
-                new PathMatcherInterceptor(new ChatInterceptor())
+                new PathMatcherInterceptor(chatInterceptor)
                         .includePathPattern("/chat/**", StompCommand.SUBSCRIBE)
-                        .includePathPattern("/chat/**", StompCommand.SEND)
+                        .includePathPattern("/chat/**", StompCommand.DISCONNECT)
+                        .includePathPattern("/chat/**", StompCommand.MESSAGE)
         );
     }
 
