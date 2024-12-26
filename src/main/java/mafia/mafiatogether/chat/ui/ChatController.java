@@ -1,5 +1,6 @@
 package mafia.mafiatogether.chat.ui;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.chat.annotation.SendToChatWithRedis;
 import mafia.mafiatogether.chat.application.ChatService;
@@ -14,8 +15,6 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -55,6 +54,5 @@ public class ChatController {
     ) {
         return chatService.chat(name, code, request.content());
     }
-
 
 }

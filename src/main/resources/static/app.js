@@ -8,6 +8,10 @@ stompClient.onConnect = (frame) => {
     stompClient.subscribe('/sub/chat/aGVsbG86cG93ZXJhc3M=', (greeting) => {
         showGreeting(JSON.parse(greeting.body));
     });
+
+    stompClient.subscribe('/sub/job/skill/mafia/aGVsbG86cG93ZXJhc3M=', (greeting) => {
+        showSkill(JSON.parse(greeting.body));
+    });
 };
 
 stompClient.onWebSocketError = (error) => {
@@ -59,7 +63,22 @@ function leaveRoom() {
     });
 }
 
+function executeSkill() {
+    stompClient.publish({
+        destination: "/pub/jobs/skill",
+        body: JSON.stringify({'target': $("#target").val()}),
+        headers: {
+            Authorization: 'Basic aGVsbG86cG93ZXJhc3M=',
+        },
+    });
+}
+
 function showGreeting(message) {
+    console.log('Received: ' + JSON.stringify(message));
+    $("#greeting").append("<tr><td>" + JSON.stringify(message) + "</td></tr>");
+}
+
+function showSkill(message) {
     console.log('Received: ' + JSON.stringify(message));
     $("#greeting").append("<tr><td>" + JSON.stringify(message) + "</td></tr>");
 }
@@ -71,4 +90,5 @@ $(function () {
     $("#send").click(() => sendName());
     $("#enter").click(() => enterRoom());
     $("#leave").click(() => leaveRoom());
+    $("#skill").click(() => executeSkill());
 });
