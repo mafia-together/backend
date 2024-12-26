@@ -43,11 +43,9 @@ public class JobController {
     ) throws JsonProcessingException {
         JobExecuteAbilityResponse response = jobService.executeSkill(playerInfoDto.code(), playerInfoDto.name(),
                 request);
-        String auth = Base64.getEncoder()
-                .encodeToString((playerInfoDto.code() + ":" + playerInfoDto.name()).getBytes());
 
         stringRedisTemplate.convertAndSend(
-                String.format("/sub/job/skill/%s/%s", response.job().toLowerCase(), auth),
+                String.format("/sub/jobs/skill/%s/%s", response.job().toLowerCase(),playerInfoDto.code()),
                 objectMapper.writeValueAsString(response)
         );
     }
