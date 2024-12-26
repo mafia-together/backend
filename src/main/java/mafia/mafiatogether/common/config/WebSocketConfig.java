@@ -2,9 +2,9 @@ package mafia.mafiatogether.common.config;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import mafia.mafiatogether.chat.ui.WebsocketPlayerArgumentResolver;
 import mafia.mafiatogether.common.interceptor.ChatInterceptor;
 import mafia.mafiatogether.common.interceptor.PathMatcherInterceptor;
+import mafia.mafiatogether.common.resolver.WebsocketPlayerArgumentResolver;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
 import org.springframework.messaging.simp.config.ChannelRegistration;

@@ -1,9 +1,7 @@
-package mafia.mafiatogether.chat.ui;
+package mafia.mafiatogether.common.resolver;
 
 import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.annotation.PlayerInfo;
-import mafia.mafiatogether.common.resolver.BasicAuthResolver;
-import mafia.mafiatogether.common.resolver.PlayerInfoDto;
 import org.springframework.core.MethodParameter;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.invocation.HandlerMethodArgumentResolver;
