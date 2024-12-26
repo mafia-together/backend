@@ -3,7 +3,6 @@ package mafia.mafiatogether.common.interceptor;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
-import lombok.RequiredArgsConstructor;
 import mafia.mafiatogether.common.util.AuthExtractor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
@@ -16,8 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Configuration
-@RequiredArgsConstructor
-public class StompChannelInterceptor implements ChannelInterceptor {
+public class ChatInterceptor implements ChannelInterceptor {
 
     private static final String SUBSCRIBE_FORMAT = "%s/%s";
     private static final String PUBLISHING_FORMAT = "%s/%s/%s";
