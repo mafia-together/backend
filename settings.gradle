@@ -1,4 +1,8 @@
 rootProject.name = 'mafia-together'
 include 'common'
 include 'chat'
+include 'game'
+include 'vote'
+include 'job'
+include 'lobby'
 

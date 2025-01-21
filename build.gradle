@@ -59,10 +59,39 @@ subprojects {
 }
 
 project(':common') {
+}
+
+project(':chat') {
     dependencies {
         implementation project(':common')
     }
 }
 
-project(':chat') {
+project(':game') {
+    dependencies {
+        implementation project(':common')
+        implementation project(':chat')
+        implementation project(':vote')
+        implementation project(':lobby')
+        implementation project(':job')
+    }
+}
+
+project(':vote') {
+    dependencies {
+        implementation project(':common')
+    }
+}
+
+project(':job') {
+    dependencies {
+        implementation project(':common')
+    }
+}
+
+project(':lobby') {
+    dependencies {
+        implementation project(':job')
+        implementation project(':common')
+    }
 }

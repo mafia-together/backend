@@ -1,4 +1,4 @@
-package mafia.mafiatogether.global;
+package mafia.mafiatogether.common;
 
 import java.time.Duration;
 import org.springframework.boot.test.context.TestConfiguration;

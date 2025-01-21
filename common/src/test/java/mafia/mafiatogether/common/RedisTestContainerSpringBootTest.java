@@ -1,4 +1,4 @@
-package mafia.mafiatogether.global;
+package mafia.mafiatogether.common;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
